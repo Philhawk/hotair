@@ -9,9 +9,18 @@
 #           PATCH    /users/:id(.:format)      users#update
 #           PUT      /users/:id(.:format)      users#update
 #           DELETE   /users/:id(.:format)      users#destroy
+#     login GET      /login(.:format)          session#new
+#           POST     /login(.:format)          session#create
+#           DELETE   /login(.:format)          session#destroy
 # websocket GET|POST /websocket(.:format)      websocket_rails
 #
 
 Rails.application.routes.draw do
- resources :users
+	root to: 'pages#index'
+
+	resources :users
+
+	get '/login' => 'session#new'
+	post '/login' => 'session#create'
+	delete '/login' => 'session#destroy'
 end
