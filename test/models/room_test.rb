@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: rooms
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  topic      :text
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 require 'test_helper'
 
 class RoomTest < ActiveSupport::TestCase
