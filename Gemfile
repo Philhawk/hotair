@@ -16,8 +16,8 @@ gem 'coffee-rails', '~> 4.0.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-gem 'websocket-rails'
-gem 'handlebars'
+gem 'websocket-rails', :git => 'https://github.com/Oxynum/websocket-rails.git'
+gem 'handlebars_assets'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.

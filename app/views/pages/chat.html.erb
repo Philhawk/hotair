@@ -1,17 +1,24 @@
-<%= label_tag 'Room Name' %>
-<%= text_field_tag :room_name %>
-<%= button_tag 'Create Room', id: 'create_room_button' %>
-<%= button_tag 'Join Room', id: 'join_room_button' %>
-<p></p>
-<%= text_field_tag :chat_text %>
-<%= button_tag 'Send', id: 'send_button' %>
-<div id="chat-view">
+<div id="chat-page">
+	
+	<script>
+		var userName = "<%= @current_user.name %>";
+		var userId = <%= @current_user.id %>;
+	</script>
+	<%= label_tag 'Room Name' %>
+	<%= text_field_tag :room_name %>
+	<%= button_tag 'Create Room', id: 'create_room_button' %>
+	<%= button_tag 'Join Room', id: 'join_room_button' %>
+	<p></p>
+	<%= text_field_tag :chat_text %>
+	<%= button_tag 'Send', id: 'send_button' %>
+	<div id="chat-view">
+	</div>
+
+
+
+	<script type='templates/handlebars' id="text_template">
+		<p>
+			<em>{{ name }}</em>: {{ text }}
+		</p>
+	</script>
 </div>
-
-
-
-<script type='templates/handlebars' id="text_template">
-	<p>
-		<em>{{ name }}</em>: {{ text }}
-	</p>
-</script>
