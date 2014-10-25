@@ -4,9 +4,10 @@ var currentRoomId;
 
 // Reg expressions used
 var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
-var YOUTUBEREGEX = /[a-zA-Z0-9\-\_]{11}/g;
+var YOUTUBEREGEX = /v=S+[a-zA-Z0-9\-\_]{11}/g;
+wikipedia.org\/wiki\/(\S+)
 
-
+http://www.youtube.com/watch?v=s_enm5TBKSA
 
 // Lawrences twitter regex
 	var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
