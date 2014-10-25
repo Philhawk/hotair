@@ -125,7 +125,9 @@ var joinRoom = function (room_id) {
 		room.unbind('new_text');
 		room.unbind('new_image');
 		room.unbind('new_youtube');
+		room.unbind('new_tweet');
 
+		dispatcher.unbind('new_tweet');
 		dispatcher.unbind('new_youtube');
 		dispatcher.unbind('new_image');
 		dispatcher.unbind('new_text');
