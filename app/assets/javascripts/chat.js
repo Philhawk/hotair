@@ -83,6 +83,7 @@ var joinHandler = function () {
 // Functions that send to the server
 
 var sendVimeo = function(i, vimeoLink) {
+
 	var message = {
 		url: vimeoLink,
 		id: userId,
@@ -277,16 +278,19 @@ var displayYouTube = function(message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
-<<<<<<< HEAD
 var displayVimeo = function(message) {
 	var source = $('#vimeo_template').html();
-=======
-var displaySound = function(message) {
-	console.log('display sound');
-	var source = $('#sound_template').html();
->>>>>>> 3185344330b438111cd76f7619cdea8084df6b39
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
-}
+};
+
+
+var displaySound = function(message) {
+	console.log('display sound');
+	var source = $('#sound_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
 
