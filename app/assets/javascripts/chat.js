@@ -11,6 +11,8 @@ var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)
 // Lawrences twitter regex
 var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
 
+var VIMEOREGEXP = /(?:https?:\/\/)?(?:www\.)?vimeo.com\/\S+/g;
+
 
 // James REGEX(soundcloub, spotify??)
 var SOUNDCLOUDREGEX = /^https?:\/\/(soundcloud.com|snd.sc)\/(.*)$/gi;
@@ -48,6 +50,8 @@ var evalText = function () {
 
 	var twitterLinks = text.match(TWITTERREGEXP);
 
+	var vimeoLinks = text.match(VIMEOREGEXP);
+
 
 	// see if text has regexp's
 	if (imageLinks) {
@@ -59,6 +63,9 @@ var evalText = function () {
 	} else if (twitterLinks) {
 		sendText(text);
 		$.each(twitterLinks, sendTweet);
+	} else if (vimeoLinks) {
+		sendText(text);
+		$.each(vimeoLinks, sendVimeo);
 	} else {
 		sendText(text);
 	}
@@ -71,6 +78,15 @@ var joinHandler = function () {
 };
 
 // Functions that send to the server
+
+var sendVimeo = function(i, vimeoLink) {
+	var message = {
+		url: vimeoLink,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_vimeo', message);
+};
 
 var sendTweet = function(i, twitterLink) {
 	var message = {
@@ -126,7 +142,9 @@ var joinRoom = function (room_id) {
 		room.unbind('new_image');
 		room.unbind('new_youtube');
 		room.unbind('new_tweet');
+		room.unbind('new_vimeo');
 
+		dispatcher.unbind('new_vimeo');
 		dispatcher.unbind('new_tweet');
 		dispatcher.unbind('new_youtube');
 		dispatcher.unbind('new_image');
@@ -157,8 +175,11 @@ var joinRoom = function (room_id) {
 	room.bind('new_text', displayText);
 	room.bind('new_image', displayImg);
 	room.bind('new_tweet', displayTweet);
+	room.bind('new_vimeo', displayVimeo);
+
 
 	dispatcher.bind('new_tweet', displayTweet);
+	dispatcher.bind('new_vimeo', displayVimeo);
 
 	room.bind('new_youtube', displayYouTube)
 
@@ -238,4 +259,11 @@ var displayYouTube = function(message) {
 
 	$('#chat-view').append(displayHTML(message));
 };
+
+var displayVimeo = function(message) {
+	var source = $('#vimeo_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+}
 
