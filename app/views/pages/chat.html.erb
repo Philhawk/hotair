@@ -18,7 +18,13 @@
 
 	<script type='templates/handlebars' id="text_template">
 		<p>
-			<em>{{ name }}</em>: {{ text }}
+			<em>{{ name }}</em>: {{{ text }}}
+		</p>
+	</script>
+
+	<script type='templates/handlebars' id="image_template">
+		<p>
+			<em>{{ name }}</em>: <img src="{{ url }}">
 		</p>
 	</script>
 </div>

@@ -2,6 +2,10 @@ var dispatcher;
 var room;
 var currentRoomId;
 
+// Reg expressions used
+var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp)/gi;
+
+
 $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
@@ -30,6 +34,16 @@ var evalText = function () {
 	// DO LOGIC AND SEND TO YOUR EVENTS
 	////////
 
+	// create arrays
+	var imageLinks = text.match(IMAGEREGEXP);
+
+	// see if text has regexp's
+	if (imageLinks) {
+		$.each(imageLinks, sendImage);
+	} else {
+
+	}
+
 	sendText(text);	
 };
 var joinHandler = function () {
@@ -38,6 +52,15 @@ var joinHandler = function () {
 };
 
 // Functions that send to the server
+
+var sendImage = function(i, imgLink) {
+	var message = {
+		url: imgLink, 
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_image', message);
+};
 
 var sendText = function (text) {
 	var message = {
@@ -63,7 +86,10 @@ var joinRoom = function (room_id) {
 		room.unbind('user_joined');
 		room.unbind('user_left');
 		room.unbind('new_text');
-		dispatcher.unbind('new_text', displayText);
+		room.unbind('new_image');
+
+		dispatcher.unbind('new_image');
+		dispatcher.unbind('new_text');
 		// room.unbind('function_name', functionNameOnJs);
 		// dispatcher.unbind('function_name', functionNameOnJs);
 
@@ -88,6 +114,9 @@ var joinRoom = function (room_id) {
 	room.bind('user_joined', userJoinedRoom);
 	room.bind('user_left', userLeftRoom);
 	room.bind('new_text', displayText);
+	room.bind('new_image', displayImg);
+
+	dispatcher.bind('new_image', displayImg);
 	dispatcher.bind('new_text', displayText);
 
 	// room.bind('function_name', functionNameOnJs);
@@ -109,6 +138,7 @@ var joinRoom = function (room_id) {
 };
 
 // Functions called from server
+
 var clientConnected = function() {
 	console.log('Client connected to websocket');
 };
@@ -134,9 +164,15 @@ var userLeftRoom = function (message) {
 }
 
 var displayText = function (message) {
-	console.log('is this working');
 	var source = $('#text_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').prepend(displayHTML(message));
-}
+};
+
+var displayImg = function(message) {
+	var source = $('#image_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').prepend(displayHTML(message));
+};

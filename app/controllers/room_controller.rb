@@ -1,4 +1,7 @@
 class RoomController < WebsocketRails::BaseController
+	# reg exps to use
+	LINKREGEXP = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/
+
 	def new
 		room_name = message['name']
 		room = Room.new(name: room_name, topic: 'Welcome!')
@@ -44,26 +47,46 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room].trigger(:user_left, message)
 	end
 
+	def new_image
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id 
+
+		message_to_send = {
+			name: user.name,
+			url: url 
+		}
+
+		put_message_in_db(message, message_to_send, 'new_image')
+
+		WebsocketRails[room_id].trigger(:new_image, message)
+
+	end 
+
 	def new_text
-		
+		# Save data from the message into variables for easy access
 		user_id = message['id']
 		room_id = message['roomid']
 		text = message['msg']
 
+		# find the user from the message
 		user = User.find user_id 
-		room = Room.find room_id 
 
-		message = {
+		new_text = text.gsub(LINKREGEXP) { |link| "<a href='#{link}'>#{link}</a>" }
+
+		# make a new message to send
+		message_to_send = {
 			name: user.name,
-			text: text
+			text: new_text
 		}
 
-		msg_in_db = put_message_in_db(message, 'new_text')
+		# put the new message into the database, saving from the details of the message sent to the server
+		put_message_in_db(message, message_to_send, 'new_text')
 
-		user.messages << msg_in_db
-		room.messages << msg_in_db
-
-		WebsocketRails[room_id].trigger(:new_text, message)
+		# send the new message to the room
+		WebsocketRails[room_id].trigger(:new_text, message_to_send)
 	end
 
 	def set_topic
@@ -71,9 +94,14 @@ class RoomController < WebsocketRails::BaseController
 
 private
 	# Storing the entire message and the function associated with it
-	def put_message_in_db(message, fn)
-		msg = Message.new(user_id: message['id'], room_id: message['roomid'], object: message.to_s, function: fn)
+	def put_message_in_db(message_sent, message_to_send, fn)
+		# reduce boilerplate by creating associations in helper function
+		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
 		msg.save 
+		user = User.find message_sent['id']
+		room = Room.find message_sent['roomid']
+		user.messages << msg
+		room.messages << msg
 		msg
 	end 
 end
