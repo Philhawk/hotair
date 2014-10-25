@@ -1,5 +1,5 @@
 <div id="chat-page">
-	
+
 	<script>
 		var userName = "<%= @current_user.name %>";
 		var userId = <%= @current_user.id %>;
@@ -28,6 +28,7 @@
 		</p>
 	</script>
 
+
 	<script type='templates/handlebars' id="youtube_template">
 		
 		<p>
@@ -37,4 +38,14 @@
 
 	</script>
 	
+
+	<script type="templates/handlebars" id="tweet_template">
+
+		<p>
+		<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</p>
+
+	</script>
+
+
 </div>

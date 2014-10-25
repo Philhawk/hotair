@@ -7,15 +7,15 @@ class RoomController < WebsocketRails::BaseController
 	def new
 		room_name = message['name']
 		room = Room.new(name: room_name, topic: 'Welcome!')
-		if room.save 
+		if room.save
 			message = {
 		 	name: room.name,
 		 	topic: room.topic,
 		 	id: room.id.to_s
 		 	}
-			send_message :room_created, message 
+			send_message :room_created, message
 		else
-		 	send_message :room_failed, message 
+		 	send_message :room_failed, message
 		end
 	end
 
@@ -26,7 +26,7 @@ class RoomController < WebsocketRails::BaseController
 		room = Room.find room_id
 
 		# add user to room
-		room.users << user 
+		room.users << user
 
 		message = {
 			name: user.name,
@@ -39,7 +39,7 @@ class RoomController < WebsocketRails::BaseController
 		# tell the user that joined the past messages
 		room.messages.each do |m|
 			send_message(m.function.to_sym, eval(m.object))
-		end 
+		end
 
 	end
 
@@ -54,18 +54,36 @@ class RoomController < WebsocketRails::BaseController
 		room_id = message['roomid']
 		url = message['url']
 
-		user = User.find user_id 
+		user = User.find user_id
 
 		message_to_send = {
 			name: user.name,
-			url: url 
+			url: url
 		}
 
 		put_message_in_db(message, message_to_send, 'new_image')
 
 		WebsocketRails[room_id].trigger(:new_image, message)
 
-	end 
+	end
+
+	def new_tweet
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['twitter_url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_tweet')
+
+		WebsocketRails[room_id].trigger(:new_tweet, message)
+
+	end
 
 	def new_youtube
 		user_id = message['id']
@@ -93,7 +111,7 @@ class RoomController < WebsocketRails::BaseController
 		text = message['msg']
 
 		# find the user from the message
-		user = User.find user_id 
+		user = User.find user_id
 
 		new_text = text.gsub(LINKREGEXP) { |link| "<a href='#{link}'>#{link}</a>" }
 
@@ -110,6 +128,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_text, message_to_send)
 	end
 
+
 	def set_topic
 	end
 
@@ -118,11 +137,11 @@ private
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
 		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
-		msg.save 
+		msg.save
 		user = User.find message_sent['id']
 		room = Room.find message_sent['roomid']
 		user.messages << msg
 		room.messages << msg
 		msg
-	end 
+	end
 end
