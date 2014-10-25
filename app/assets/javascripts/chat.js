@@ -36,7 +36,7 @@ var evalText = function () {
 
 	// create arrays
 	var imageLinks = text.match(IMAGEREGEXP);
-	
+
 
 	// see if text has regexp's
 	if (imageLinks) {
@@ -168,12 +168,12 @@ var displayText = function (message) {
 	var source = $('#text_template').html();
 	var displayHTML = Handlebars.compile(source);
 
-	$('#chat-view').prepend(displayHTML(message));
+	$('#chat-view').append(displayHTML(message));
 };
 
 var displayImg = function(message) {
 	var source = $('#image_template').html();
 	var displayHTML = Handlebars.compile(source);
 
-	$('#chat-view').prepend(displayHTML(message));
+	$('#chat-view').append(displayHTML(message));
 };

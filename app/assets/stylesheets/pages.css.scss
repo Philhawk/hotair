@@ -1,3 +1,62 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.vertAlign {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.fullWidth {
+   width: 100%;
+   margin-left: auto;
+   margin-right: auto;
+   max-width: initial;
+}
+
+#chat-view {
+	height: 70vh;
+	overflow: scroll;
+	margin-top: 1em;
+}
+.chatRoom {
+	position: relative;
+	background-color: white;	
+
+}
+
+.sendRow {
+	background-color: #8D8D8D;
+}
+
+.sendInput {
+	padding-top: 1em;
+}
+.userList {
+	background-color: #F1EEEE;
+	height: 100%;
+	position: absolute;
+	right: 0;
+}
+
+#chat-page {
+	height: 100vh;
+	background-color: #FCAFAE;
+}
+
+.chatFooter {
+	background-color: #E49797;
+}
+
+.topBar {
+	position: relative;
+	background: white;
+	padding: 1em;
+	box-shadow: 0px 5px 2px rgba(0,0,0,0.15);
+	z-index: 1;
+}
+button {
+	height: 2.4em;
+	padding-top: .65em;
+}
