@@ -49,20 +49,20 @@ var evalText = function () {
 	var twitterLinks = text.match(TWITTERREGEXP);
 
 
-
 	// see if text has regexp's
 	if (imageLinks) {
-		sendText(text);	
-		$.each(imageLinks, sendImage);	
+		sendText(text);
+		$.each(imageLinks, sendImage);
 	} else if (youtubeLinks) {
-		sendText(text);	
-		$.each(youtubeLinks, sendTube);	
+		sendText(text);
+		$.each(youtubeLinks, sendTube);
 	} else if (twitterLinks) {
 		sendText(text);
 		$.each(twitterLinks, sendTweet);
 	} else {
 		sendText(text);
 	}
+
 
 };
 var joinHandler = function () {
@@ -154,6 +154,10 @@ var joinRoom = function (room_id) {
 	room.bind('user_left', userLeftRoom);
 	room.bind('new_text', displayText);
 	room.bind('new_image', displayImg);
+	room.bind('new_tweet', displayTweet);
+
+	dispatcher.bind('new_tweet', displayTweet);
+
 	room.bind('new_youtube', displayYouTube)
 
 	dispatcher.bind('new_text', displayText);
@@ -219,9 +223,17 @@ var displayImg = function(message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
+var displayTweet = function(message) {
+	var source = $('#tweet_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
 var displayYouTube = function(message) {
 	var source = $('#youtube_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
 };
+
