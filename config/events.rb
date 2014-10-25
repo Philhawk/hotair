@@ -14,7 +14,7 @@ WebsocketRails::EventMap.describe do
 
   subscribe :send_youtube, :to => RoomController, :with_method => :new_youtube
   subscribe :send_tweet, :to => RoomController, :with_method => :new_tweet
-
+  subscribe :send_sound_cloud, :to => RoomController, :with_method => :new_sound
   #
   # Here is an example of mapping namespaced events:
   #   namespace :product do

@@ -48,7 +48,7 @@ var evalText = function () {
 
 	var twitterLinks = text.match(TWITTERREGEXP);
 
-
+	var soundCloudLink = text.match(SOUNDCLOUDREGEX);
 	// see if text has regexp's
 	if (imageLinks) {
 		sendText(text);
@@ -59,6 +59,9 @@ var evalText = function () {
 	} else if (twitterLinks) {
 		sendText(text);
 		$.each(twitterLinks, sendTweet);
+	} else if (soundCloudLink) {
+		sendText(text);
+		$.each(soundCloudLink, sendSoundCloud);
 	} else {
 		sendText(text);
 	}
@@ -71,6 +74,17 @@ var joinHandler = function () {
 };
 
 // Functions that send to the server
+
+var sendSoundCloud = function (i, soundLink) {
+			console.log('sendSoundCloud');
+	var message = {
+
+		url: soundLink,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_sound_cloud', message);
+};
 
 var sendTweet = function(i, twitterLink) {
 	var message = {
@@ -126,11 +140,13 @@ var joinRoom = function (room_id) {
 		room.unbind('new_image');
 		room.unbind('new_youtube');
 		room.unbind('new_tweet');
+		room.unbind('new_sound');
 
 		dispatcher.unbind('new_tweet');
 		dispatcher.unbind('new_youtube');
 		dispatcher.unbind('new_image');
 		dispatcher.unbind('new_text');
+		dispatcher.unbind('new_sound');
 		// room.unbind('function_name', functionNameOnJs);
 		// dispatcher.unbind('function_name', functionNameOnJs);
 
@@ -157,11 +173,13 @@ var joinRoom = function (room_id) {
 	room.bind('new_text', displayText);
 	room.bind('new_image', displayImg);
 	room.bind('new_tweet', displayTweet);
+	room.bind('new_sound', displaySound);
 
 	dispatcher.bind('new_tweet', displayTweet);
 
 	room.bind('new_youtube', displayYouTube)
 
+	dispatcher.bind('new_sound', displaySound);
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_youtube', displayYouTube)
 	dispatcher.bind('new_image', displayImg);
@@ -238,4 +256,12 @@ var displayYouTube = function(message) {
 
 	$('#chat-view').append(displayHTML(message));
 };
+
+var displaySound = function(message) {
+	console.log('display sound');
+	var source = $('#sound_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+}
 
