@@ -40,11 +40,11 @@ var evalText = function () {
 	// see if text has regexp's
 	if (imageLinks) {
 		$.each(imageLinks, sendImage);
+		sendText(text);	
 	} else {
 
 	}
 
-	sendText(text);	
 };
 var joinHandler = function () {
 	var roomid = $('#room_name').val();
