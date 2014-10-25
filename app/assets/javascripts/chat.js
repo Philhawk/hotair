@@ -4,12 +4,12 @@ var currentRoomId;
 
 // Reg expressions used
 var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
-var YOUTUBEREGEX = /[a-zA-Z0-9\-\_]{11}/g;
+// var YOUTUBEREGEX = /[a-zA-Z0-9\-\_]{11}/g;
 
 
 
 // Lawrences twitter regex
-	var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
+var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
 
 
 // James REGEX(soundcloub, spotify??)
@@ -42,7 +42,7 @@ var evalText = function () {
 	///
 	// DO LOGIC AND SEND TO YOUR EVENTS
 	////////
-	var youtubeLinks = text.match(YOUTUBEREGEX);
+	// var youtubeLinks = text.match(YOUTUBEREGEX);
 	// create arrays
 	var imageLinks = text.match(IMAGEREGEXP);
 
@@ -53,9 +53,9 @@ var evalText = function () {
 	if (imageLinks) {
 		sendText(text);
 		$.each(imageLinks, sendImage);
-	} else if (youtubeLinks) {
-		sendText(text);
-		$.each(youtubeLinks, sendTube);
+	// } else if (youtubeLinks) {
+	// 	sendText(text);
+	// 	$.each(youtubeLinks, sendTube);
 	} else if (twitterLinks) {
 		sendText(text);
 		$.each(twitterLinks, sendTweet);
