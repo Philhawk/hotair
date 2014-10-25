@@ -5,7 +5,7 @@ var currentRoomId;
 // Reg expressions used
 var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
 
-var YOUTUBEREGEX = /v=S+[a-zA-Z0-9\-\_]{11}/g;
+var YOUTUBEREGEX = /^(?:https?:\/\/)?(?:www\.)?youtu(?:\.be|be\.com)\/(?:watch\?v=)?([\w-]{10,})/g;
 // wikipedia.org\/wiki\/(\S+)
 
 // var YOUTUBEREGEX = /[a-zA-Z0-9\-\_]{11}/g;
@@ -49,7 +49,7 @@ var evalText = function () {
 	///
 	// DO LOGIC AND SEND TO YOUR EVENTS
 	////////
-	// var youtubeLinks = text.match(YOUTUBEREGEX);
+	var youtubeLinks = text.match(YOUTUBEREGEX);
 	// create arrays
 	var imageLinks = text.match(IMAGEREGEXP);
 
@@ -62,9 +62,9 @@ var evalText = function () {
 	if (imageLinks) {
 		sendText(text);
 		$.each(imageLinks, sendImage);
-	// } else if (youtubeLinks) {
-	// 	sendText(text);
-	// 	$.each(youtubeLinks, sendTube);
+	} else if (youtubeLinks) {
+		sendText(text);
+		$.each(youtubeLinks, sendTube);
 	} else if (twitterLinks) {
 		sendText(text);
 		$.each(twitterLinks, sendTweet);
@@ -88,10 +88,7 @@ var joinHandler = function () {
 // Functions that send to the server
 
 var sendVimeo = function(i, vimeoLink) {
-<<<<<<< HEAD
-=======
 
->>>>>>> 02fa1b668d7b411d82c390ce447c77124c6a0eff
 	var message = {
 		url: vimeoLink,
 		id: userId,
