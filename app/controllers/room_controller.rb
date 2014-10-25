@@ -3,19 +3,20 @@ class RoomController < WebsocketRails::BaseController
 
 	# LINKREGEXP = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=-]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/
 	LINKREGEXP = /(https?:\/\/|www)\S+/
+	TWITTERREGEXP = (?:https?:\/\/)?(?:www\.)?twitter.com/\S+
 
 	def new
 		room_name = message['name']
 		room = Room.new(name: room_name, topic: 'Welcome!')
-		if room.save 
+		if room.save
 			message = {
 		 	name: room.name,
 		 	topic: room.topic,
 		 	id: room.id.to_s
 		 	}
-			send_message :room_created, message 
+			send_message :room_created, message
 		else
-		 	send_message :room_failed, message 
+		 	send_message :room_failed, message
 		end
 	end
 
@@ -26,7 +27,7 @@ class RoomController < WebsocketRails::BaseController
 		room = Room.find room_id
 
 		# add user to room
-		room.users << user 
+		room.users << user
 
 		message = {
 			name: user.name,
@@ -39,7 +40,7 @@ class RoomController < WebsocketRails::BaseController
 		# tell the user that joined the past messages
 		room.messages.each do |m|
 			send_message(m.function.to_sym, eval(m.object))
-		end 
+		end
 
 	end
 
@@ -54,18 +55,18 @@ class RoomController < WebsocketRails::BaseController
 		room_id = message['roomid']
 		url = message['url']
 
-		user = User.find user_id 
+		user = User.find user_id
 
 		message_to_send = {
 			name: user.name,
-			url: url 
+			url: url
 		}
 
 		put_message_in_db(message, message_to_send, 'new_image')
 
 		WebsocketRails[room_id].trigger(:new_image, message)
 
-	end 
+	end
 
 	def new_text
 		# Save data from the message into variables for easy access
@@ -74,7 +75,7 @@ class RoomController < WebsocketRails::BaseController
 		text = message['msg']
 
 		# find the user from the message
-		user = User.find user_id 
+		user = User.find user_id
 
 		new_text = text.gsub(LINKREGEXP) { |link| "<a href='#{link}'>#{link}</a>" }
 
@@ -99,11 +100,11 @@ private
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
 		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
-		msg.save 
+		msg.save
 		user = User.find message_sent['id']
 		room = Room.find message_sent['roomid']
 		user.messages << msg
 		room.messages << msg
 		msg
-	end 
+	end
 end
