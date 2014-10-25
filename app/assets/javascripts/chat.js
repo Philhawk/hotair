@@ -3,7 +3,7 @@ var room;
 var currentRoomId;
 
 // Reg expressions used
-var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp)/gi;
+var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
 
 
 $(document).ready(function() {
