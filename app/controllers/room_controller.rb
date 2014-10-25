@@ -81,7 +81,25 @@ class RoomController < WebsocketRails::BaseController
 
 		put_message_in_db(message, message_to_send, 'new_tweet')
 
-		WebsocketRails[room_id].trigger(:new_tweet, message)
+		WebsocketRails[room_id].trigger(:new_tweet, message_to_send)
+
+	end
+
+	def new_vimeo
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_vimeo')
+
+		WebsocketRails[room_id].trigger(:new_vimeo, message)
 
 	end
 
@@ -90,19 +108,36 @@ class RoomController < WebsocketRails::BaseController
 		room_id = message['roomid']
 		url = message['url']
 
-		user = User.find user_id 
+		user = User.find user_id
 
 		message_to_send = {
 			name: user.name,
-			url: url 
+			url: url
 		}
 
 		put_message_in_db(message, message_to_send, 'new_youtube')
 
-		WebsocketRails[room_id].trigger(:new_youtube, message)
+		WebsocketRails[room_id].trigger(:new_youtube, message_to_send)
 
-	end 
+	end
 
+	# Soundcloud
+	def new_sound
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_sound')
+
+		WebsocketRails[room_id].trigger(:new_sound, message)
+	end
 
 	def new_text
 		# Save data from the message into variables for easy access
