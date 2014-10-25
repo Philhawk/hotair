@@ -88,7 +88,6 @@ var joinHandler = function () {
 // Functions that send to the server
 
 var sendVimeo = function(i, vimeoLink) {
-
 	var message = {
 		url: vimeoLink,
 		id: userId,
@@ -291,7 +290,6 @@ var displayVimeo = function(message) {
 
 	$('#chat-view').append(displayHTML(message));
 };
-
 
 
 var displaySound = function(message) {
