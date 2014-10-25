@@ -36,13 +36,14 @@ var evalText = function () {
 
 	// create arrays
 	var imageLinks = text.match(IMAGEREGEXP);
+	
 
 	// see if text has regexp's
 	if (imageLinks) {
 		$.each(imageLinks, sendImage);
 		sendText(text);	
 	} else {
-
+		sendText(text);	
 	}
 
 };
