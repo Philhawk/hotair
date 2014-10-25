@@ -6,7 +6,7 @@ var currentRoomId;
 var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
 
 // Lawrences twitter regex
-	var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com/\S+/g;
+	var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
 
 
 // James REGEX(soundcloub, spotify??)
@@ -44,6 +44,12 @@ var evalText = function () {
 	var imageLinks = text.match(IMAGEREGEXP);
 	var twitterLinks = text.match(TWITTERREGEXP);
 
+	if (twitterLinks) {
+		$.each(twitterLinks, sendTweet);
+		sendText(text);
+	} else {
+		sendText(text);
+	}
 
 	// see if text has regexp's
 	if (imageLinks) {
@@ -53,12 +59,6 @@ var evalText = function () {
 		sendText(text);
 	}
 
-	if (twitterLinks) {
-		$.each(twitterLinks, sendTweet);
-		sendText(text);
-	} else {
-		sendText(text);
-	}
 
 };
 var joinHandler = function () {
@@ -139,7 +139,9 @@ var joinRoom = function (room_id) {
 	room.bind('user_left', userLeftRoom);
 	room.bind('new_text', displayText);
 	room.bind('new_image', displayImg);
+	room.bind('new_tweet', displayTweet);
 
+	dispatcher.bind('new_tweet', displayTweet);
 	dispatcher.bind('new_image', displayImg);
 	dispatcher.bind('new_text', displayText);
 
@@ -200,3 +202,15 @@ var displayImg = function(message) {
 
 	$('#chat-view').prepend(displayHTML(message));
 };
+
+var displayTweet = function(message) {
+	var source = $('#tweet_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').prepend(displayHTML(message));
+}
+
+
+
+
+
