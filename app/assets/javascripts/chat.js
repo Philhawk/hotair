@@ -4,14 +4,23 @@ var currentRoomId;
 
 // Reg expressions used
 var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
+var YOUTUBEREGEX = /[a-zA-Z0-9\-\_]{11}/g;
 
+
+
+// Lawrences twitter regex
+	var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
+
+
+// James REGEX(soundcloub, spotify??)
+var SOUNDCLOUDREGEX = /^https?:\/\/(soundcloud.com|snd.sc)\/(.*)$/gi;
 
 $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
 		// connect to websocket
 		dispatcher = new WebSocketRails('localhost:3000/websocket');
- 	 	
+
  	 	// bind to websocket global events
  	 	dispatcher.bind('connected', clientConnected);
  	 	dispatcher.bind('room_created', roomCreated);
@@ -33,17 +42,26 @@ var evalText = function () {
 	///
 	// DO LOGIC AND SEND TO YOUR EVENTS
 	////////
-
+	var youtubeLinks = text.match(YOUTUBEREGEX);
 	// create arrays
 	var imageLinks = text.match(IMAGEREGEXP);
+
+	var twitterLinks = text.match(TWITTERREGEXP);
+
 
 
 	// see if text has regexp's
 	if (imageLinks) {
-		$.each(imageLinks, sendImage);
 		sendText(text);	
+		$.each(imageLinks, sendImage);	
+	} else if (youtubeLinks) {
+		sendText(text);	
+		$.each(youtubeLinks, sendTube);	
+	} else if (twitterLinks) {
+		sendText(text);
+		$.each(twitterLinks, sendTweet);
 	} else {
-		sendText(text);	
+		sendText(text);
 	}
 
 };
@@ -54,13 +72,31 @@ var joinHandler = function () {
 
 // Functions that send to the server
 
+var sendTweet = function(i, twitterLink) {
+	var message = {
+		twitter_url: twitterLink,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_tweet', message);
+}
+
 var sendImage = function(i, imgLink) {
 	var message = {
-		url: imgLink, 
+		url: imgLink,
 		id: userId,
 		roomid: currentRoomId
 	}
 	dispatcher.trigger('send_image', message);
+};
+
+var sendTube = function(i, vidID) {
+	var message = {
+		url: vidID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_youtube', message)
 };
 
 var sendText = function (text) {
@@ -88,19 +124,21 @@ var joinRoom = function (room_id) {
 		room.unbind('user_left');
 		room.unbind('new_text');
 		room.unbind('new_image');
+		room.unbind('new_youtube');
 
+		dispatcher.unbind('new_youtube');
 		dispatcher.unbind('new_image');
 		dispatcher.unbind('new_text');
 		// room.unbind('function_name', functionNameOnJs);
 		// dispatcher.unbind('function_name', functionNameOnJs);
 
-		// ADD BETWEEN HERE 
+		// ADD BETWEEN HERE
 		// AND HERE
 
 		// send a message to people in the PREVIOUS room that someone has LEFT
 		var leavemessage = {
 			name: userName,
-			roomid: currentRoomId 
+			roomid: currentRoomId
 		};
 		dispatcher.trigger('left_room', leavemessage);
 	}
@@ -116,9 +154,12 @@ var joinRoom = function (room_id) {
 	room.bind('user_left', userLeftRoom);
 	room.bind('new_text', displayText);
 	room.bind('new_image', displayImg);
+	room.bind('new_youtube', displayYouTube)
 
-	dispatcher.bind('new_image', displayImg);
 	dispatcher.bind('new_text', displayText);
+	dispatcher.bind('new_youtube', displayYouTube)
+	dispatcher.bind('new_image', displayImg);
+
 
 	// room.bind('function_name', functionNameOnJs);
 	// dispatcher.bind('function_name', functionNameOnJs);
@@ -173,6 +214,13 @@ var displayText = function (message) {
 
 var displayImg = function(message) {
 	var source = $('#image_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayYouTube = function(message) {
+	var source = $('#youtube_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
