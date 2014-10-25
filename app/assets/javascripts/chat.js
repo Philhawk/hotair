@@ -52,7 +52,7 @@ var evalText = function () {
 
 	var vimeoLinks = text.match(VIMEOREGEXP);
 
-
+	var soundCloudLink = text.match(SOUNDCLOUDREGEX);
 	// see if text has regexp's
 	if (imageLinks) {
 		sendText(text);
@@ -66,6 +66,9 @@ var evalText = function () {
 	} else if (vimeoLinks) {
 		sendText(text);
 		$.each(vimeoLinks, sendVimeo);
+	} else if (soundCloudLink) {
+		sendText(text);
+		$.each(soundCloudLink, sendSoundCloud);
 	} else {
 		sendText(text);
 	}
@@ -86,6 +89,17 @@ var sendVimeo = function(i, vimeoLink) {
 		roomid: currentRoomId
 	}
 	dispatcher.trigger('send_vimeo', message);
+};
+
+var sendSoundCloud = function (i, soundLink) {
+			console.log('sendSoundCloud');
+	var message = {
+
+		url: soundLink,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_sound_cloud', message);
 };
 
 var sendTweet = function(i, twitterLink) {
@@ -143,12 +157,14 @@ var joinRoom = function (room_id) {
 		room.unbind('new_youtube');
 		room.unbind('new_tweet');
 		room.unbind('new_vimeo');
+		room.unbind('new_sound');
 
 		dispatcher.unbind('new_vimeo');
 		dispatcher.unbind('new_tweet');
 		dispatcher.unbind('new_youtube');
 		dispatcher.unbind('new_image');
 		dispatcher.unbind('new_text');
+		dispatcher.unbind('new_sound');
 		// room.unbind('function_name', functionNameOnJs);
 		// dispatcher.unbind('function_name', functionNameOnJs);
 
@@ -176,13 +192,14 @@ var joinRoom = function (room_id) {
 	room.bind('new_image', displayImg);
 	room.bind('new_tweet', displayTweet);
 	room.bind('new_vimeo', displayVimeo);
-
+	room.bind('new_sound', displaySound);
 
 	dispatcher.bind('new_tweet', displayTweet);
 	dispatcher.bind('new_vimeo', displayVimeo);
 
 	room.bind('new_youtube', displayYouTube)
 
+	dispatcher.bind('new_sound', displaySound);
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_youtube', displayYouTube)
 	dispatcher.bind('new_image', displayImg);
@@ -260,8 +277,14 @@ var displayYouTube = function(message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
+<<<<<<< HEAD
 var displayVimeo = function(message) {
 	var source = $('#vimeo_template').html();
+=======
+var displaySound = function(message) {
+	console.log('display sound');
+	var source = $('#sound_template').html();
+>>>>>>> 3185344330b438111cd76f7619cdea8084df6b39
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
