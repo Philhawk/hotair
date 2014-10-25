@@ -6,17 +6,22 @@ var currentRoomId;
 var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
 
 var YOUTUBEREGEX = /^(?:https?:\/\/)?(?:www\.)?youtu(?:\.be|be\.com)\/(?:watch\?v=)?([\w-]{10,})/g;
-// wikipedia.org\/wiki\/(\S+)
 
-// var YOUTUBEREGEX = /[a-zA-Z0-9\-\_]{11}/g;
+var FLICKRREGEXP = /(?:https?:\/\/)?(?:www\.)?flickr.com\/\S+/g;
 
+var WIKIREGEXP = /wikipedia.org\/wiki\/(\S+)/g;
 
-http://www.youtube.com/watch?v=s_enm5TBKSA
+var IMGURREGEXP = /(?:https?:\/\/)?(?:www\.)?imgur.com\/\S+/g;
 
 // Lawrences twitter regex
 var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
 
 var VIMEOREGEXP = /(?:https?:\/\/)?(?:www\.)?vimeo.com\/\S+/g;
+
+var INSTAGRAMREGEXP = /(?:https?:\/\/)?(?:www\.)?instagram.com\/\S+/g;
+
+var GITHUBREGEXP = /(?:https?:\/\/)?(?:www\.)?github.com\/\S+/g;
+
 
 
 // James REGEX(soundcloub, spotify??)
@@ -49,6 +54,17 @@ var evalText = function () {
 	///
 	// DO LOGIC AND SEND TO YOUR EVENTS
 	////////
+
+	var wikiLinks = text.match(WIKIREGEXP)
+
+	var imgurLinks = text.match(IMGURREGEXP)
+
+	var flickrLinks = text.match(FLICKRREGEXP)
+
+	var instaLinks = text.match(INSTAGRAMREGEXP)
+
+	var githubLinks = text.match(GITHUBREGEXP)
+
 	var youtubeLinks = text.match(YOUTUBEREGEX);
 	// create arrays
 	var imageLinks = text.match(IMAGEREGEXP);
@@ -62,10 +78,25 @@ var evalText = function () {
 	if (imageLinks) {
 		sendText(text);
 		$.each(imageLinks, sendImage);
+	} else if (githubLinks) {
+		sendText(text);
+		$.each(githubLinks, sendGit);
 	} else if (youtubeLinks) {
 		sendText(text);
 		$.each(youtubeLinks, sendTube);
-	} else if (twitterLinks) {
+	} else if (wikiLinks) {
+		sendText(text)
+		$.each(wikiLinks, sendWiki);
+	} else if (flickrLinks) {
+		sendText(text)
+		$.each(flickrLinks, sendFlickr);
+	}  else if (instaLinks) {
+		sendText(text)
+		$.each(instaLinks, sendInsta);
+	}  else if (imgurLinks) {
+		sendText(text)
+		$.each(imgurLinks, sendImgur);
+	}  else if (twitterLinks) {
 		sendText(text);
 		$.each(twitterLinks, sendTweet);
 	} else if (vimeoLinks) {
@@ -134,6 +165,52 @@ var sendTube = function(i, vidID) {
 	dispatcher.trigger('send_youtube', message)
 };
 
+var sendFlickr = function(i, flickrID) {
+	var message = {
+		url: flickrID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_flickr', message)
+};
+
+var sendWiki = function(i, wikiID) {
+	var message = {
+		url: wikiID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_wiki', message)
+};
+
+var sendGit = function(i, gitID) {
+	var message = {
+		url: gitID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_git', message)
+};
+
+var sendImgur = function(i, imgurID) {
+	var message = {
+		url: imgurID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_imgur', message)
+};
+
+var sendInsta = function(i, instaID) {
+	var message = {
+		url: instaID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_insta', message)
+};
+
+
 var sendText = function (text) {
 	var message = {
 		id: userId,
@@ -163,7 +240,17 @@ var joinRoom = function (room_id) {
 		room.unbind('new_tweet');
 		room.unbind('new_vimeo');
 		room.unbind('new_sound');
+		room.unbind('new_flickr');
+		room.unbind('new_wiki');
+		room.unbind('new_imgur');
+		room.unbind('new_insta');
+		room.unbind('new_git');
 
+		dispatcher.unbind('new_git');
+		dispatcher.unbind('new_insta');
+		dispatcher.unbind('new_imgur');
+		dispatcher.unbind('new_wiki');
+		dispatcher.unbind('new_flickr');
 		dispatcher.unbind('new_vimeo');
 		dispatcher.unbind('new_tweet');
 		dispatcher.unbind('new_youtube');
@@ -198,12 +285,20 @@ var joinRoom = function (room_id) {
 	room.bind('new_tweet', displayTweet);
 	room.bind('new_vimeo', displayVimeo);
 	room.bind('new_sound', displaySound);
+	room.bind('new_youtube', displayYouTube)
+	room.bind('new_flickr', displayFlickr)
+	room.bind('new_wiki', displayWiki)
+	room.bind('new_imgur', displayImgur)
+	room.bind('new_insta', displayInsta)
+	room.bind('new_git', displayGit)
 
+	dispatcher.bind('new_git', displayGit);
+	dispatcher.bind('new_insta', displayInsta);
+	dispatcher.bind('new_imgur', displayImgur);
+	dispatcher.bind('new_wiki', displayWiki);
+	dispatcher.bind('new_flickr', displayFlickr);
 	dispatcher.bind('new_tweet', displayTweet);
 	dispatcher.bind('new_vimeo', displayVimeo);
-
-	room.bind('new_youtube', displayYouTube)
-
 	dispatcher.bind('new_sound', displaySound);
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_youtube', displayYouTube)
@@ -261,6 +356,13 @@ var displayText = function (message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
+var displayGit = function (message) {
+	var source = $('#git_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
 var displayImg = function(message) {
 	var source = $('#image_template').html();
 	var displayHTML = Handlebars.compile(source);
@@ -282,7 +384,33 @@ var displayYouTube = function(message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
+var displayFlickr = function(message) {
+	var source = $('#flickr_template').html();
+	var displayHTML = Handlebars.compile(source);
 
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayWiki = function(message) {
+	var source = $('#wiki_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayImgur = function(message) {
+	var source = $('#imgur_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayInsta = function(message) {
+	var source = $('#insta_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
 
 var displayVimeo = function(message) {
 	var source = $('#vimeo_template').html();

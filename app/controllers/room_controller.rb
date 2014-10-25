@@ -121,6 +121,96 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_wiki
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_wiki')
+
+		WebsocketRails[room_id].trigger(:new_wiki, message_to_send)
+
+	end
+
+	def new_imgur
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_imgur')
+
+		WebsocketRails[room_id].trigger(:new_imgur, message_to_send)
+
+	end
+
+	def new_flickr
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_flickr')
+
+		WebsocketRails[room_id].trigger(:new_flickr, message_to_send)
+
+	end
+
+	def new_insta
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_insta')
+
+		WebsocketRails[room_id].trigger(:new_insta, message_to_send)
+
+	end
+
+	def new_git
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_git')
+
+		WebsocketRails[room_id].trigger(:new_git, message_to_send)
+
+	end
+
 	# Soundcloud
 	def new_sound
 		user_id = message['id']
