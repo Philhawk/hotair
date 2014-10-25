@@ -3,7 +3,6 @@ class RoomController < WebsocketRails::BaseController
 
 	# LINKREGEXP = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=-]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/
 	LINKREGEXP = /(https?:\/\/|www)\S+/
-	TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com/\S+/
 
 	def new
 		room_name = message['name']

@@ -68,6 +68,15 @@ var joinHandler = function () {
 
 // Functions that send to the server
 
+var sendTweet = function(i, twitterLink) {
+	var message = {
+		url: twitterLink,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_tweet', message);
+}
+
 var sendImage = function(i, imgLink) {
 	var message = {
 		url: imgLink,
