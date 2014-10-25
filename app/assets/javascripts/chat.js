@@ -70,7 +70,7 @@ var joinHandler = function () {
 
 var sendTweet = function(i, twitterLink) {
 	var message = {
-		url: twitterLink,
+		twitter_url: twitterLink,
 		id: userId,
 		roomid: currentRoomId
 	}

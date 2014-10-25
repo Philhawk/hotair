@@ -67,6 +67,24 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_tweet
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['twitter_url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_tweet')
+
+		WebsocketRails[room_id].trigger(:new_tweet, message)
+
+	end
+
 	def new_text
 		# Save data from the message into variables for easy access
 		user_id = message['id']
@@ -90,6 +108,7 @@ class RoomController < WebsocketRails::BaseController
 		# send the new message to the room
 		WebsocketRails[room_id].trigger(:new_text, message_to_send)
 	end
+
 
 	def set_topic
 	end
