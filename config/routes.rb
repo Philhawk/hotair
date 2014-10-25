@@ -1,6 +1,7 @@
 # == Route Map
 #
 #    Prefix Verb     URI Pattern               Controller#Action
+#      root GET      /                         pages#index
 #     users GET      /users(.:format)          users#index
 #           POST     /users(.:format)          users#create
 #  new_user GET      /users/new(.:format)      users#new
@@ -12,6 +13,7 @@
 #     login GET      /login(.:format)          session#new
 #           POST     /login(.:format)          session#create
 #           DELETE   /login(.:format)          session#destroy
+#      chat GET      /chat(.:format)           pages#chat
 # websocket GET|POST /websocket(.:format)      websocket_rails
 #
 

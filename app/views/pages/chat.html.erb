@@ -1,9 +1,68 @@
 <div id="chat-page">
-
 	<script>
 		var userName = "<%= @current_user.name %>";
 		var userId = <%= @current_user.id %>;
 	</script>
+
+	<!-- Left side -->
+	<div class="small-3 columns">
+		<!-- Logo -->
+		<div class="row">
+				Hot Air
+		</div>
+		<!-- side-nav -->
+		<div class="row">
+			<p>Room1</p>
+			<p>Room2</p>
+		</div>
+	</div>
+	<!-- Right Side -->
+	<div class="small-9 columns">
+		<!-- Top Bar -->
+		<div class="row topBar">
+			ROOM 1
+		</div>
+		<!-- Chat room -->
+		<div class="row chatRoom">
+			<!-- Chat log -->
+			<div class="small-10 columns" id="chat-view">
+
+			</div>
+			<!-- List of users -->
+			<div class="small-2 columns userList">
+				<p>Nick</p>
+				<p>Nick2</p>
+			</div>
+		</div>
+		<!-- Send row -->
+		<div class="row sendRow">
+			<!-- Send field and button -->
+			<div class="small-9 columns">
+				<div class="row sendInput">
+					<!-- Text field -->
+					<div class="small-9 columns">
+						<%= text_field_tag :chat_text %>
+					</div>
+					<!-- Send button -->
+					<div class="small-3 columns">
+						<%= button_tag 'Send', id: 'send_button' %>
+					</div>
+				</div>
+
+
+
+			</div>
+
+			<div class="small-3 columns">
+
+			</div>
+		</div>
+		<!-- footer -->
+		<div class="row chatFooter">
+			footer
+		</div>
+	</div>
+
 	<%= label_tag 'Room Name' %>
 	<%= text_field_tag :room_name %>
 	<%= button_tag 'Create Room', id: 'create_room_button' %>
@@ -11,29 +70,38 @@
 	<p></p>
 	<%= text_field_tag :chat_text %>
 	<%= button_tag 'Send', id: 'send_button' %>
-	<div id="chat-view">
+	<div >
 	</div>
 
 
 
 	<script type='templates/handlebars' id="text_template">
-		<p>
+		<div class="row">
 			<em>{{ name }}</em>: {{{ text }}}
-		</p>
+		</div>
 	</script>
 
 	<script type='templates/handlebars' id="image_template">
-		<p>
+		<div class="row">
 			<em>{{ name }}</em>: <img src="{{ url }}">
-		</p>
+		</div>
 	</script>
+
+	<script type='templates/handlebars' id="youtube_template">
+
+		<div class="row">
+			<em>{{ name }}</em>  <iframe src="http://www.youtube.com/embed/{{ url }}"
+   width="560" height="315" frameborder="0" allowfullscreen></iframe>
+		</div>
+
+	</script>
+
 
 	<script type="templates/handlebars" id="tweet_template">
 
-		<p>
-		<a href="{{ url }}" class="tweet" >{{ url }}</a>
+		<div class="row">
 		<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
-		</p>
+		</div>
 
 	</script>
 
