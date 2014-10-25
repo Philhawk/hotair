@@ -13,7 +13,7 @@ var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
 
 
 // James REGEX(soundcloub, spotify??)
-var SOUNDCLOUDREGEX = /^https?:\/\/(soundcloud.com|snd.sc)\/(.*)$/gi;
+var SOUNDCLOUDREGEX = /(?:https?:\/\/)?(?:www\.)?(soundcloud.com|snd.sc)\/(.*)$/gi;
 
 $(document).ready(function() {
 	// if someone is on the chat view
