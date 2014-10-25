@@ -12,7 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require foundation
 //= require handlebars
 //= require_tree .
 //= require websocket_rails/main
 
+
+$(function(){ $(document).foundation(); });

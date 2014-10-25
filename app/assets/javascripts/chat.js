@@ -6,6 +6,9 @@ var currentRoomId;
 var IMAGEREGEXP = /(www\.)?\S+?\.[\w]{2,4}\/\S+\.(gif|jpg|jpeg|jpe|png|bmp|webm)/gi;
 
 
+// James REGEX(soundcloub, spotify??)
+var SOUNDCLOUDREGEX = /^https?:\/\/(soundcloud.com|snd.sc)\/(.*)$/gi;
+
 $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
