@@ -1,3 +1,19 @@
+<script>
+  (function(w, d){
+   var id='embedly-platform', n = 'script';
+   if (!d.getElementById(id)){
+     w.embedly = w.embedly || function() {(w.embedly.q = w.embedly.q || []).push(arguments);};
+     var e = d.createElement(n); e.id = id; e.async=1;
+     e.src = ('https:' === document.location.protocol ? 'https' : 'http') + '://cdn.embedly.com/widgets/platform.js';
+     var s = d.getElementsByTagName(n)[0];
+     s.parentNode.insertBefore(e, s);
+   }
+  })(window, document);
+
+  // This is the important line. You will need to insert your API KEY here.
+  embedly('analytics', {key: '16c593df623045a0af1119e3ac6281aa'});
+</script>
+
 <div id="chat-page">
 	<script>
 		var userName = "<%= @current_user.name %>";
@@ -91,27 +107,25 @@
 
 		<div class="row chatRow">
 			<em>{{ name }}</em>  <a class="embedly-card" href="{{ url }}"></a>
-			<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>	
+			<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
 
 	</script>
-
-
-
 
 	<script type="templates/handlebars" id="tweet_template">
 
 		<div class="row chatRow">
 		<a href="{{ url }}"></a>
-		<script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>
+		<script async src="//cdn.embedly.com/widgets/platform.js" charset="utf-8"></script>
 		</div>
 
 	</script>
 
 	<script type="templates/handlebars" id="vimeo_template">
 		<div class="row chatRow">
+		<em>{{ name }}</em> <a href="{{ url }}"></a>
+		<script async src="//cdn.embedly.com/widgets/platform.js" charset="utf-8"></script>
 
-				<iframe src="{{ url }}"></iframe>
 		</div>
 	</script>
 
