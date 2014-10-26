@@ -21,7 +21,7 @@ $(document).ready(function() {
  	 	// bind to events
  	 	$('#create_room_button').on('click', createRoom);
  	 	$('#join_room_button').on('click', joinHandler);
- 	 	$('#send_button').on('paste', evalText);
+ 	 	$('#send_button').on('click', evalText);
 
 	}
 });
