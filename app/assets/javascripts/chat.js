@@ -4,7 +4,6 @@ var currentRoomId;
 
 // Reg expressions used
 
-
 var IMAGEREGEXP = /(https?:\/\/|www)\S+/g;
 
 $(document).ready(function() {
@@ -45,9 +44,8 @@ var evalText = function () {
 	} else {
 		sendText(text);
 	}
-
-
 };
+
 var joinHandler = function () {
 	var roomid = $('#room_name').val();
 	joinRoom(roomid);
@@ -129,10 +127,8 @@ var joinRoom = function (room_id) {
 		id: userId,
 		room_joined: room_id
 	};
-
 	// tell server we have joined
 	dispatcher.trigger('join_room', message);
-
 };
 
 // Functions called from server
@@ -159,7 +155,7 @@ var userJoinedRoom = function (message) {
 var userLeftRoom = function (message) {
 	var name = message.name;
 	console.log(name + ' has left the room');
-}
+};
 
 var displayText = function (message) {
 	var source = $('#text_template').html();
