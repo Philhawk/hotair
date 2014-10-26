@@ -4,7 +4,7 @@ var currentRoomId;
 
 // Reg expressions used
 
-var IMAGEREGEXP = /(https?:\/\/|www)\S+/g;
+var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
 
 $(document).ready(function() {
 	// if someone is on the chat view
@@ -35,12 +35,18 @@ var evalText = function () {
 	////////
 
 	// create arrays
-	var imageLinks = text.match(IMAGEREGEXP);
+	var embedLinks = text.match(EMBEDREGEXP);
+	var timeCommand = text.split('/time');
 
 	// see if text has regexp's
-	if (imageLinks) {
+	if (embedLinks) {
 		sendText(text);
-		$.each(imageLinks, sendImage);
+		$.each(embedLinks, sendEmbed);
+	} else if (timeCommand.length > 1) {
+			if (timeCommand[0]) {
+				sendText(timeCommand[0]);
+			}
+		sendTimeCommand(timeCommand[1]);
 	} else {
 		sendText(text);
 	}
@@ -52,15 +58,25 @@ var joinHandler = function () {
 };
 
 // Functions that send to the server
-
-var sendImage = function(i, imgLink) {
-	console.log("send image");
+// nicks stuff
+var sendTimeCommand = function(gmt) {
 	var message = {
-		url: imgLink,
+		id: userId,
+		roomid: currentRoomId,
+		gmt: gmt
+	};
+	dispatcher.trigger('send_time', message);
+}
+// nick end 
+
+// dont touch this ---------------------
+var sendEmbed = function(i, embedLink) {
+	var message = {
+		url: embedLink,
 		id: userId,
 		roomid: currentRoomId
 	}
-	dispatcher.trigger('send_image', message);
+	dispatcher.trigger('send_embed', message);
 };
 
 var sendText = function (text) {
@@ -87,10 +103,12 @@ var joinRoom = function (room_id) {
 		room.unbind('user_joined');
 		room.unbind('user_left');
 		room.unbind('new_text');
-		room.unbind('new_image');
+		room.unbind('new_embed');
+		room.unbind('new_time');
 
-		dispatcher.unbind('new_image');
+		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
+		dispatcher.unbind('new_time');
 
 		// ADD BETWEEN HERE
 		// AND HERE
@@ -113,10 +131,12 @@ var joinRoom = function (room_id) {
 	room.bind('user_joined', userJoinedRoom);
 	room.bind('user_left', userLeftRoom);
 	room.bind('new_text', displayText);
-	room.bind('new_image', displayImg);
+	room.bind('new_embed', displayEmbed);
+	room.bind('new_time', displayTime);
 
 	dispatcher.bind('new_text', displayText);
-	dispatcher.bind('new_image', displayImg);
+	dispatcher.bind('new_embed', displayEmbed);
+	dispatcher.bind('new_time', displayTime);
 
 	// AND BETWEEN HERE
 	// AND HERE
@@ -130,6 +150,8 @@ var joinRoom = function (room_id) {
 	// tell server we have joined
 	dispatcher.trigger('join_room', message);
 };
+// end dont touch this ---------------------------
+
 
 // Functions called from server
 
@@ -164,10 +186,19 @@ var displayText = function (message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
-var displayImg = function(message) {
-	var source = $('#image_template').html();
+var displayEmbed = function(message) {
+	var source = $('#embed_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
 };
+
+// NICKS DISPLAY
+var displayTime = function(message) {
+	var source = $('#time_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+// END 
 
