@@ -13,15 +13,25 @@ var WIKIREGEXP = /wikipedia.org\/wiki\/(\S+)/g;
 
 var IMGURREGEXP = /(?:https?:\/\/)?(?:www\.)?imgur.com\/\S+/g;
 
+// Meetup still has kinks to be ironed out. 
+var MEETUPREGEXP = /(?:https?:\/\/)?(?:www\.)?meetup.com\/\S+/g;
+
+var INSTAGRAMREGEXP = /(?:https?:\/\/)?(?:www\.)?instagram.com\/\S+/g;
+
+var AMAZONREGEXP = /(?:https?:\/\/)?(?:www\.)?amazon.com\/\S+/g;
+
+var SHOPSTYLEREGEXP = /(?:https?:\/\/)?(?:www\.)?shopstyle.com.au\/\S+/g;
+
+var GITHUBREGEXP = /(?:https?:\/\/)?(?:www\.)?github.com\/\S+/g;
+
+var FOURSQREGEXP = /(?:https?:\/\/)?(?:www\.)?foursquare.com\/\S+/g;
+
+var LINKEDINREGEXP = /(?:https?:\/\/)?(?:www\.)?linkedin.com\/\S+/g;
+
 // Lawrences twitter regex
 var TWITTERREGEXP = /(?:https?:\/\/)?(?:www\.)?twitter.com\/\S+/g;
 
 var VIMEOREGEXP = /(?:https?:\/\/)?(?:www\.)?vimeo.com\/\S+/g;
-
-var INSTAGRAMREGEXP = /(?:https?:\/\/)?(?:www\.)?instagram.com\/\S+/g;
-
-var GITHUBREGEXP = /(?:https?:\/\/)?(?:www\.)?github.com\/\S+/g;
-
 
 
 // James REGEX(soundcloub, spotify??)
@@ -55,15 +65,25 @@ var evalText = function () {
 	// DO LOGIC AND SEND TO YOUR EVENTS
 	////////
 
-	var wikiLinks = text.match(WIKIREGEXP)
+	var wikiLinks = text.match(WIKIREGEXP);
 
-	var imgurLinks = text.match(IMGURREGEXP)
+	var shopstyleLinks = text.match(SHOPSTYLEREGEXP);
 
-	var flickrLinks = text.match(FLICKRREGEXP)
+	var linkedinLinks = text.match(LINKEDINREGEXP);
 
-	var instaLinks = text.match(INSTAGRAMREGEXP)
+	var foursqLinks = text.match(FOURSQREGEXP);
 
-	var githubLinks = text.match(GITHUBREGEXP)
+	var meetupLinks = text.match(MEETUPREGEXP);
+
+	var imgurLinks = text.match(IMGURREGEXP);
+
+	var amazonLinks = text.match(AMAZONREGEXP);
+
+	var flickrLinks = text.match(FLICKRREGEXP);
+
+	var instaLinks = text.match(INSTAGRAMREGEXP);
+
+	var githubLinks = text.match(GITHUBREGEXP);
 
 	var youtubeLinks = text.match(YOUTUBEREGEX);
 	// create arrays
@@ -78,6 +98,21 @@ var evalText = function () {
 	if (imageLinks) {
 		sendText(text);
 		$.each(imageLinks, sendImage);
+	} else if (shopstyleLinks) {
+		sendText(text);
+		$.each(shopstyleLinks, sendShopstyle);	
+	} else if (meetupLinks) {
+		sendText(text);
+		$.each(meetupLinks, sendMeetup);	
+	} else if (amazonLinks) {
+		sendText(text);
+		$.each(amazonLinks, sendAmazon);
+	} else if (linkedinLinks) {
+		sendText(text);
+		$.each(linkedinLinks, sendLinked);
+	} else if (foursqLinks) {
+		sendText(text);
+		$.each(foursqLinks, sendFoursq);	
 	} else if (githubLinks) {
 		sendText(text);
 		$.each(githubLinks, sendGit);
@@ -147,6 +182,26 @@ var sendTweet = function(i, twitterLink) {
 	dispatcher.trigger('send_tweet', message);
 }
 
+var sendMeetup = function(i, meetupLink) {
+	var message = {
+		twitter_url: meetupLink,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_meetup', message);
+}
+
+
+
+var sendShopstyle = function(i, shopstyleLink) {
+	var message = {
+		twitter_url: shopstyleLink,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_shopstyle', message);
+}
+
 var sendImage = function(i, imgLink) {
 	var message = {
 		url: imgLink,
@@ -164,6 +219,35 @@ var sendTube = function(i, vidID) {
 	}
 	dispatcher.trigger('send_youtube', message)
 };
+
+var sendAmazon = function(i, amazonID) {
+	var message = {
+		url: amazonID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_amazon', message)
+};
+
+
+var sendLinked = function(i, linkedinID) {
+	var message = {
+		url: linkedinID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_linkedin', message)
+};
+
+var sendFoursq = function(i, foursqID) {
+	var message = {
+		url: foursqID,
+		id: userId,
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_foursq', message)
+};
+
 
 var sendFlickr = function(i, flickrID) {
 	var message = {
@@ -245,7 +329,17 @@ var joinRoom = function (room_id) {
 		room.unbind('new_imgur');
 		room.unbind('new_insta');
 		room.unbind('new_git');
+		room.unbind('new_foursq');
+		room.unbind('new_linkedin');
+		room.unbind('new_amazon');
+		room.unbind('new_meetup');
+		room.unbind('new_shopstyle');
 
+		dispatcher.unbind('new_shopstyle');
+		dispatcher.unbind('new_meetup');
+		dispatcher.unbind('new_amazon');
+		dispatcher.unbind('new_linkedin');
+		dispatcher.unbind('new_foursq');
 		dispatcher.unbind('new_git');
 		dispatcher.unbind('new_insta');
 		dispatcher.unbind('new_imgur');
@@ -291,7 +385,16 @@ var joinRoom = function (room_id) {
 	room.bind('new_imgur', displayImgur)
 	room.bind('new_insta', displayInsta)
 	room.bind('new_git', displayGit)
+	room.bind('new_foursq', displayFoursq)
+	room.bind('new_linkedin', displayLinkedin)
+	room.bind('new_amazon', displayAmazon)
+	room.bind('new_meetup', displayMeetup)
+	room.bind('new_shopstyle', displayShopstyle)
 
+	dispatcher.bind('new_shopstyle', displayShopstyle);
+	dispatcher.bind('new_amazon', displayAmazon);
+	dispatcher.bind('new_linkedin', displayLinkedin);
+	dispatcher.bind('new_foursq', displayFoursq);
 	dispatcher.bind('new_git', displayGit);
 	dispatcher.bind('new_insta', displayInsta);
 	dispatcher.bind('new_imgur', displayImgur);
@@ -363,6 +466,34 @@ var displayGit = function (message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
+var displayLinkedin = function (message) {
+	var source = $('#linkedin_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayFoursq = function (message) {
+	var source = $('#foursq_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayShopstyle = function (message) {
+	var source = $('#shopstyle_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayMeetup = function (message) {
+	var source = $('#meetup_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
 var displayImg = function(message) {
 	var source = $('#image_template').html();
 	var displayHTML = Handlebars.compile(source);
@@ -372,6 +503,13 @@ var displayImg = function(message) {
 
 var displayTweet = function(message) {
 	var source = $('#tweet_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayAmazon = function(message) {
+	var source = $('#amazon_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));

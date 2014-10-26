@@ -12,6 +12,11 @@ WebsocketRails::EventMap.describe do
   subscribe :send_text, :to => RoomController, :with_method => :new_text
   subscribe :send_image, :to => RoomController, :with_method => :new_image
 
+  subscribe :send_shopstyle, :to => RoomController, :with_method => :new_shopstyle
+  subscribe :send_meetup, :to => RoomController, :with_method => :new_meetup
+  subscribe :send_amazon, :to => RoomController, :with_method => :new_amazon
+  subscribe :send_linkedin, :to => RoomController, :with_method => :new_linkedin
+  subscribe :send_foursq, :to => RoomController, :with_method => :new_foursq
   subscribe :send_git, :to => RoomController, :with_method => :new_git
   subscribe :send_insta, :to => RoomController, :with_method => :new_insta
   subscribe :send_imgur, :to => RoomController, :with_method => :new_imgur

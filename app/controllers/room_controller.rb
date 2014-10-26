@@ -211,6 +211,42 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_foursq
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_foursq')
+
+		WebsocketRails[room_id].trigger(:new_foursq, message_to_send)
+
+	end
+
+	def new_linkedin
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_linkedin')
+
+		WebsocketRails[room_id].trigger(:new_linkedin, message_to_send)
+
+	end
+
 	# Soundcloud
 	def new_sound
 		user_id = message['id']
@@ -227,6 +263,57 @@ class RoomController < WebsocketRails::BaseController
 		put_message_in_db(message, message_to_send, 'new_sound')
 
 		WebsocketRails[room_id].trigger(:new_sound, message)
+	end
+
+	def new_amazon
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_amazon')
+
+		WebsocketRails[room_id].trigger(:new_amazon, message)
+	end
+
+	def new_shopstyle
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_shopstyle')
+
+		WebsocketRails[room_id].trigger(:new_shopstyle, message)
+	end
+
+	def new_meetup
+		user_id = message['id']
+		room_id = message['roomid']
+		url = message['url']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			url: url
+		}
+
+		put_message_in_db(message, message_to_send, 'new_meetup')
+
+		WebsocketRails[room_id].trigger(:new_meetup, message)
 	end
 
 	def new_text
