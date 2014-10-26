@@ -4,6 +4,7 @@ var currentRoomId;
 
 // Reg expressions used
 
+
 var IMAGEREGEXP = /(https?:\/\/|www)\S+/g;
 
 $(document).ready(function() {
@@ -33,6 +34,7 @@ var evalText = function () {
 	///
 	// DO LOGIC AND SEND TO YOUR EVENTS
 	////////
+
 	// create arrays
 	var imageLinks = text.match(IMAGEREGEXP);
 
@@ -172,5 +174,4 @@ var displayImg = function(message) {
 
 	$('#chat-view').append(displayHTML(message));
 };
-
 
