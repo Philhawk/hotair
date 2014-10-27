@@ -16,11 +16,18 @@ $(document).ready(function() {
  	 	dispatcher.bind('connected', clientConnected);
  	 	dispatcher.bind('room_created', roomCreated);
  	 	dispatcher.bind('room_failed', roomFailed);
+ 	 	dispatcher.bind('show_rooms', displayRooms);
+ 	 	
 
  	 	// bind to events
  	 	$('#create_room_button').on('click', createRoom);
- 	 	$('#join_room_button').on('click', joinHandler);
+ 	 	// $('#join_room_button').on('click', joinHandler);
  	 	$('#send_button').on('click', evalText);
+ 	 	$('#show_rooms_button').on('click', getRooms);
+ 	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
+
+ 	 	// get rooms
+ 	 	getRooms();
 
 	}
 });
@@ -52,9 +59,10 @@ var evalText = function () {
 	}
 };
 
-var joinHandler = function () {
-	var roomid = $('#room_name').val();
-	joinRoom(roomid);
+var joinHandler = function(ev) {
+	ev.preventDefault();
+	var roomID = $(this).attr('href');
+	joinRoom(roomID);
 };
 
 // Functions that send to the server
@@ -66,7 +74,13 @@ var sendTimeCommand = function(gmt) {
 		gmt: gmt
 	};
 	dispatcher.trigger('send_time', message);
-}
+};
+var getRooms = function() {
+	var message = {
+
+	};
+	dispatcher.trigger('get_rooms', message);
+};
 // nick end
 
 // james
@@ -107,30 +121,35 @@ var createRoom = function () {
 	dispatcher.trigger('new_room', message);
 };
 
+var leaveRoom = function(){
+// stop listening to previous events and leave the room
+	room.unsubscribe;
+	// functions to stop listening to
+	room.unbind('user_joined');
+	room.unbind('user_left');
+	room.unbind('new_text');
+	room.unbind('new_embed');
+	room.unbind('new_time');
+	room.unbind('room_details');
+
+	dispatcher.unbind('new_embed');
+	dispatcher.unbind('new_text');
+	dispatcher.unbind('new_time');
+
+	// ADD BETWEEN HERE
+	// AND HERE
+
+	// send a message to people in the PREVIOUS room that someone has LEFT
+	var leavemessage = {
+		name: userName,
+		id: userId,
+		roomid: currentRoomId
+	};
+	dispatcher.trigger('left_room', leavemessage);
+};
 var joinRoom = function (room_id) {
 	if (room) {
-		// stop listening to previous events and leave the room
-		room.unsubscribe;
-		// functions to stop listening to
-		room.unbind('user_joined');
-		room.unbind('user_left');
-		room.unbind('new_text');
-		room.unbind('new_embed');
-		room.unbind('new_time');
-
-		dispatcher.unbind('new_embed');
-		dispatcher.unbind('new_text');
-		dispatcher.unbind('new_time');
-
-		// ADD BETWEEN HERE
-		// AND HERE
-
-		// send a message to people in the PREVIOUS room that someone has LEFT
-		var leavemessage = {
-			name: userName,
-			roomid: currentRoomId
-		};
-		dispatcher.trigger('left_room', leavemessage);
+		leaveRoom();
 	}
 
 	// join the room
@@ -145,49 +164,52 @@ var joinRoom = function (room_id) {
 	room.bind('new_text', displayText);
 	room.bind('new_embed', displayEmbed);
 	room.bind('new_time', displayTime);
+	room.bind('room_details', displayRoomDetails);
 
 	// james
 
-// james end
+	// james end
 
-//phil
+	//phil
 
-// phil end
+	// phil end
 
-//lawrence
+	//lawrence
 
-//lawrence end
+	//lawrence end
 
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_embed', displayEmbed);
 	dispatcher.bind('new_time', displayTime);
 
-	// AND BETWEEN HERE
+		// AND BETWEEN HERE
 
-// james
+	// james
 
-// james end
+	// james end
 
-//phil
+	//phil
 
-// phil end
+	// phil end
 
-//lawrence
+	//lawrence
 
-//lawrence end
+	//lawrence end
 
-	// AND HERE
+		// AND HERE
 
 
-	// message to send to server
-	var message = {
-		id: userId,
-		room_joined: room_id
+		// message to send to server
+		var message = {
+			id: userId,
+			room_joined: room_id
+		};
+		// tell server we have joined
+		dispatcher.trigger('join_room', message);
+
+
 	};
-	// tell server we have joined
-	dispatcher.trigger('join_room', message);
-};
-// end dont touch this ---------------------------
+	// end dont touch this ---------------------------
 
 
 // Functions called from server
@@ -236,6 +258,28 @@ var displayTime = function(message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+};
+
+var displayRooms = function(message) {
+	if (room) {
+		leaveRoom();
+		$('#topBar').empty();
+	}
+	rooms = jQuery.parseJSON( message );
+	var source = $('#room_template').html();
+	var displayHTML = Handlebars.compile(source);
+	$('#chat-view').empty();
+	$.each(rooms, function(i, roomObj){
+		$('#chat-view').append(displayHTML(roomObj));
+	});
+};
+
+var displayRoomDetails = function(message) {
+	console.log(message)
+	var source = $('#room_details_template').html();
+	var displayHTML = Handlebars.compile(source);
+	$('#topBar').empty();
+	$('#topBar').append(displayHTML(message));
 };
 // END
 
