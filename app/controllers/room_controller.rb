@@ -211,7 +211,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_map, message_to_send)
 
 	end
-
+	
 	def new_directions
 		user_id = message['id']
 		room_id = message['roomid']
@@ -222,8 +222,8 @@ class RoomController < WebsocketRails::BaseController
 		new_directions = "https://www.google.com/maps?saddr=My+Location&daddr=#{ directions.gsub(' ', '+') }"
 
 		message_to_send = {
-			name: user.name,
-			directions: new_directions
+		name: user.name,
+		directions: new_directions
 		}
 
 		put_message_in_db(message, message_to_send, 'new_directions')
