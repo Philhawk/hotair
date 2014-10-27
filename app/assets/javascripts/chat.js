@@ -119,7 +119,6 @@ var evalText = function () {
 		}
 		sendRollCommand(rollCommand[1]);
 	} else if (gifCommand.length > 1){
-		console.log("gif command");
 		if (gifCommand[0]) {
 			sendText(gifCommand[0]);
 		}
