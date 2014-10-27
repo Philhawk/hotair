@@ -17,9 +17,11 @@ $(document).ready(function() {
  	 	dispatcher.bind('room_created', roomCreated);
  	 	dispatcher.bind('room_failed', roomFailed);
  	 	dispatcher.bind('show_rooms', displayRooms);
- 	 	
+ 	 	dispatcher.bind('scroll_chat', scrollChat);
+
 
  	 	// bind to events
+ 	 	$('#show_create_room_button').on('click', showCreateRoom);
  	 	$('#create_room_button').on('click', createRoom);
  	 	// $('#join_room_button').on('click', joinHandler);
  	 	$('#send_button').on('click', evalText);
@@ -77,10 +79,10 @@ var evalText = function () {
 			}
 		sendRecipeCommand(recipeCommand[1]);
 	} else if (codeCommand.length > 1) {
-		if (codeCommand[0]) {
-			sendText(timeCommand[0])
-		}
-		sendCodeCommand(codeCommand[1]);
+			if (codeCommand[0]) {
+				sendText(codeCommand[0])
+			}
+			sendCodeCommand(codeCommand[1]);
 	} else if (searchCommand.length > 1) {
 			if (searchCommand[0]) {
 				sendText(searchCommand[0]);
@@ -189,12 +191,22 @@ var sendText = function (text) {
 	};
 	dispatcher.trigger('send_text', message);
 };
+var showCreateRoom = function () {
+	// var roomName = $('#room_name').val();
+	// var message = {
+	// 	name: roomName
+	// };
+	// dispatcher.trigger('new_room', message);
+	$('#newRoomModal').foundation('reveal', 'open');
+};
+
 var createRoom = function () {
 	var roomName = $('#room_name').val();
 	var message = {
 		name: roomName
 	};
 	dispatcher.trigger('new_room', message);
+	$('#newRoomModal').foundation('reveal', 'close');
 };
 
 var leaveRoom = function(){
@@ -233,13 +245,20 @@ var joinRoom = function (room_id) {
 		room.unbind('new_text');
 		room.unbind('new_embed');
 		room.unbind('new_time');
+		room.unbind('new_code');
+
 		room.unbind('new_map');
+
 		room.unbind('new_recipe');
 		room.unbind('new_movie');
+
+		room.unbind('scroll_chat');
+
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
+		dispatcher.unbind('new_code');
 		dispatcher.unbind('new_map');
 		dispatcher.unbind('new_recipe');
 		dispatcher.unbind('new_movie');
@@ -269,6 +288,7 @@ var joinRoom = function (room_id) {
 	room.bind('new_embed', displayEmbed);
 	room.bind('new_time', displayTime);
 	room.bind('room_details', displayRoomDetails);
+	room.bind('scroll_chat', scrollChat);
 
 	// james
 
@@ -281,6 +301,8 @@ var joinRoom = function (room_id) {
 	room.bind('new_movie', displayMovie);
 
 
+//lawrence
+	room.bind('new_code', displayCode);
 	//phil
 
 
@@ -301,6 +323,10 @@ var joinRoom = function (room_id) {
 	// james end
 
 	//phil
+
+
+//lawrence
+	dispatcher.bind('new_code', displayCode);
 
 
 	dispatcher.bind('new_map', displayMap);
@@ -361,6 +387,7 @@ var displayText = function (message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+
 };
 
 var displayEmbed = function(message) {
@@ -368,11 +395,12 @@ var displayEmbed = function(message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+
 };
 
 // NICKS DISPLAY
 var displayTime = function(message) {
-	var source = $('#time_template').html()
+	var source = $('#time_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
@@ -387,6 +415,12 @@ var displayRooms = function(message) {
 	var source = $('#room_template').html();
 	var displayHTML = Handlebars.compile(source);
 	$('#chat-view').empty();
+
+	var displayRoomsDetailsMessage = {
+		name: "Room List",
+		topic: "Click a room to join"
+	};
+	displayRoomDetails(displayRoomsDetailsMessage);
 	$.each(rooms, function(i, roomObj){
 		$('#chat-view').append(displayHTML(roomObj));
 	});
@@ -430,6 +464,19 @@ var displayMovie = function(message) {
 // phil end
 
 //lawrence
+	var displayCode = function(message) {
+		var source = $('#code_template').html();
+		var displayHTML = Handlebars.compile(source);
+		$('#chat-view').append(displayHTML(message));
+
+		$('pre code').each(function(i, msg) {
+	    hljs.highlightBlock(msg);
+		});
+	};
 
 //lawrence end
 
+var scrollChat = function() {
+	var $chat = $('#chat-view');
+	$chat.scrollTop($chat[0].scrollHeight);
+}
