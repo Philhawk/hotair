@@ -24,10 +24,25 @@ class RoomController < WebsocketRails::BaseController
 		end
 	end
 
+<<<<<<< HEAD
 	def get_recent_rooms
 		ids_of_rooms = message['recent_rooms']
 		rooms = Room.find(ids_of_rooms).to_json
+=======
+	def get_recent_rooms
+		user = User.find message['id']
+		ids_of_rooms = message['recent_rooms']
+		if ids_of_rooms.length < 1
+			ids_of_rooms = JSON.parse(user.recent_rooms)
+			send_message :update_recent_rooms, ids_of_rooms
+		else
+			user.recent_rooms = ids_of_rooms.to_json
+			user.save
+		end
+		rooms = Room.find(ids_of_rooms).to_json
+>>>>>>> 3189538f6a7374bf91d7ef023420fedc59ebfb18
 		send_message :show_recent_rooms, rooms
+
 
 	end
 
@@ -63,7 +78,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:room_details, room_details)
 		# tell the user that joined the past 10 messages
 		room.messages.last(10).each do |m|
-			send_message(m.function.to_sym, eval(m.object))
+			send_message(m.function.to_sym, JSON.parse(m.object))
 		end
 
 		# scroll user
@@ -231,6 +246,26 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_directions
+		user_id = message['id']
+		room_id = message['roomid']
+		directions = message['directions']
+
+		user = User.find user_id
+
+		new_directions = "https://www.google.com/maps?saddr=My+Location&daddr=#{ directions.gsub(' ', '+') }"
+
+		message_to_send = {
+			name: user.name,
+			directions: new_directions
+		}
+
+		put_message_in_db(message, message_to_send, 'new_directions')
+
+		WebsocketRails[room_id].trigger(:new_directions, message_to_send)
+
+	end
+
 	def new_recipe
 		user_id = message['id']
 		room_id = message['roomid']
@@ -260,6 +295,8 @@ class RoomController < WebsocketRails::BaseController
 
 		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
 
+		new_movie = "http://www.imdb.com/find?ref_=nv_sr_fn&q=#{ movie.gsub(' ', '+') }&s=all"
+
 		message_to_send = {
 			name: user.name,
 			movie: new_movie
@@ -283,7 +320,7 @@ class RoomController < WebsocketRails::BaseController
 	    uri.query = search
 	    uri.size = :small
 	  end
-	  uri_results = uri.first(5).each
+	  uri_results = uri.first(5)
 
 	  message_to_send = {
 	  	name: user.name,
@@ -307,7 +344,7 @@ private
 	end
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
-		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
+		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_json, function: fn)
 		msg.save
 		user = User.find message_sent['id']
 		room = Room.find message_sent['roomid']

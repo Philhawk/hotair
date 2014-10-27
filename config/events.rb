@@ -26,6 +26,7 @@ WebsocketRails::EventMap.describe do
   subscribe :send_map, :to => RoomController, :with_method => :new_map
   subscribe :send_recipe, :to => RoomController, :with_method => :new_recipe
   subscribe :send_movie, :to => RoomController, :with_method => :new_movie
+  subscribe :send_directions, :to => RoomController, :with_method => :new_directions
 
 # phil end
 
