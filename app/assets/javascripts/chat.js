@@ -53,11 +53,13 @@ var evalText = function () {
 	var timeCommand = text.split('/time');
 	var mapsCommand = text.split('/maps ');
 	var moviesCommand = text.split('/movies ');
-	var recipeCommand = text.split('/recipe ')
-	var moviesCommand = text.split('/movies ')
+	var recipeCommand = text.split('/recipe ');
+	var moviesCommand = text.split('/movies ');
 	var codeCommand = text.split('/code ');
 	var searchCommand = text.split('/search ');
 	var nudgeCommand = text.split('/nudge');
+	var transportCommand = text.split('/transport ');
+	var wikiCommand = text.split('/wiki ');
 	var gotoCommand = text.split('/goto ');
 	var flipCommand = text.split('/flip');
 	var rollCommand = text.split('/roll');
@@ -77,11 +79,21 @@ var evalText = function () {
 				sendText(gotoCommand[0]);
 			}
 		sendGoToCommand(gotoCommand[1]);
+	} else if (transportCommand.length > 1) {
+			if (transportCommand[0]) {
+				sendText(transportCommand[0]);
+			}
+		sendTransportCommand(transportCommand[1]);
 	} else if (mapsCommand.length > 1) {
 			if (mapsCommand[0]) {
 				sendText(mapsCommand[0]);
 			}
 		sendMapsCommand(mapsCommand[1]);
+	} else if (wikiCommand.length > 1) {
+			if (wikiCommand[0]) {
+				sendText(wikiCommand[0]);
+			}
+		sendWikiCommand(wikiCommand[1]);
 	} else if (moviesCommand.length > 1) {
 			if (moviesCommand[0]) {
 				sendText(moviesCommand[0]);
@@ -192,6 +204,25 @@ var sendMapsCommand = function(map) {
 	};
 	dispatcher.trigger('send_map', message);
 }
+
+var sendTransportCommand = function(transport) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		transport: transport
+	};
+	dispatcher.trigger('send_transport', message);
+}
+
+var sendWikiCommand = function(wiki) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		wiki: wiki
+	};
+	dispatcher.trigger('send_wiki', message);
+}
+
 
 var sendGoToCommand = function(directions) {
 	var message = {
@@ -322,10 +353,11 @@ var joinRoom = function (room_id) {
 		room.unbind('new_flip');
 		room.unbind('new_roll');
 
+		room.unbind('new_transport');
 		room.unbind('new_map');
 		room.unbind('new_nudge');
 		room.unbind('new_directions');
-
+		room.unbind('new_wiki');
 		room.unbind('new_recipe');
 		room.unbind('new_movie');
 
@@ -338,9 +370,11 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
 		dispatcher.unbind('new_code');
+		dispatcher.unbind('new_transport');
 		dispatcher.unbind('new_map');
 		dispatcher.unbind('new_recipe');
 		dispatcher.unbind('new_movie');
+		dispatcher.unbind('new_wiki');
 		dispatcher.unbind('new_nudge');
 		dispatcher.unbind('new_flip');
 		dispatcher.unbind('new_roll');
@@ -389,8 +423,10 @@ var joinRoom = function (room_id) {
 	room.bind('new_map', displayMap);
 	room.bind('new_recipe', displayRecipe);
 	room.bind('new_movie', displayMovie);
+	room.bind('new_transport', displayTransport);
 	room.bind('new_directions', displayDirections);
-
+	room.bind('new_wiki', displayWiki);
+	// phil end
 
  //lawrence
 	room.bind('new_code', displayCode);
@@ -398,7 +434,7 @@ var joinRoom = function (room_id) {
 	//phil
 
 
-	// phil end
+	
 
 	//lawrence
 	dispatcher.bind('new_nudge', displayNudge);
@@ -423,7 +459,8 @@ var joinRoom = function (room_id) {
 	dispatcher.bind('new_recipe', displayRecipe);
 	dispatcher.bind('new_movie', displayMovie);
 	dispatcher.bind('new_directions', displayDirections);
-
+	dispatcher.bind('new_transport', displayTransport);
+	dispatcher.bind('new_wiki', displayWiki);
 	// phil end
 
 
@@ -576,6 +613,14 @@ var displayMap = function(message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
+var displayTransport = function(message) {
+	var source = $('#transport_template').html();
+	console.log(message);
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
 var displayDirections = function(message) {
 	var source = $('#directions_template').html();
 	console.log(message);
@@ -593,6 +638,13 @@ var displayRecipe = function(message) {
 
 var displayMovie = function(message) {
 	var source = $('#movie_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayWiki = function(message) {
+	var source = $('#wiki_template').html()
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
