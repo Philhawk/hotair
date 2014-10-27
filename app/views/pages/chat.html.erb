@@ -14,7 +14,7 @@
 		<%= button_tag 'Create Room', id:'show_create_room_button' %>
 		<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
 		<div class="row" id="recentRoomNav">
-		
+
 		</div>
 	</div>
 	<!-- Right Side -->
@@ -60,7 +60,7 @@
 
 	<div >
 	</div>
-	
+
 	<script type='templates/handlebars' id="text_template">
 		<div class="row chatRow">
 			<em>{{ name }}:</em> {{{ text }}}
@@ -83,6 +83,14 @@
 		</div>
 	</script>
 
+	<script type='templates/handlebars' id="directions_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{{ directions }}}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
+
+
 	<script type='templates/handlebars' id="recipe_template">
 		<div class="row chatRow">
 				<a class="embedly-card" href="{{{ recipe }}}"></a>
@@ -100,7 +108,7 @@
 
 	<script type="templates/handlebars" id="time_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{ time }} 
+			<em>{{ name }}</em>: {{ time }}
 		</div>
 	</script>
 
@@ -124,13 +132,28 @@
 		</div>
 	</script>
 
+	<script type="templates/handlebars" id="search_template">
+		<div class="row chatRow">
+			<a href="{{ uri }}">{{ title }}</a>
+			{{{ content }}}
+
+		</div>
+	</script>
+
 	<script type="templates/handlebars" id="recent_rooms_template">
 		<div class="recentRoom">
 			<a href="{{ id }}">{{ name }}</a><span class="removeRecent"><a href="{{ id }}">x</a></span>
 		</div>
 	</script>
 
-	
+	<script type="templates/handlebars" id="code_template">
+		<div class="row chatRow">
+			<div class="code snippet">
+				<em>{{ name }}</em>: {{ time }}
+				<pre><code>{{ code }}</code></pre>
+			</div>
+	 	</div>
+ 	</script>
 
 
 <!-- New room form -->
@@ -141,7 +164,7 @@
   <div class="columns small-10">
   	<%= text_field_tag :room_name %>
   </div>
- 	
+
  	<%= button_tag 'Create', id: 'create_room_button' %>
   <a class="close-reveal-modal">&#215;</a>
 </div>

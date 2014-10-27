@@ -72,7 +72,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:room_details, room_details)
 		# tell the user that joined the past 10 messages
 		room.messages.last(10).each do |m|
-			send_message(m.function.to_sym, eval(m.object))
+			send_message(m.function.to_sym, JSON.parse(m.object))
 		end
 
 		# scroll user
@@ -221,6 +221,26 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_directions
+		user_id = message['id']
+		room_id = message['roomid']
+		directions = message['directions']
+
+		user = User.find user_id
+
+		new_directions = "https://www.google.com/maps?saddr=My+Location&daddr=#{ directions.gsub(' ', '+') }"
+
+		message_to_send = {
+			name: user.name,
+			directions: new_directions
+		}
+
+		put_message_in_db(message, message_to_send, 'new_directions')
+
+		WebsocketRails[room_id].trigger(:new_directions, message_to_send)
+
+	end
+
 	def new_recipe
 		user_id = message['id']
 		room_id = message['roomid']
@@ -248,8 +268,10 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
-		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
+		new_movie = "http://www.imdb.com/find?ref_=nv_sr_fn&q=#{ movie.gsub(' ', '+') }&s=all"
 		
+		
+
 		message_to_send = {
 			name: user.name,
 			movie: new_movie
@@ -269,17 +291,23 @@ class RoomController < WebsocketRails::BaseController
 		search = message['search']
 
 		user = User.find user_id
-
-
-
-	  search = Google::Search::Web.new do |search|
-	    search.query = query
-	    search.size = :large
-	    search.each_response { print '.'; $stdout.flush }
+	  uri = Google::Search::Web.new do |uri|
+	    uri.query = search
+	    uri.size = :small
 	  end
-	  search.find { |item| item.uri =~ uri }
+	  uri_results = uri.first(5)
+
+	  message_to_send = {
+	  	name: user.name,
+	  	search: uri_results
+	  }
+
+	  put_message_in_db(message, message_to_send, 'new_search')
+
+	  WebsocketRails[room_id].trigger(:new_search, message_to_send)
 
 	end
+
 	# JAMES END
 
 
@@ -291,7 +319,7 @@ private
 	end
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
-		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
+		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_json, function: fn)
 		msg.save
 		user = User.find message_sent['id']
 		room = Room.find message_sent['roomid']
