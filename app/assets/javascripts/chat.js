@@ -38,6 +38,7 @@ var evalText = function () {
 	var embedLinks = text.match(EMBEDREGEXP);
 	var timeCommand = text.split('/time');
 	var codeCommand = text.split('/code ');
+	var searchCommand = text.split('/search');
 
 	// see if text has regexp's
 	if (embedLinks) {
