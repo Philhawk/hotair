@@ -2,6 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+
 .vertAlign {
   position: relative;
   top: 50%;
@@ -41,7 +42,10 @@
 }
 
 #chat-page {
-	height: 100vh;
+  height:100%;
+  margin: 0;
+  padding: 0;
+
 	background-color: #FCAFAE;
 }
 

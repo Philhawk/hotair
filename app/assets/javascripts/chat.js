@@ -17,6 +17,7 @@ $(document).ready(function() {
  	 	dispatcher.bind('room_created', roomCreated);
  	 	dispatcher.bind('room_failed', roomFailed);
  	 	dispatcher.bind('show_rooms', displayRooms);
+ 	 	dispatcher.bind('scroll_chat', scrollChat);
  	 	
 
  	 	// bind to events
@@ -201,6 +202,7 @@ var joinRoom = function (room_id) {
 		room.unbind('new_embed');
 		room.unbind('new_time');
 		room.unbind('new_map');
+		room.unbind('scroll_chat');
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
@@ -232,6 +234,7 @@ var joinRoom = function (room_id) {
 	room.bind('new_embed', displayEmbed);
 	room.bind('new_time', displayTime);
 	room.bind('room_details', displayRoomDetails);
+	room.bind('scroll_chat', scrollChat);
 
 	// james
 
@@ -319,7 +322,7 @@ var displayText = function (message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
-	scrollChat();
+
 };
 
 var displayEmbed = function(message) {
@@ -327,6 +330,7 @@ var displayEmbed = function(message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+	
 };
 
 // NICKS DISPLAY
@@ -382,5 +386,5 @@ var displayMap = function(message) {
 
 var scrollChat = function() {
 	var $chat = $('#chat-view');
-	$chat.animate({ scrollTop: $chat.height() }, "slow");
+	$chat.animate({ scrollTop: $chat[0].scrollHeight}, 500);
 }
