@@ -397,7 +397,8 @@ var displayRoomDetails = function(message) {
 //phil
 
 var displayMap = function(message) {
-	var source = $('#map_template').html()
+	var source = $('#map_template').html();
+	console.log(message);
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
