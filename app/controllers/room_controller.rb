@@ -306,6 +306,8 @@ class RoomController < WebsocketRails::BaseController
 
 	  WebsocketRails[room_id].trigger(:new_search, message_to_send)
 
+	  scroll_chat room_id
+
 	end
 
 	# JAMES END
