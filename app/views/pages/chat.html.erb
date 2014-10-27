@@ -11,16 +11,15 @@
 				Hot Air
 		</div>
 		<!-- side-nav -->
-		<div class="row">
-			<p>Room1</p>
-			<p>Room2</p>
+		<div class="row" id="roomNav">
+			<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
 		</div>
 	</div>
 	<!-- Right Side -->
 	<div class="small-9 columns">
 		<!-- Top Bar -->
-		<div class="row topBar">
-			ROOM 1 
+		<div class="row topBar" id="topBar">
+			
 		</div>
 		<!-- Chat room -->
 		<div class="row chatRoom">
@@ -48,13 +47,8 @@
 						<%= button_tag 'Send', id: 'send_button' %>
 					</div>
 				</div>
-
-
-
 			</div>
-
 			<div class="small-3 columns">
-
 			</div>
 		</div>
 		<!-- footer -->
@@ -92,5 +86,17 @@
 		<div class="row chatRow">
 			<em>{{ name }}</em>: {{ time }} 
 		</div>
+	</script>
+
+	<script type="templates/handlebars" id="room_template">
+		<div class="row roomRow">
+			<a href="{{ id }}">{{ name }}</a>
+		</div>
+	</script>
+
+	<script type="templates/handlebars" id="room_details_template">
+		<h1>{{ name }}</h1>
+		<h4>{{ topic }}</h4>
+		<h5>{{ users }} Users in room</h5>
 	</script>
 

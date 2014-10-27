@@ -8,6 +8,8 @@ WebsocketRails::EventMap.describe do
   subscribe :new_room, :to => RoomController, :with_method => :new
   subscribe :join_room, :to => RoomController, :with_method => :join
   subscribe :left_room, :to => RoomController, :with_method => :leave
+  subscribe :get_rooms, :to => RoomController, :with_method => :show
+
 
   subscribe :send_text, :to => RoomController, :with_method => :new_text
   subscribe :send_embed, :to => RoomController, :with_method => :new_embed
