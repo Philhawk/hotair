@@ -24,11 +24,6 @@ class RoomController < WebsocketRails::BaseController
 		end
 	end
 
-<<<<<<< HEAD
-	def get_recent_rooms
-		ids_of_rooms = message['recent_rooms']
-		rooms = Room.find(ids_of_rooms).to_json
-=======
 	def get_recent_rooms
 		user = User.find message['id']
 		ids_of_rooms = message['recent_rooms']
@@ -40,10 +35,7 @@ class RoomController < WebsocketRails::BaseController
 			user.save
 		end
 		rooms = Room.find(ids_of_rooms).to_json
->>>>>>> 3189538f6a7374bf91d7ef023420fedc59ebfb18
 		send_message :show_recent_rooms, rooms
-
-
 	end
 
 	def show
@@ -221,6 +213,49 @@ class RoomController < WebsocketRails::BaseController
 		# scroll clients
 		scroll_chat room_id
 	end
+
+	def new_roll
+		user = User.find message['id']
+		room_id = message['roomid']
+
+		if message['max_value'].to_i == 0
+			roll = 'no' + message['max_value'] + "'s"
+		else
+			roll = (rand(message['max_value'].to_i) + 1).floor
+		end 
+
+		
+
+		message_to_send = {
+			name: user.name,
+			roll: roll,
+			max: message['max_value']
+		}
+
+		put_message_in_db(message, message_to_send, 'new_roll')
+
+		WebsocketRails[room_id].trigger(:new_roll, message_to_send)
+
+		scroll_chat room_id
+	end
+
+	def new_flip 
+		user = User.find message['id']
+		room_id = message['roomid']
+
+		heads_or_tails = rand > 0.5 ? 'heads' : 'tails'
+
+		message_to_send = {
+			name: user.name,
+			result: heads_or_tails
+		}
+
+		put_message_in_db(message, message_to_send, 'new_flip')
+
+		WebsocketRails[room_id].trigger(:new_flip, message_to_send)
+
+		scroll_chat room_id
+	end 
 	# NICKS END
 
 

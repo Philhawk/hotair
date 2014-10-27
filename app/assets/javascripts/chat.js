@@ -59,6 +59,8 @@ var evalText = function () {
 	var searchCommand = text.split('/search ');
 	var nudgeCommand = text.split('/nudge');
 	var gotoCommand = text.split('/goto ');
+	var flipCommand = text.split('/flip');
+	var rollCommand = text.split('/roll');
 
 
 	// see if text has regexp's
@@ -105,7 +107,17 @@ var evalText = function () {
 				sendText(searchCommand[0]);
 		}
 		sendSearchCommand(searchCommand[1]);
-	} else {
+	} else if (flipCommand.length > 1) {
+		if (flipCommand[0]) {
+			sendText(flipCommand[0]);
+		}
+		sendFlipCommand(flipCommand[1]);
+	} else if (rollCommand.length > 1){
+		if (rollCommand[0]) {
+			sendText(rollCommand[0]);
+		}
+		sendRollCommand(rollCommand[1]);
+	}	else {
 		sendText(text);
 	}
 };
@@ -118,6 +130,14 @@ var joinHandler = function(ev) {
 
 // Functions that send to the server
 // nicks stuff
+var sendRollCommand = function(max) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		max_value: max 
+	};
+	dispatcher.trigger('send_roll', message);
+};
 var sendTimeCommand = function(gmt) {
 	var message = {
 		id: userId,
@@ -140,6 +160,14 @@ var getRecentRooms = function () {
 	};
 	dispatcher.trigger('get_recent_rooms',message);
 };
+
+var sendFlipCommand = function () {
+	var message = {
+		id: userId, 
+		roomid: currentRoomId
+	}
+	dispatcher.trigger('send_flip', message);
+}
 // nick end
 
 // james
@@ -291,6 +319,8 @@ var joinRoom = function (room_id) {
 		room.unbind('new_embed');
 		room.unbind('new_time');
 		room.unbind('new_code');
+		room.unbind('new_flip');
+		room.unbind('new_roll');
 
 		room.unbind('new_map');
 		room.unbind('new_nudge');
@@ -312,6 +342,9 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_recipe');
 		dispatcher.unbind('new_movie');
 		dispatcher.unbind('new_nudge');
+		dispatcher.unbind('new_flip');
+		dispatcher.unbind('new_roll');
+
 
 		dispatcher.unbind('new_directions');
 
@@ -344,6 +377,8 @@ var joinRoom = function (room_id) {
 	room.bind('new_time', displayTime);
 	room.bind('room_details', displayRoomDetails);
 	room.bind('scroll_chat', scrollChat);
+	room.bind('new_flip', displayFlip);
+	room.bind('new_roll', displayRoll);
 
 	// james
 	room.bind('new_search', displaySearch);
@@ -373,6 +408,8 @@ var joinRoom = function (room_id) {
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_embed', displayEmbed);
 	dispatcher.bind('new_time', displayTime);
+	dispatcher.bind('new_flip', displayFlip);
+	dispatcher.bind('new_roll', displayRoll);
 
 
 		// AND BETWEEN HERE
@@ -455,6 +492,18 @@ var displayEmbed = function(message) {
 };
 
 // NICKS DISPLAY
+var displayRoll = function(message) {
+	var source = $('#roll_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+}
+var displayFlip = function(message) {
+	var source = $('#flip_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+}
 
 var displayTime = function(message) {
 	var source = $('#time_template').html();
