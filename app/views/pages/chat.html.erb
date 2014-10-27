@@ -124,6 +124,14 @@
 		</div>
 	</script>
 
+	<script type="templates/handlebars" id="search_template">
+		<div class="row chatRow">
+			<a href="{{ uri }}">{{ title }}</a>
+			{{{ content }}}
+
+		</div>
+	</script>
+
 	<script type="templates/handlebars" id="recent_rooms_template">
 		<div class="recentRoom">
 			<a href="{{ id }}">{{ name }}</a><span class="removeRecent"><a href="{{ id }}">x</a></span>

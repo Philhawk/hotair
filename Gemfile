@@ -32,6 +32,7 @@ gem 'bcrypt'
 gem 'mail'
 gem 'daemons'
 gem 'coderay'
+gem 'google-search'
 # Use unicorn as the app server
 # gem 'unicorn'
 

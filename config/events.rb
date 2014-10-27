@@ -19,7 +19,7 @@ WebsocketRails::EventMap.describe do
   subscribe :get_recent_rooms, :to => RoomController, :with_method => :get_recent_rooms
 
 # james
-
+  subscribe :send_search, :to => RoomController, :with_method => :new_search
 # james end
 
 #phil
