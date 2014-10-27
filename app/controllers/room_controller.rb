@@ -224,8 +224,6 @@ class RoomController < WebsocketRails::BaseController
 			roll = (rand(message['max_value'].to_i) + 1).floor
 		end 
 
-		
-
 		message_to_send = {
 			name: user.name,
 			roll: roll,
