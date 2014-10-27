@@ -61,6 +61,7 @@ var evalText = function () {
 	var gotoCommand = text.split('/goto ');
 	var flipCommand = text.split('/flip');
 	var rollCommand = text.split('/roll');
+	var gifCommand = text.split('/gifme');
 
 
 	// see if text has regexp's
@@ -117,6 +118,12 @@ var evalText = function () {
 			sendText(rollCommand[0]);
 		}
 		sendRollCommand(rollCommand[1]);
+	} else if (gifCommand.length > 1){
+		console.log("gif command");
+		if (gifCommand[0]) {
+			sendText(gifCommand[0]);
+		}
+		sendGifCommand(gifCommand[1]);
 	}	else {
 		sendText(text);
 	}
@@ -172,13 +179,21 @@ var sendFlipCommand = function () {
 
 // james
 var sendSearchCommand = function(search) {
-	console.log('sendSearchCommand');
 	var message = {
 		id: userId,
 		roomid: currentRoomId,
 		search: search
 	};
 	dispatcher.trigger('send_search', message);
+}
+
+var sendGifCommand = function(gif) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		// gif: gif
+	};
+	dispatcher.trigger('send_gif', message);
 }
 // james end
 
@@ -291,11 +306,13 @@ var leaveRoom = function(){
 	room.unbind('new_time');
 	room.unbind('room_details');
 	room.unbind('new_search');
+	room.unbind('new_gif');
 
 	dispatcher.unbind('new_embed');
 	dispatcher.unbind('new_text');
 	dispatcher.unbind('new_time');
 	dispatcher.unbind('new_search');
+	dispatcher.unbind('new_gif');
 
 	// ADD BETWEEN HERE
 	// AND HERE
@@ -332,6 +349,7 @@ var joinRoom = function (room_id) {
 		room.unbind('scroll_chat');
 
 		room.unbind('new_search');
+		room.unbind('new_gif');
 
 
 		dispatcher.unbind('new_embed');
@@ -349,6 +367,7 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_directions');
 
 		dispatcher.unbind('new_search');
+		dispatcher.unbind('new_gif');
 
 
 		// ADD BETWEEN HERE
@@ -382,6 +401,7 @@ var joinRoom = function (room_id) {
 
 	// james
 	room.bind('new_search', displaySearch);
+	room.bind('new_gif', displayGif);
 	// james end
 
 
@@ -416,6 +436,7 @@ var joinRoom = function (room_id) {
 
 	// james
 	dispatcher.bind('new_search', displaySearch);
+	dispatcher.bind('new_gif', displayGif);
 	// james end
 
 	//phil
@@ -564,6 +585,13 @@ var displaySearch = function(message) {
 		$('#chat-view').append(displayHTML(result));
 	});
 };
+
+var displayGif = function(message) {
+	var source = $('#gif_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+}
 // james end
 
 //phil
