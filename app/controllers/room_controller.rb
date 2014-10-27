@@ -24,17 +24,23 @@ class RoomController < WebsocketRails::BaseController
 		end
 	end
 
-	def get_recent_rooms 
+<<<<<<< HEAD
+	def get_recent_rooms
+		ids_of_rooms = message['recent_rooms']
+		rooms = Room.find(ids_of_rooms).to_json
+=======
+	def get_recent_rooms
 		user = User.find message['id']
 		ids_of_rooms = message['recent_rooms']
 		if ids_of_rooms.length < 1
 			ids_of_rooms = JSON.parse(user.recent_rooms)
 			send_message :update_recent_rooms, ids_of_rooms
-		else 
+		else
 			user.recent_rooms = ids_of_rooms.to_json
-			user.save 
-		end 
-		rooms = Room.find(ids_of_rooms).to_json 
+			user.save
+		end
+		rooms = Room.find(ids_of_rooms).to_json
+>>>>>>> 3189538f6a7374bf91d7ef023420fedc59ebfb18
 		send_message :show_recent_rooms, rooms
 
 
@@ -138,6 +144,25 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_code, message_to_send)
 
 		# scroll clients
+		scroll_chat room_id
+	end
+
+	def new_nudge
+		user_id = message['id']
+		room_id = message['roomid']
+		nudge = message['nudge']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			nudge: nudge
+		}
+
+		# put_message_in_db(message, message_to_send, 'new_nudge')
+
+		WebsocketRails[room_id].trigger(:new_nudge, message_to_send)
+
 		scroll_chat room_id
 	end
 
@@ -249,7 +274,7 @@ class RoomController < WebsocketRails::BaseController
 		user = User.find user_id
 
 		new_recipe = "http://ifood.tv/search/q/#{ recipe.gsub(' ', '%20') }"
-		
+
 		message_to_send = {
 			name: user.name,
 			recipe: new_recipe
@@ -268,9 +293,9 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
+		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
+
 		new_movie = "http://www.imdb.com/find?ref_=nv_sr_fn&q=#{ movie.gsub(' ', '+') }&s=all"
-		
-		
 
 		message_to_send = {
 			name: user.name,

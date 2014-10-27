@@ -33,6 +33,8 @@ WebsocketRails::EventMap.describe do
 #lawrence
   subscribe :send_code, :to => RoomController, :with_method => :new_code
 
+  subscribe :send_nudge, :to => RoomController, :with_method => :new_nudge
+
 #lawrence end
 
   #
