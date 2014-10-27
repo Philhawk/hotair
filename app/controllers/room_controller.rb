@@ -119,7 +119,7 @@ class RoomController < WebsocketRails::BaseController
 
 		put_message_in_db(message, message_to_send, 'new_code')
 
-		WebsocketRails[roomid].trigger(:new_code, message_to_send)
+		WebsocketRails[room_id].trigger(:new_code, message_to_send)
 
 		# scroll clients
 		scroll_chat room_id

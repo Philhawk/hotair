@@ -70,10 +70,6 @@ var evalText = function () {
 				sendText(codeCommand[0])
 			}
 			sendCodeCommand(codeCommand[1]);
-		if (codeCommand[0]) {
-			sendText(timeCommand[0])
-		}
-		sendCodeCommand(codeCommand[1]);
 	} else if (searchCommand.length > 1) {
 			if (searchCommand[0]) {
 				sendText(searchCommand[0]);
