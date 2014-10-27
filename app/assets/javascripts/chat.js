@@ -44,7 +44,10 @@ var evalText = function () {
 	// create arrays
 	var embedLinks = text.match(EMBEDREGEXP);
 	var timeCommand = text.split('/time');
+	var mapsCommand = text.split('/maps ');
 	var codeCommand = text.split('/code ');
+	var searchCommand = text.split('/search');
+
 
 	// see if text has regexp's
 	if (embedLinks) {
@@ -55,6 +58,11 @@ var evalText = function () {
 				sendText(timeCommand[0]);
 			}
 		sendTimeCommand(timeCommand[1]);
+	} else if (mapsCommand.length > 1) {
+			if (mapsCommand[0]) {
+				sendText(mapsCommand[0]);
+			}
+		sendMapsCommand(mapsCommand[1]);
 	} else if (codeCommand.length > 1) {
 		if (codeCommand[0]) {
 			sendText(timeCommand[0])
@@ -106,6 +114,15 @@ var sendSearchCommand = function(search) {
 // james end
 
 //phil
+
+var sendMapsCommand = function(map) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		map: map
+	};
+	dispatcher.trigger('send_map', message);
+}
 
 // phil end
 
@@ -175,6 +192,30 @@ var leaveRoom = function(){
 };
 var joinRoom = function (room_id) {
 	if (room) {
+		// stop listening to previous events and leave the room
+		room.unsubscribe;
+		// functions to stop listening to
+		room.unbind('user_joined');
+		room.unbind('user_left');
+		room.unbind('new_text');
+		room.unbind('new_embed');
+		room.unbind('new_time');
+		room.unbind('new_map');
+
+		dispatcher.unbind('new_embed');
+		dispatcher.unbind('new_text');
+		dispatcher.unbind('new_time');
+		dispatcher.unbind('new_map');
+
+		// ADD BETWEEN HERE
+		// AND HERE
+
+		// send a message to people in the PREVIOUS room that someone has LEFT
+		var leavemessage = {
+			name: userName,
+			roomid: currentRoomId
+		};
+		dispatcher.trigger('left_room', leavemessage);
 		leaveRoom();
 	}
 
@@ -196,7 +237,12 @@ var joinRoom = function (room_id) {
 
 	// james end
 
+
 	//phil
+	room.bind('new_map', displayMap);
+
+	//phil
+
 
 	// phil end
 
@@ -216,7 +262,11 @@ var joinRoom = function (room_id) {
 
 	//phil
 
+
+	dispatcher.bind('new_map', displayMap);
+
 	// phil end
+
 
 	//lawrence
 
@@ -315,6 +365,14 @@ var displayRoomDetails = function(message) {
 // james end
 
 //phil
+
+var displayMap = function(message) {
+	var source = $('#map_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
 
 // phil end
 

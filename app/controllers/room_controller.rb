@@ -166,6 +166,51 @@ WebsocketRails[roomid].trigger(:new_code, message_to_send)
 	end
 	# NICKS END
 
+
+	#PHIL
+
+	def new_map
+		user_id = message['id']
+		room_id = message['roomid']
+		map = message['map']
+
+		user = User.find user_id
+
+		new_address = "http://www.google.com.au/maps/place/#{ map.gsub(' ', '+') }"
+
+		message_to_send = {
+			name: user.name,
+			address: new_address
+		}
+
+		put_message_in_db(message, message_to_send, 'new_map')
+
+		WebsocketRails[room_id].trigger(:new_map, message_to_send)
+
+	end
+	#PHIL END
+
+	# JAMES
+	def new_search
+		user_id = message['id']
+		room_id = message['roomid']
+		search = message['search']
+
+		user = User.find user_id
+
+		
+
+	  search = Google::Search::Web.new do |search|
+	    search.query = query
+	    search.size = :large
+	    search.each_response { print '.'; $stdout.flush }
+	  end
+	  search.find { |item| item.uri =~ uri }
+
+	end
+	# JAMES END
+
+
 private
 	# Storing the entire message and the function associated with it
 	def put_message_in_db(message_sent, message_to_send, fn)
