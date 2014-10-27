@@ -21,6 +21,7 @@ $(document).ready(function() {
 
 
  	 	// bind to events
+ 	 	$('#show_create_room_button').on('click', showCreateRoom);
  	 	$('#create_room_button').on('click', createRoom);
  	 	// $('#join_room_button').on('click', joinHandler);
  	 	$('#send_button').on('click', evalText);
@@ -161,12 +162,22 @@ var sendText = function (text) {
 	};
 	dispatcher.trigger('send_text', message);
 };
+var showCreateRoom = function () {
+	// var roomName = $('#room_name').val();
+	// var message = {
+	// 	name: roomName
+	// };
+	// dispatcher.trigger('new_room', message);
+	$('#newRoomModal').foundation('reveal', 'open');
+};
+
 var createRoom = function () {
 	var roomName = $('#room_name').val();
 	var message = {
 		name: roomName
 	};
 	dispatcher.trigger('new_room', message);
+	$('#newRoomModal').foundation('reveal', 'close');
 };
 
 var leaveRoom = function(){
