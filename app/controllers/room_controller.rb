@@ -24,9 +24,9 @@ class RoomController < WebsocketRails::BaseController
 		end
 	end
 
-	def get_recent_rooms 
+	def get_recent_rooms
 		ids_of_rooms = message['recent_rooms']
-		rooms = Room.find(ids_of_rooms).to_json 
+		rooms = Room.find(ids_of_rooms).to_json
 		send_message :show_recent_rooms, rooms
 
 	end
@@ -132,6 +132,25 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 
+	def new_nudge
+		user_id = message['id']
+		room_id = message['roomid']
+		nudge = message['nudge']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			nudge: nudge
+		}
+
+		# put_message_in_db(message, message_to_send, 'new_nudge')
+
+		WebsocketRails[room_id].trigger(:new_nudge, message_to_send)
+
+		scroll_chat room_id
+	end
+
 	#lawrence end
 
 	def new_text
@@ -220,7 +239,7 @@ class RoomController < WebsocketRails::BaseController
 		user = User.find user_id
 
 		new_recipe = "http://ifood.tv/search/q/#{ recipe.gsub(' ', '%20') }"
-		
+
 		message_to_send = {
 			name: user.name,
 			recipe: new_recipe
@@ -240,7 +259,7 @@ class RoomController < WebsocketRails::BaseController
 		user = User.find user_id
 
 		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
-		
+
 		message_to_send = {
 			name: user.name,
 			movie: new_movie
