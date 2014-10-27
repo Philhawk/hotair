@@ -269,6 +269,7 @@ var displayText = function (message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+	scrollChat();
 };
 
 var displayEmbed = function(message) {
@@ -321,3 +322,7 @@ var displayRoomDetails = function(message) {
 
 //lawrence end
 
+var scrollChat = function() {
+	var $chat = $('#chat-view');
+	$chat.animate({ scrollTop: $chat.height() }, "slow");
+}
