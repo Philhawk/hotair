@@ -61,7 +61,7 @@ var evalText = function () {
 	var gotoCommand = text.split('/goto ');
 	var flipCommand = text.split('/flip');
 	var rollCommand = text.split('/roll');
-
+	var randomFactCommand = text.split('/fact');
 
 	// see if text has regexp's
 	if (embedLinks) {
@@ -112,11 +112,17 @@ var evalText = function () {
 			sendText(flipCommand[0]);
 		}
 		sendFlipCommand(flipCommand[1]);
+
 	} else if (rollCommand.length > 1){
 		if (rollCommand[0]) {
 			sendText(rollCommand[0]);
 		}
 		sendRollCommand(rollCommand[1]);
+	} else if (randomFactCommand.length > 1) {
+			if (randomFactCommand[0]){
+				sendText(randomFactCommand[0])
+		}
+		sendRandomFactCommand(randomFactCommand[1]);
 	}	else {
 		sendText(text);
 	}
@@ -134,7 +140,7 @@ var sendRollCommand = function(max) {
 	var message = {
 		id: userId,
 		roomid: currentRoomId,
-		max_value: max 
+		max_value: max
 	};
 	dispatcher.trigger('send_roll', message);
 };
@@ -163,7 +169,7 @@ var getRecentRooms = function () {
 
 var sendFlipCommand = function () {
 	var message = {
-		id: userId, 
+		id: userId,
 		roomid: currentRoomId
 	}
 	dispatcher.trigger('send_flip', message);
@@ -240,8 +246,17 @@ var sendNudgeCommand = function (nudge) {
 		roomid: currentRoomId,
 		nudge: nudge
 	}
-	dispatcher.trigger('send_nudge', message);
+		dispatcher.trigger('send_nudge', message);
 };
+
+	var sendRandomFactCommand = function (fact) {
+		var message = {
+			id: userId,
+			roomid: currentRoomId,
+			fact: fact
+		}
+		dispatcher.trigger('send_fact', message)
+	};
 //lawrence end
 
 // dont touch this ---------------------
@@ -291,11 +306,13 @@ var leaveRoom = function(){
 	room.unbind('new_time');
 	room.unbind('room_details');
 	room.unbind('new_search');
+	room.unbind('new_fact');
 
 	dispatcher.unbind('new_embed');
 	dispatcher.unbind('new_text');
 	dispatcher.unbind('new_time');
 	dispatcher.unbind('new_search');
+	dispatcher.unbind('new_fact');
 
 	// ADD BETWEEN HERE
 	// AND HERE
@@ -333,6 +350,8 @@ var joinRoom = function (room_id) {
 
 		room.unbind('new_search');
 
+		room.unbind('new_fact');
+
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
@@ -345,6 +364,7 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_flip');
 		dispatcher.unbind('new_roll');
 
+		dispatcher.unbind('new_fact');
 
 		dispatcher.unbind('new_directions');
 
@@ -395,13 +415,14 @@ var joinRoom = function (room_id) {
  //lawrence
 	room.bind('new_code', displayCode);
 	room.bind('new_nudge', displayNudge);
+	room.bind('new_fact', displayFact);
+
 	//phil
 
 
 	// phil end
 
 	//lawrence
-	dispatcher.bind('new_nudge', displayNudge);
 
 	//lawrence end
 
@@ -410,6 +431,7 @@ var joinRoom = function (room_id) {
 	dispatcher.bind('new_time', displayTime);
 	dispatcher.bind('new_flip', displayFlip);
 	dispatcher.bind('new_roll', displayRoll);
+
 
 
 		// AND BETWEEN HERE
@@ -430,6 +452,7 @@ var joinRoom = function (room_id) {
 	//lawrence
 
 	dispatcher.bind('new_code', displayCode);
+	dispatcher.bind('new_fact', displayFact);
 	//lawrence end
 
 		// AND HERE
@@ -616,6 +639,13 @@ var displayMovie = function(message) {
  			setTimeout(function () {
     	$html.removeClass('shake');
   		}, 800);
+	};
+
+	var displayFact = function (message) {
+		var source = $('#fact_template').html();
+		var displayHTML = Handlebars.compile(source);
+
+		$('#chat-view').append(displayHTML(message));
 	};
 
 //lawrence end
