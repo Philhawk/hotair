@@ -100,6 +100,22 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	#lawrence
+	def new_code
+		user_id = message['id']
+		room_id = message['roomid']
+		code = message['code']
+
+		user = User.find user_id
+
+put_message_in_db(message, message_to_send, 'new_code')
+
+WebsocketRails[roomid].trigger(:new_code, message_to_send)
+
+	end
+
+	#lawrence end
+
 	def new_text
 		# Save data from the message into variables for easy access
 		user_id = message['id']

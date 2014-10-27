@@ -31,6 +31,7 @@ gem 'spring',        group: :development
 gem 'bcrypt'
 gem 'mail'
 gem 'daemons'
+gem 'coderay'
 # Use unicorn as the app server
 # gem 'unicorn'
 

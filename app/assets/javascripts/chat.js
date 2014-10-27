@@ -44,6 +44,7 @@ var evalText = function () {
 	// create arrays
 	var embedLinks = text.match(EMBEDREGEXP);
 	var timeCommand = text.split('/time');
+	var codeCommand = text.split('/code ');
 
 	// see if text has regexp's
 	if (embedLinks) {
@@ -54,6 +55,16 @@ var evalText = function () {
 				sendText(timeCommand[0]);
 			}
 		sendTimeCommand(timeCommand[1]);
+	} else if (codeCommand.length > 1) {
+		if (codeCommand[0]) {
+			sendText(timeCommand[0])
+		}
+		sendCodeCommand(codeCommand[1]);
+	} else if (searchCommand.length > 1) {
+			if (searchCommand[0]) {
+				sendText(searchCommand[0]);
+			}
+		sendSearchCommand(addressCommand[0]);
 	} else {
 		sendText(text);
 	}
@@ -84,7 +95,14 @@ var getRooms = function() {
 // nick end
 
 // james
-
+var sendSearchCommand = function(search) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		search: search
+	};
+	dispatcher.trigger('send_search', message);
+}
 // james end
 
 //phil
@@ -92,6 +110,14 @@ var getRooms = function() {
 // phil end
 
 //lawrence
+var sendCodeCommand = function (code) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		code: code
+	}
+	dispatcher.trigger('send_code', message);
+};
 
 //lawrence end
 

@@ -17,6 +17,7 @@ WebsocketRails::EventMap.describe do
   # NICKS
   subscribe :send_time, :to => RoomController, :with_method => :new_time
 
+
 # james
 
 # james end
@@ -26,8 +27,10 @@ WebsocketRails::EventMap.describe do
 # phil end
 
 #lawrence
+  subscribe :send_code, :to => RoomController, :with_method => :new_code
 
 #lawrence end
+
   #
   # Here is an example of mapping namespaced events:
   #   namespace :product do
