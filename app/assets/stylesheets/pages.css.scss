@@ -2,6 +2,21 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+#topBar {
+	h1 {
+		font-size: 2em;
+		margin: 0;
+	}
+	h4 {
+		font-size: 1em;
+		display: inline-block;
+	}
+	h5 {
+		display: inline-block;
+		font-size: 1em;
+		float: right;
+	}
+}
 
 .vertAlign {
   position: relative;
@@ -17,13 +32,14 @@
 }
 
 #chat-view {
-	height: 70vh;
+	max-height: 65vh;
 	overflow: scroll;
 	margin-top: 1em;
 }
 .chatRoom {
 	position: relative;
 	background-color: white;	
+	min-height: 65vh;
 
 }
 
@@ -42,7 +58,7 @@
 }
 
 #chat-page {
-  height:100%;
+
   margin: 0;
   padding: 0;
 
@@ -56,7 +72,9 @@
 .topBar {
 	position: relative;
 	background: white;
-	padding: 1em;
+	padding-top: 0.5em;
+	padding-left: 1em;
+	padding-right: 20%;
 	box-shadow: 0px 5px 2px rgba(0,0,0,0.15);
 	z-index: 1;
 }
