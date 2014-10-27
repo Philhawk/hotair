@@ -53,6 +53,11 @@ var evalText = function () {
 			sendText(timeCommand[0])
 		}
 		sendCodeCommand(codeCommand[1]);
+	} else if (searchCommand.length > 1) {
+			if (searchCommand[0]) {
+				sendText(searchCommand[0]);
+			}
+		sendSearchCommand(addressCommand[0]);
 	} else {
 		sendText(text);
 	}
@@ -76,7 +81,14 @@ var sendTimeCommand = function(gmt) {
 // nick end
 
 // james
-
+var sendSearchCommand = function(search) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		search: search
+	};
+	dispatcher.trigger('send_search', message);
+}
 // james end
 
 //phil
@@ -86,7 +98,7 @@ var sendTimeCommand = function(gmt) {
 //lawrence
 var sendCodeCommand = function (code) {
 	var message = {
-		id: = userId,
+		id: userId,
 		roomid = currentRoomId,
 		code: code
 	};
