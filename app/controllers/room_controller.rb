@@ -239,8 +239,10 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
-		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
+		new_movie = "http://www.imdb.com/find?ref_=nv_sr_fn&q=#{ movie.gsub(' ', '+') }&s=all"
 		
+		
+
 		message_to_send = {
 			name: user.name,
 			movie: new_movie
