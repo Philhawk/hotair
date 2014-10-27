@@ -20,6 +20,7 @@ WebsocketRails::EventMap.describe do
 # james end
 
 #phil
+  subscribe :send_map, :to => RoomController, :with_method => :new_map
 
 # phil end
 

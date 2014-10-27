@@ -37,6 +37,7 @@ var evalText = function () {
 	// create arrays
 	var embedLinks = text.match(EMBEDREGEXP);
 	var timeCommand = text.split('/time');
+	var mapsCommand = text.split('/maps ');
 
 	// see if text has regexp's
 	if (embedLinks) {
@@ -47,6 +48,11 @@ var evalText = function () {
 				sendText(timeCommand[0]);
 			}
 		sendTimeCommand(timeCommand[1]);
+	} else if (mapsCommand.length > 1) {
+			if (mapsCommand[0]) {
+				sendText(mapsCommand[0]);
+			}
+		sendMapsCommand(mapsCommand[1]);
 	} else {
 		sendText(text);
 	}
@@ -74,6 +80,15 @@ var sendTimeCommand = function(gmt) {
 // james end
 
 //phil
+
+var sendMapsCommand = function(map) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		map: map
+	};
+	dispatcher.trigger('send_map', message);
+}
 
 // phil end
 
@@ -117,10 +132,12 @@ var joinRoom = function (room_id) {
 		room.unbind('new_text');
 		room.unbind('new_embed');
 		room.unbind('new_time');
+		room.unbind('new_map');
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
+		dispatcher.unbind('new_map');
 
 		// ADD BETWEEN HERE
 		// AND HERE
@@ -151,6 +168,7 @@ var joinRoom = function (room_id) {
 // james end
 
 //phil
+	room.bind('new_map', displayMap);
 
 // phil end
 
@@ -169,6 +187,8 @@ var joinRoom = function (room_id) {
 // james end
 
 //phil
+
+	dispatcher.bind('new_map', displayMap);
 
 // phil end
 
@@ -244,6 +264,14 @@ var displayTime = function(message) {
 // james end
 
 //phil
+
+var displayMap = function(message) {
+	var source = $('#map_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
 
 // phil end
 

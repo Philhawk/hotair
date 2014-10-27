@@ -117,6 +117,29 @@ class RoomController < WebsocketRails::BaseController
 	end
 	# NICKS END
 
+	#PHIL
+
+	def new_map
+		user_id = message['id']
+		room_id = message['roomid']
+		map = message['map']
+
+		user = User.find user_id
+
+		new_address = "http://www.google.com.au/maps/place/#{ map.gsub(' ', '+') }"
+
+		message_to_send = {
+			name: user.name,
+			address: new_address
+		}
+
+		put_message_in_db(message, message_to_send, 'new_map')
+
+		WebsocketRails[room_id].trigger(:new_map, message_to_send)
+
+	end
+	#PHIL END
+
 private
 	# Storing the entire message and the function associated with it
 	def put_message_in_db(message_sent, message_to_send, fn)
