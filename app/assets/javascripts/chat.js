@@ -363,6 +363,12 @@ var displayRooms = function(message) {
 	var source = $('#room_template').html();
 	var displayHTML = Handlebars.compile(source);
 	$('#chat-view').empty();
+
+	var displayRoomsDetailsMessage = {
+		name: "Room List",
+		topic: "Click a room to join"
+	};
+	displayRoomDetails(displayRoomsDetailsMessage);
 	$.each(rooms, function(i, roomObj){
 		$('#chat-view').append(displayHTML(roomObj));
 	});
@@ -408,5 +414,5 @@ var displayMap = function(message) {
 
 var scrollChat = function() {
 	var $chat = $('#chat-view');
-	$chat.animate({ scrollTop: $chat[0].scrollHeight}, 500);
+	$chat.scrollTop($chat[0].scrollHeight);
 }

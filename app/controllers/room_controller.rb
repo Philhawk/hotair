@@ -55,7 +55,7 @@ class RoomController < WebsocketRails::BaseController
 		}
 		WebsocketRails[room_id].trigger(:room_details, room_details)
 		# tell the user that joined the past 10 messages
-		room.messages.last(20).each do |m|
+		room.messages.last(10).each do |m|
 			send_message(m.function.to_sym, eval(m.object))
 		end
 

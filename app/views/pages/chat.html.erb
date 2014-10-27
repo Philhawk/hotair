@@ -96,8 +96,16 @@
 	</script>
 
 	<script type="templates/handlebars" id="room_details_template">
-		<h1>{{ name }}</h1>
-		<h4>{{ topic }}</h4>
-		<h5>{{ users }} Users in room</h5>
+		<div class="columns small-12">
+			<div class="row">
+				<h1>{{ name }}</h1>
+			</div>
+			<div class="row">
+				<h4>{{ topic }}</h4>
+				{{#if users}}
+				<h5>{{ users }} Users in room</h5>
+				{{/if}}
+			</div>
+		</div>
 	</script>
 
