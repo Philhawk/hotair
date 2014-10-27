@@ -204,6 +204,46 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_map, message_to_send)
 
 	end
+
+	def new_recipe
+		user_id = message['id']
+		room_id = message['roomid']
+		recipe = message['recipe']
+
+		user = User.find user_id
+
+		new_recipe = "http://ifood.tv/search/q/#{ recipe.gsub(' ', '%20') }"
+		
+		message_to_send = {
+			name: user.name,
+			recipe: new_recipe
+		}
+
+		put_message_in_db(message, message_to_send, 'new_recipe')
+
+		WebsocketRails[room_id].trigger(:new_recipe, message_to_send)
+
+	end
+
+	def new_movie
+		user_id = message['id']
+		room_id = message['roomid']
+		movie = message['movie']
+
+		user = User.find user_id
+
+		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
+		
+		message_to_send = {
+			name: user.name,
+			movie: new_movie
+		}
+
+		put_message_in_db(message, message_to_send, 'new_movie')
+
+		WebsocketRails[room_id].trigger(:new_movie, message_to_send)
+
+	end
 	#PHIL END
 
 	# JAMES
