@@ -67,7 +67,19 @@ var sendTimeCommand = function(gmt) {
 	};
 	dispatcher.trigger('send_time', message);
 }
-// nick end 
+// nick end
+
+// james
+
+// james end
+
+//phil
+
+// phil end
+
+//lawrence
+
+//lawrence end
 
 // dont touch this ---------------------
 var sendEmbed = function(i, embedLink) {
@@ -134,11 +146,36 @@ var joinRoom = function (room_id) {
 	room.bind('new_embed', displayEmbed);
 	room.bind('new_time', displayTime);
 
+	// james
+
+// james end
+
+//phil
+
+// phil end
+
+//lawrence
+
+//lawrence end
+
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_embed', displayEmbed);
 	dispatcher.bind('new_time', displayTime);
 
 	// AND BETWEEN HERE
+
+// james
+
+// james end
+
+//phil
+
+// phil end
+
+//lawrence
+
+//lawrence end
+
 	// AND HERE
 
 
@@ -200,5 +237,17 @@ var displayTime = function(message) {
 
 	$('#chat-view').append(displayHTML(message));
 };
-// END 
+// END
+
+// james
+
+// james end
+
+//phil
+
+// phil end
+
+//lawrence
+
+//lawrence end
 
