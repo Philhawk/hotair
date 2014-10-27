@@ -86,10 +86,10 @@ var sendTimeCommand = function(gmt) {
 //lawrence
 var sendCodeCommand = function (code) {
 	var message = {
-		id: = userId,
-		roomid = currentRoomId,
+		id: userId,
+		roomid: currentRoomId,
 		code: code
-	};
+	}
 	dispatcher.trigger('send_code', message);
 };
 
