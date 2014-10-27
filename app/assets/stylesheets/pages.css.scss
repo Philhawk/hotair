@@ -1,7 +1,10 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-
+.removeRecent {
+	float: right;
+	padding-right: 1em;
+}
 #topBar {
 	h1 {
 		font-size: 2em;
