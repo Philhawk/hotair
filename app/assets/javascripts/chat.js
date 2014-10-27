@@ -28,7 +28,8 @@ $(document).ready(function() {
  	 	$('#send_button').on('click', evalText);
  	 	$('#show_rooms_button').on('click', getRooms);
  	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
- 	 	$('#chat-page').on('click', '.recentRoom a', joinHandler);
+ 	 	$('#chat-page').on('click', '.recentRoom>a', joinHandler);
+ 	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
 
  	 	// get rooms
  	 	getRooms();
@@ -360,6 +361,7 @@ var joinRoom = function (room_id) {
 
 	// add to recently joined
 	recentRooms.push(room_id);
+	recentRooms = _.uniq(recentRooms);
 	getRecentRooms();
 };
 	// end dont touch this ---------------------------
@@ -408,6 +410,7 @@ var displayEmbed = function(message) {
 };
 
 // NICKS DISPLAY
+
 var displayTime = function(message) {
 	var source = $('#time_template').html();
 	var displayHTML = Handlebars.compile(source);
@@ -503,5 +506,18 @@ var scrollChat = function() {
 	var $chat = $('#chat-view');
 	$chat.scrollTop($chat[0].scrollHeight);
 }
+
+var removeRecent = function(ev) {
+	ev.preventDefault();
+	var roomID = $(this).attr('href');
+	console.log(roomID);
+	recentRooms = _.without(recentRooms,roomID);
+	if (currentRoomId === roomID) {
+		getRooms();
+	}
+
+	getRecentRooms();
+}
+
 
 
