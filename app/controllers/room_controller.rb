@@ -260,17 +260,23 @@ class RoomController < WebsocketRails::BaseController
 		search = message['search']
 
 		user = User.find user_id
-
-
-
-	  search = Google::Search::Web.new do |search|
-	    search.query = query
-	    search.size = :large
-	    search.each_response { print '.'; $stdout.flush }
+	  uri = Google::Search::Web.new do |uri|
+	    uri.query = search
+	    uri.size = :small
 	  end
-	  search.find { |item| item.uri =~ uri }
+	  uri_results = uri.first(5).each
+
+	  message_to_send = {
+	  	name: user.name,
+	  	search: uri_results
+	  }
+
+	  put_message_in_db(message, message_to_send, 'new_search')
+
+	  WebsocketRails[room_id].trigger(:new_search, message_to_send)
 
 	end
+
 	# JAMES END
 
 
