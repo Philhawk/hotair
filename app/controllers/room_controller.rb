@@ -24,6 +24,13 @@ class RoomController < WebsocketRails::BaseController
 		end
 	end
 
+	def get_recent_rooms 
+		ids_of_rooms = message['recent_rooms']
+		rooms = Room.find(ids_of_rooms).to_json 
+		send_message :show_recent_rooms, rooms
+
+	end
+
 	def show
 		roomsAsJSON = Room.all.to_json
 		send_message :show_rooms, roomsAsJSON

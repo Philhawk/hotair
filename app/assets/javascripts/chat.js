@@ -1,7 +1,7 @@
 var dispatcher;
 var room;
 var currentRoomId;
-
+var recentRooms = [];
 // Reg expressions used
 
 var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
@@ -18,6 +18,7 @@ $(document).ready(function() {
  	 	dispatcher.bind('room_failed', roomFailed);
  	 	dispatcher.bind('show_rooms', displayRooms);
  	 	dispatcher.bind('scroll_chat', scrollChat);
+ 	 	dispatcher.bind('show_recent_rooms', showRecentRooms);
 
 
  	 	// bind to events
@@ -27,6 +28,7 @@ $(document).ready(function() {
  	 	$('#send_button').on('click', evalText);
  	 	$('#show_rooms_button').on('click', getRooms);
  	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
+ 	 	$('#chat-page').on('click', '.recentRoom a', joinHandler);
 
  	 	// get rooms
  	 	getRooms();
@@ -114,6 +116,13 @@ var getRooms = function() {
 
 	};
 	dispatcher.trigger('get_rooms', message);
+};
+
+var getRecentRooms = function () {
+	var message = {
+		recent_rooms: recentRooms
+	};
+	dispatcher.trigger('get_recent_rooms',message);
 };
 // nick end
 
@@ -210,7 +219,7 @@ var createRoom = function () {
 };
 
 var leaveRoom = function(){
-// stop listening to previous events and leave the room
+ // stop listening to previous events and leave the room
 	room.unsubscribe;
 	// functions to stop listening to
 	room.unbind('user_joined');
@@ -301,7 +310,7 @@ var joinRoom = function (room_id) {
 	room.bind('new_movie', displayMovie);
 
 
-//lawrence
+ //lawrence
 	room.bind('new_code', displayCode);
 	//phil
 
@@ -325,7 +334,7 @@ var joinRoom = function (room_id) {
 	//phil
 
 
-//lawrence
+ //lawrence
 	dispatcher.bind('new_code', displayCode);
 
 
@@ -341,18 +350,18 @@ var joinRoom = function (room_id) {
 	//lawrence end
 
 		// AND HERE
-
-
-		// message to send to server
-		var message = {
-			id: userId,
-			room_joined: room_id
-		};
-		// tell server we have joined
-		dispatcher.trigger('join_room', message);
-
-
+				// message to send to server
+	var message = {
+		id: userId,
+		room_joined: room_id
 	};
+		// tell server we have joined
+	dispatcher.trigger('join_room', message);
+
+	// add to recently joined
+	recentRooms.push(room_id);
+	getRecentRooms();
+};
 	// end dont touch this ---------------------------
 
 
@@ -404,6 +413,19 @@ var displayTime = function(message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+};
+
+var showRecentRooms = function(message) {
+	rooms = jQuery.parseJSON(message);
+
+	var source = $('#recent_rooms_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#recentRoomNav').empty();
+
+	$.each(rooms, function(i, roomObj){
+		$('#recentRoomNav').append(displayHTML(roomObj));
+	});
 };
 
 var displayRooms = function(message) {
@@ -481,3 +503,5 @@ var scrollChat = function() {
 	var $chat = $('#chat-view');
 	$chat.scrollTop($chat[0].scrollHeight);
 }
+
+

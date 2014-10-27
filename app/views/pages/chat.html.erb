@@ -12,8 +12,9 @@
 		</div>
 		<!-- side-nav -->
 		<%= button_tag 'Create Room', id:'show_create_room_button' %>
-		<div class="row" id="roomNav">
-			<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
+		<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
+		<div class="row" id="recentRoomNav">
+		
 		</div>
 	</div>
 	<!-- Right Side -->
@@ -122,6 +123,14 @@
 			</div>
 		</div>
 	</script>
+
+	<script type="templates/handlebars" id="recent_rooms_template">
+		<div class="recentRoom">
+			<a href="{{ id }}">{{ name }}</a>
+		</div>
+	</script>
+
+	
 
 
 <!-- New room form -->

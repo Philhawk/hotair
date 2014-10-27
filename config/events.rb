@@ -16,7 +16,7 @@ WebsocketRails::EventMap.describe do
 
   # NICKS
   subscribe :send_time, :to => RoomController, :with_method => :new_time
-
+  subscribe :get_recent_rooms, :to => RoomController, :with_method => :get_recent_rooms
 
 # james
 

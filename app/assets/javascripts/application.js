@@ -17,6 +17,7 @@
 //= require highlight.min
 //= require_tree .
 //= require websocket_rails/main
+//= require underscore
 
 
 $(function(){ $(document).foundation(); });
