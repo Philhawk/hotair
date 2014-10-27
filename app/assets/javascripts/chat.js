@@ -126,6 +126,7 @@ var evalText = function () {
 	}	else {
 		sendText(text);
 	}
+	$('#chat_text').val("");
 };
 
 var joinHandler = function(ev) {
