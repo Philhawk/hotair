@@ -165,7 +165,7 @@ class RoomController < WebsocketRails::BaseController
 		# Save data from the message into variables for easy access
 		user_id = message['id']
 		room_id = message['roomid']
-		text = message['msg']
+		text = message['text']
 
 		# find the user from the message
 		user = User.find user_id
@@ -196,7 +196,7 @@ class RoomController < WebsocketRails::BaseController
 	def new_time
 		user_id = message['id']
 		room_id = message['roomid']
-		gmt = message['gmt']
+		time = message['time']
 
 		user = User.find user_id
 
@@ -219,16 +219,16 @@ class RoomController < WebsocketRails::BaseController
 		user = User.find message['id']
 		room_id = message['roomid']
 
-		if message['max_value'].to_i == 0
-			roll = 'no' + message['max_value'] + "'s"
+		if message['roll'].to_i == 0
+			roll = 'no' + message['roll'] + "'s"
 		else
-			roll = (rand(message['max_value'].to_i) + 1).floor
+			roll = (rand(message['roll'].to_i) + 1).floor
 		end 
 
 		message_to_send = {
 			name: user.name,
 			roll: roll,
-			max: message['max_value']
+			max: message['roll']
 		}
 
 		put_message_in_db(message, message_to_send, 'new_roll')
@@ -349,7 +349,7 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
-		new_recipe = "http://en.wikipedia.org/wiki/#{ wiki.gsub(' ', '%20') }"
+		new_wiki = "http://en.wikipedia.org/wiki/#{ wiki.gsub(' ', '%20') }"
 
 		message_to_send = {
 			name: user.name,

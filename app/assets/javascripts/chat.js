@@ -39,6 +39,30 @@ $(document).ready(function() {
 	}
 });
 
+// Send command generator 
+
+var sendCommand = function (type) {
+	return function (value) {
+		var message = {
+			id: userId,
+			roomid: currentRoomId
+		};
+		message[type] = value;
+		dispatcher.trigger('send_' + type, message);
+	}
+};
+
+// display command generator 
+
+var displayCommand = function(type) {
+	return function(message) {
+		var source = $('#' + type + '_template').html();
+		var displayHTML = Handlebars.compile(source);
+
+		$('#chat-view').append(displayHTML(message));
+	}
+};
+
 // Functions bound to events from page
 
 var evalText = function () {
@@ -149,22 +173,7 @@ var joinHandler = function(ev) {
 
 // Functions that send to the server
 // nicks stuff
-var sendRollCommand = function(max) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		max_value: max 
-	};
-	dispatcher.trigger('send_roll', message);
-};
-var sendTimeCommand = function(gmt) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		gmt: gmt
-	};
-	dispatcher.trigger('send_time', message);
-};
+
 var getRooms = function() {
 	var message = {
 
@@ -180,114 +189,30 @@ var getRecentRooms = function () {
 	dispatcher.trigger('get_recent_rooms',message);
 };
 
-var sendFlipCommand = function () {
-	var message = {
-		id: userId, 
-		roomid: currentRoomId
-	}
-	dispatcher.trigger('send_flip', message);
-}
+var sendRollCommand = sendCommand('roll');
+var sendTimeCommand = sendCommand('time');
+var sendFlipCommand = sendCommand('flip');
 // nick end
 
 // james
-var sendSearchCommand = function(search) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		search: search
-	};
-	dispatcher.trigger('send_search', message);
-}
-
-var sendGifCommand = function(gif) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		// gif: gif
-	};
-	dispatcher.trigger('send_gif', message);
-}
+var sendSearchCommand = sendCommand('search');
+var sendGifCommand = sendCommand('gif');
 // james end
 
 //phil
 
-var sendMapsCommand = function(map) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		map: map
-	};
-	dispatcher.trigger('send_map', message);
-}
-
-var sendTransportCommand = function(transport) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		transport: transport
-	};
-	dispatcher.trigger('send_transport', message);
-}
-
-var sendWikiCommand = function(wiki) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		wiki: wiki
-	};
-	dispatcher.trigger('send_wiki', message);
-}
-
-
-var sendGoToCommand = function(directions) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		directions: directions
-	};
-	dispatcher.trigger('send_directions', message);
-}
-
-var sendRecipeCommand = function(recipe) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		recipe: recipe
-	};
-	dispatcher.trigger('send_recipe', message);
-}
-
-var sendMoviesCommand = function(movie) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		movie: movie
-	};
-	dispatcher.trigger('send_movie', message);
-}
-
-
+var sendMapsCommand = sendCommand('map');
+var sendTransportCommand = sendCommand('transport');
+var sendWikiCommand = sendCommand('wiki');
+var sendGoToCommand = sendCommand('directions');
+var sendRecipeCommand = sendCommand('recipe');
+var sendMoviesCommand = sendCommand('movie');
 
 // phil end
 
 //lawrence
-var sendCodeCommand = function (code) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		code: code
-	}
-	dispatcher.trigger('send_code', message);
-};
-
-var sendNudgeCommand = function (nudge) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		nudge: nudge
-	}
-	dispatcher.trigger('send_nudge', message);
-};
+var sendCodeCommand = sendCommand('code');
+var sendNudgeCommand = sendCommand('nudge');
 //lawrence end
 
 // dont touch this ---------------------
@@ -300,14 +225,8 @@ var sendEmbed = function(i, embedLink) {
 	dispatcher.trigger('send_embed', message);
 };
 
-var sendText = function (text) {
-	var message = {
-		id: userId,
-		roomid: currentRoomId,
-		msg: text
-	};
-	dispatcher.trigger('send_text', message);
-};
+var sendText = sendCommand('text');
+
 var showCreateRoom = function () {
 	// var roomName = $('#room_name').val();
 	// var message = {
@@ -533,42 +452,13 @@ var userLeftRoom = function (message) {
 	console.log(name + ' has left the room');
 };
 
-var displayText = function (message) {
-	var source = $('#text_template').html();
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-
-};
-
-var displayEmbed = function(message) {
-	var source = $('#embed_template').html();
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-
-};
-
 // NICKS DISPLAY
-var displayRoll = function(message) {
-	var source = $('#roll_template').html();
-	var displayHTML = Handlebars.compile(source);
 
-	$('#chat-view').append(displayHTML(message));
-}
-var displayFlip = function(message) {
-	var source = $('#flip_template').html();
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-}
-
-var displayTime = function(message) {
-	var source = $('#time_template').html();
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-};
+var displayText = displayCommand('text');
+var displayEmbed = displayCommand('embed');
+var displayRoll = displayCommand('roll');
+var displayFlip = displayCommand('flip');
+var displayTime = displayCommand('time');
 
 var showRecentRooms = function(message) {
 	rooms = jQuery.parseJSON(message);
@@ -623,80 +513,37 @@ var displaySearch = function(message) {
 	});
 };
 
-var displayGif = function(message) {
-	var source = $('#gif_template').html();
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-}
+var displayGif = displayCommand('gif');
 // james end
 
 //phil
 
-var displayMap = function(message) {
-	var source = $('#map_template').html();
-	console.log(message);
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-};
-
-var displayTransport = function(message) {
-	var source = $('#transport_template').html();
-	console.log(message);
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-};
-
-var displayDirections = function(message) {
-	var source = $('#directions_template').html();
-	console.log(message);
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-};
-
-var displayRecipe = function(message) {
-	var source = $('#recipe_template').html()
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-};
-
-var displayMovie = function(message) {
-	var source = $('#movie_template').html()
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-};
-
-var displayWiki = function(message) {
-	var source = $('#wiki_template').html()
-	var displayHTML = Handlebars.compile(source);
-
-	$('#chat-view').append(displayHTML(message));
-};
+var displayMap = displayCommand('map');
+var displayTransport = displayCommand('transport');
+var displayDirections = displayCommand('directions');
+var displayRecipe = displayCommand('recipe');
+var displayMovie = displayCommand('movie');
+var displayWiki = displayCommand('wiki');
 
 // phil end
 
 //lawrence
-	var displayCode = function(message) {
-		var source = $('#code_template').html();
-		var displayHTML = Handlebars.compile(source);
-		$('#chat-view').append(displayHTML(message));
+var displayCode = function(message) {
+	var source = $('#code_template').html();
+	var displayHTML = Handlebars.compile(source);
+	$('#chat-view').append(displayHTML(message));
 
-		$('pre code').each(function(i, msg) {
-	    hljs.highlightBlock(msg);
-		});
-	};
+	$('pre code').each(function(i, msg) {
+    hljs.highlightBlock(msg);
+	});
+};
 
-	var displayNudge = function (message) {
-			var $html = $('div').addClass('shake');
- 			setTimeout(function () {
-    	$html.removeClass('shake');
-  		}, 800);
-	};
+var displayNudge = function (message) {
+		var $html = $('div').addClass('shake');
+			setTimeout(function () {
+  	$html.removeClass('shake');
+		}, 800);
+};
 
 //lawrence end
 
@@ -719,4 +566,3 @@ var removeRecent = function(ev) {
 var updateRecentRooms = function(message) {
 	recentRooms = message;
 };
-
