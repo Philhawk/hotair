@@ -19,7 +19,7 @@ $(document).ready(function() {
  	 	dispatcher.bind('show_rooms', displayRooms);
  	 	dispatcher.bind('scroll_chat', scrollChat);
  	 	dispatcher.bind('show_recent_rooms', showRecentRooms);
-
+ 	 	dispatcher.bind('update_recent_rooms', updateRecentRooms);
 
  	 	// bind to events
  	 	$('#show_create_room_button').on('click', showCreateRoom);
@@ -33,6 +33,7 @@ $(document).ready(function() {
 
  	 	// get rooms
  	 	getRooms();
+ 	 	getRecentRooms();
 
 	}
 });
@@ -121,6 +122,7 @@ var getRooms = function() {
 
 var getRecentRooms = function () {
 	var message = {
+		id: userId,
 		recent_rooms: recentRooms
 	};
 	dispatcher.trigger('get_recent_rooms',message);
@@ -515,9 +517,10 @@ var removeRecent = function(ev) {
 	if (currentRoomId === roomID) {
 		getRooms();
 	}
-
 	getRecentRooms();
-}
+};
 
-
+var updateRecentRooms = function(message) {
+	recentRooms = message;
+};
 
