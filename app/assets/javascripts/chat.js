@@ -267,6 +267,8 @@ var joinRoom = function (room_id) {
 
 		room.unbind('scroll_chat');
 
+		room.unbind('new_search');
+
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
@@ -275,6 +277,7 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_map');
 		dispatcher.unbind('new_recipe');
 		dispatcher.unbind('new_movie');
+		dispatcher.unbind('new_search');
 
 		// ADD BETWEEN HERE
 		// AND HERE
