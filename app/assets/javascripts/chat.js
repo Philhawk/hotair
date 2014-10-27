@@ -49,10 +49,11 @@ var evalText = function () {
 			}
 		sendTimeCommand(timeCommand[1]);
 	} else if (codeCommand.length > 1) {
-		if (codeCommand[0]) {
-			sendText(timeCommand[0])
-		}
-		sendCodeCommand(codeCommand[1]);
+			if (codeCommand[0]) {
+				sendText(codeCommand[0])
+				debugger;
+			}
+			sendCodeCommand(codeCommand[1]);
 	} else {
 		sendText(text);
 	}
@@ -131,10 +132,13 @@ var joinRoom = function (room_id) {
 		room.unbind('new_text');
 		room.unbind('new_embed');
 		room.unbind('new_time');
+		room.unbind('new_code');
+
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
+		dispatcher.unbind('new_code');
 
 		// ADD BETWEEN HERE
 		// AND HERE
@@ -169,6 +173,7 @@ var joinRoom = function (room_id) {
 // phil end
 
 //lawrence
+	room.bind('new_code', displayCode);
 
 //lawrence end
 
@@ -187,6 +192,7 @@ var joinRoom = function (room_id) {
 // phil end
 
 //lawrence
+	dispatcher.bind('new_code', displayCode);
 
 //lawrence end
 
@@ -246,7 +252,7 @@ var displayEmbed = function(message) {
 
 // NICKS DISPLAY
 var displayTime = function(message) {
-	var source = $('#time_template').html()
+	var source = $('#time_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
@@ -262,6 +268,15 @@ var displayTime = function(message) {
 // phil end
 
 //lawrence
+	var displayCode = function(message) {
+		var source = $('#code_template').html();
+		var displayHTML = Handlebars.compile(source);
+		$('#chat-view').append(displayHTML(message));
+
+		$('pre code').each(function(i, msg) {
+	    hljs.highlightBlock(msg);
+		});
+	};
 
 //lawrence end
 

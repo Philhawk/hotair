@@ -75,6 +75,11 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
+		message_to_send = {
+			name: user.name,
+			code: code
+		}
+
 put_message_in_db(message, message_to_send, 'new_code')
 
 WebsocketRails[roomid].trigger(:new_code, message_to_send)

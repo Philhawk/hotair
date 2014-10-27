@@ -20,7 +20,7 @@
 	<div class="small-9 columns">
 		<!-- Top Bar -->
 		<div class="row topBar">
-			ROOM 1 
+			ROOM 1
 		</div>
 		<!-- Chat room -->
 		<div class="row chatRoom">
@@ -90,7 +90,14 @@
 
 	<script type="templates/handlebars" id="time_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{ time }} 
+			<em>{{ name }}</em>: {{ time }}
+		</div>
+	</script>
+
+	<script type="templates/handlebars" id="code_template">
+		<div class="row chatRow">
+			<em>{{ name }}</em>:
+			<pre><code>{{ code }}</code></pre>
 		</div>
 	</script>
 
