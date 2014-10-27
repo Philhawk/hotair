@@ -324,6 +324,28 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_transport
+		user_id = message['id']
+		room_id = message['roomid']
+		transport = message['transport']
+
+		user = User.find user_id
+
+		new_transport = "https://www.google.com/maps/dir/?saddr=my+location&daddr=#{ transport.gsub(' ', '+') }&ie=UTF8&f=d&sort=def&dirflg=r&hl=en"
+
+		
+
+		message_to_send = {
+		name: user.name,
+		transport: new_transport
+		}
+
+		put_message_in_db(message, message_to_send, 'new_transport')
+
+		WebsocketRails[room_id].trigger(:new_transport, message_to_send)
+
+	end
+
 	def new_recipe
 		user_id = message['id']
 		room_id = message['roomid']
@@ -344,14 +366,32 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_wiki
+		user_id = message['id']
+		room_id = message['roomid']
+		wiki = message['wiki']
+
+		user = User.find user_id
+
+		new_wiki = "http://en.wikipedia.org/wiki/#{ wiki.gsub(' ', '%20') }"
+
+		message_to_send = {
+			name: user.name,
+			wiki: new_wiki
+		}
+
+		put_message_in_db(message, message_to_send, 'new_wiki')
+
+		WebsocketRails[room_id].trigger(:new_wiki, message_to_send)
+
+	end
+
 	def new_movie
 		user_id = message['id']
 		room_id = message['roomid']
 		movie = message['movie']
 
 		user = User.find user_id
-
-		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
 
 		new_movie = "http://www.imdb.com/find?ref_=nv_sr_fn&q=#{ movie.gsub(' ', '+') }&s=all"
 
@@ -391,6 +431,37 @@ class RoomController < WebsocketRails::BaseController
 
 	  scroll_chat room_id
 
+	end
+
+	def new_gif
+		user_id = message['id']
+		room_id = message['roomid']
+		# gif = message['gif']
+
+		user = User.find user_id
+
+		url = "https://imgur.com/hot/viral"
+		doc = Nokogiri::HTML(open(url))
+		links = doc.css('a.image-list-link')
+		results = []
+
+		links.each do |link|
+			results << link["href"]
+		end
+
+		sample = results.sample
+		new_gif = "https://imgur.com#{ sample }"
+
+		message_to_send = {
+			name: user.name,
+			gif: new_gif
+		}
+
+	  put_message_in_db(message, message_to_send, 'new_gif')
+
+	  WebsocketRails[room_id].trigger(:new_gif, message_to_send)
+
+	  scroll_chat room_id
 	end
 
 	# JAMES END

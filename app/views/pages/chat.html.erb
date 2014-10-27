@@ -90,10 +90,23 @@
 		</div>
 	</script>
 
+	<script type='templates/handlebars' id="transport_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{{ transport }}}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
 
 	<script type='templates/handlebars' id="recipe_template">
 		<div class="row chatRow">
 				<a class="embedly-card" href="{{{ recipe }}}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
+
+	<script type='templates/handlebars' id="wiki_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{{ wiki }}}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
 	</script>
@@ -136,7 +149,6 @@
 		<div class="row chatRow">
 			<a href="{{ uri }}">{{ title }}</a>
 			{{{ content }}}
-
 		</div>
 	</script>
 
@@ -174,6 +186,13 @@
 		</div>
 	</script>
 
+
+	<script type='templates/handlebars' id="gif_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{ gif }}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
 
 
 <!-- New room form -->

@@ -53,15 +53,19 @@ var evalText = function () {
 	var timeCommand = text.split('/time');
 	var mapsCommand = text.split('/maps ');
 	var moviesCommand = text.split('/movies ');
-	var recipeCommand = text.split('/recipe ')
-	var moviesCommand = text.split('/movies ')
+	var recipeCommand = text.split('/recipe ');
+	var moviesCommand = text.split('/movies ');
 	var codeCommand = text.split('/code ');
 	var searchCommand = text.split('/search ');
 	var nudgeCommand = text.split('/nudge');
+	var transportCommand = text.split('/transport ');
+	var wikiCommand = text.split('/wiki ');
 	var gotoCommand = text.split('/goto ');
 	var flipCommand = text.split('/flip');
 	var rollCommand = text.split('/roll');
 	var randomFactCommand = text.split('/fact');
+	var gifCommand = text.split('/gifme');
+
 
 	// see if text has regexp's
 	if (embedLinks) {
@@ -77,11 +81,21 @@ var evalText = function () {
 				sendText(gotoCommand[0]);
 			}
 		sendGoToCommand(gotoCommand[1]);
+	} else if (transportCommand.length > 1) {
+			if (transportCommand[0]) {
+				sendText(transportCommand[0]);
+			}
+		sendTransportCommand(transportCommand[1]);
 	} else if (mapsCommand.length > 1) {
 			if (mapsCommand[0]) {
 				sendText(mapsCommand[0]);
 			}
 		sendMapsCommand(mapsCommand[1]);
+	} else if (wikiCommand.length > 1) {
+			if (wikiCommand[0]) {
+				sendText(wikiCommand[0]);
+			}
+		sendWikiCommand(wikiCommand[1]);
 	} else if (moviesCommand.length > 1) {
 			if (moviesCommand[0]) {
 				sendText(moviesCommand[0]);
@@ -123,9 +137,15 @@ var evalText = function () {
 				sendText(randomFactCommand[0])
 		}
 		sendRandomFactCommand(randomFactCommand[1]);
+	} else if (gifCommand.length > 1){
+		if (gifCommand[0]) {
+			sendText(gifCommand[0]);
+		}
+		sendGifCommand(gifCommand[1]);
 	}	else {
 		sendText(text);
 	}
+	$('#chat_text').val("");
 };
 
 var joinHandler = function(ev) {
@@ -178,13 +198,21 @@ var sendFlipCommand = function () {
 
 // james
 var sendSearchCommand = function(search) {
-	console.log('sendSearchCommand');
 	var message = {
 		id: userId,
 		roomid: currentRoomId,
 		search: search
 	};
 	dispatcher.trigger('send_search', message);
+}
+
+var sendGifCommand = function(gif) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		// gif: gif
+	};
+	dispatcher.trigger('send_gif', message);
 }
 // james end
 
@@ -198,6 +226,25 @@ var sendMapsCommand = function(map) {
 	};
 	dispatcher.trigger('send_map', message);
 }
+
+var sendTransportCommand = function(transport) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		transport: transport
+	};
+	dispatcher.trigger('send_transport', message);
+}
+
+var sendWikiCommand = function(wiki) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		wiki: wiki
+	};
+	dispatcher.trigger('send_wiki', message);
+}
+
 
 var sendGoToCommand = function(directions) {
 	var message = {
@@ -307,12 +354,14 @@ var leaveRoom = function(){
 	room.unbind('room_details');
 	room.unbind('new_search');
 	room.unbind('new_fact');
+	room.unbind('new_gif');
 
 	dispatcher.unbind('new_embed');
 	dispatcher.unbind('new_text');
 	dispatcher.unbind('new_time');
 	dispatcher.unbind('new_search');
 	dispatcher.unbind('new_fact');
+	dispatcher.unbind('new_gif');
 
 	// ADD BETWEEN HERE
 	// AND HERE
@@ -325,6 +374,7 @@ var leaveRoom = function(){
 	};
 	dispatcher.trigger('left_room', leavemessage);
 };
+
 var joinRoom = function (room_id) {
 	if (room) {
 		// stop listening to previous events and leave the room
@@ -339,16 +389,18 @@ var joinRoom = function (room_id) {
 		room.unbind('new_flip');
 		room.unbind('new_roll');
 
+		room.unbind('new_transport');
 		room.unbind('new_map');
 		room.unbind('new_nudge');
 		room.unbind('new_directions');
-
+		room.unbind('new_wiki');
 		room.unbind('new_recipe');
 		room.unbind('new_movie');
 
 		room.unbind('scroll_chat');
 
 		room.unbind('new_search');
+		room.unbind('new_gif');
 
 		room.unbind('new_fact');
 
@@ -357,9 +409,11 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
 		dispatcher.unbind('new_code');
+		dispatcher.unbind('new_transport');
 		dispatcher.unbind('new_map');
 		dispatcher.unbind('new_recipe');
 		dispatcher.unbind('new_movie');
+		dispatcher.unbind('new_wiki');
 		dispatcher.unbind('new_nudge');
 		dispatcher.unbind('new_flip');
 		dispatcher.unbind('new_roll');
@@ -369,6 +423,7 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_directions');
 
 		dispatcher.unbind('new_search');
+		dispatcher.unbind('new_gif');
 
 
 		// ADD BETWEEN HERE
@@ -402,6 +457,7 @@ var joinRoom = function (room_id) {
 
 	// james
 	room.bind('new_search', displaySearch);
+	room.bind('new_gif', displayGif);
 	// james end
 
 
@@ -409,8 +465,10 @@ var joinRoom = function (room_id) {
 	room.bind('new_map', displayMap);
 	room.bind('new_recipe', displayRecipe);
 	room.bind('new_movie', displayMovie);
+	room.bind('new_transport', displayTransport);
 	room.bind('new_directions', displayDirections);
-
+	room.bind('new_wiki', displayWiki);
+	// phil end
 
  //lawrence
 	room.bind('new_code', displayCode);
@@ -420,7 +478,7 @@ var joinRoom = function (room_id) {
 	//phil
 
 
-	// phil end
+
 
 	//lawrence
 
@@ -438,6 +496,7 @@ var joinRoom = function (room_id) {
 
 	// james
 	dispatcher.bind('new_search', displaySearch);
+	dispatcher.bind('new_gif', displayGif);
 	// james end
 
 	//phil
@@ -445,7 +504,8 @@ var joinRoom = function (room_id) {
 	dispatcher.bind('new_recipe', displayRecipe);
 	dispatcher.bind('new_movie', displayMovie);
 	dispatcher.bind('new_directions', displayDirections);
-
+	dispatcher.bind('new_transport', displayTransport);
+	dispatcher.bind('new_wiki', displayWiki);
 	// phil end
 
 
@@ -587,12 +647,27 @@ var displaySearch = function(message) {
 		$('#chat-view').append(displayHTML(result));
 	});
 };
+
+var displayGif = function(message) {
+	var source = $('#gif_template').html();
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+}
 // james end
 
 //phil
 
 var displayMap = function(message) {
 	var source = $('#map_template').html();
+	console.log(message);
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayTransport = function(message) {
+	var source = $('#transport_template').html();
 	console.log(message);
 	var displayHTML = Handlebars.compile(source);
 
@@ -616,6 +691,13 @@ var displayRecipe = function(message) {
 
 var displayMovie = function(message) {
 	var source = $('#movie_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayWiki = function(message) {
+	var source = $('#wiki_template').html()
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
