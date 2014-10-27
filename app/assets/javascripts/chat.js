@@ -99,9 +99,9 @@ var sendSearchCommand = function(search) {
 var sendCodeCommand = function (code) {
 	var message = {
 		id: userId,
-		roomid = currentRoomId,
+		roomid: currentRoomId,
 		code: code
-	};
+	}
 	dispatcher.trigger('send_code', message);
 };
 
