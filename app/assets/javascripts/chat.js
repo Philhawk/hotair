@@ -45,6 +45,9 @@ var evalText = function () {
 	var embedLinks = text.match(EMBEDREGEXP);
 	var timeCommand = text.split('/time');
 	var mapsCommand = text.split('/maps ');
+	var moviesCommand = text.split('/movies ');
+	var recipeCommand = text.split('/recipe ')
+	var moviesCommand = text.split('/movies ')
 	var codeCommand = text.split('/code ');
 	var searchCommand = text.split('/search');
 
@@ -63,6 +66,16 @@ var evalText = function () {
 				sendText(mapsCommand[0]);
 			}
 		sendMapsCommand(mapsCommand[1]);
+	} else if (moviesCommand.length > 1) {
+			if (moviesCommand[0]) {
+				sendText(moviesCommand[0]);
+			}
+		sendMoviesCommand(moviesCommand[1]);
+	} else if (recipeCommand.length > 1) {
+			if (recipeCommand[0]) {
+				sendText(recipeCommand[0]);
+			}
+		sendRecipeCommand(recipeCommand[1]);
 	} else if (codeCommand.length > 1) {
 		if (codeCommand[0]) {
 			sendText(timeCommand[0])
@@ -123,6 +136,26 @@ var sendMapsCommand = function(map) {
 	};
 	dispatcher.trigger('send_map', message);
 }
+
+var sendRecipeCommand = function(recipe) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		recipe: recipe
+	};
+	dispatcher.trigger('send_recipe', message);
+}
+
+var sendMoviesCommand = function(movie) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		movie: movie
+	};
+	dispatcher.trigger('send_movie', message);
+}
+
+
 
 // phil end
 
@@ -201,11 +234,15 @@ var joinRoom = function (room_id) {
 		room.unbind('new_embed');
 		room.unbind('new_time');
 		room.unbind('new_map');
+		room.unbind('new_recipe');
+		room.unbind('new_movie');
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
 		dispatcher.unbind('new_map');
+		dispatcher.unbind('new_recipe');
+		dispatcher.unbind('new_movie');
 
 		// ADD BETWEEN HERE
 		// AND HERE
@@ -240,6 +277,9 @@ var joinRoom = function (room_id) {
 
 	//phil
 	room.bind('new_map', displayMap);
+	room.bind('new_recipe', displayRecipe);
+	room.bind('new_movie', displayMovie);
+
 
 	//phil
 
@@ -264,6 +304,8 @@ var joinRoom = function (room_id) {
 
 
 	dispatcher.bind('new_map', displayMap);
+	dispatcher.bind('new_recipe', displayRecipe);
+	dispatcher.bind('new_movie', displayMovie);
 
 	// phil end
 
@@ -351,7 +393,6 @@ var displayRooms = function(message) {
 };
 
 var displayRoomDetails = function(message) {
-	console.log(message)
 	var source = $('#room_details_template').html();
 	var displayHTML = Handlebars.compile(source);
 	$('#topBar').empty();
@@ -372,6 +413,19 @@ var displayMap = function(message) {
 	$('#chat-view').append(displayHTML(message));
 };
 
+var displayRecipe = function(message) {
+	var source = $('#recipe_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayMovie = function(message) {
+	var source = $('#movie_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
 
 // phil end
 
