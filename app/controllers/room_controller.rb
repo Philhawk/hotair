@@ -8,15 +8,25 @@ class RoomController < WebsocketRails::BaseController
 		room_name = message['name']
 		room = Room.new(name: room_name, topic: 'Welcome!')
 		if room.save
+			# send a message to the user that the room was created
 			message = {
 		 	name: room.name,
 		 	topic: room.topic,
 		 	id: room.id.to_s
 		 	}
 			send_message :room_created, message
+
+			# send a message to all users that a new room is created
+			broadcast_message :new_room_added, message 
+
 		else
 		 	send_message :room_failed, message
 		end
+	end
+
+	def show
+		roomsAsJSON = Room.all.to_json 
+		send_message :show_rooms, roomsAsJSON
 	end
 
 	def join
@@ -36,17 +46,40 @@ class RoomController < WebsocketRails::BaseController
 		# tell all users in that room that someone has joined
 		WebsocketRails[room_id].trigger(:user_joined, message)
 
+		# tell all users the room details
+		room_details = {
+			name: room.name,
+			topic: room.topic,
+			users: room.users.length
+		}
+		WebsocketRails[room_id].trigger(:room_details, room_details)
 		# tell the user that joined the past messages
 		room.messages.each do |m|
 			send_message(m.function.to_sym, eval(m.object))
 		end
 
+
+
 	end
 
 	def leave
 		user_name = message['name']
-		room = message['roomid']
-		WebsocketRails[room].trigger(:user_left, message)
+		room_id = message['roomid']
+		WebsocketRails[room_id].trigger(:user_left, message)
+
+		user = User.find message['id']
+		room = Room.find message['roomid']
+
+		# remove association
+		room.users.delete(user)
+
+		# tell all users the room details
+		room_details = {
+			name: room.name,
+			topic: room.topic,
+			users: room.users.length
+		}
+		WebsocketRails[room_id].trigger(:room_details, room_details)
 	end
 
 	def new_embed
@@ -66,6 +99,22 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_embed, message)
 
 	end
+
+	#lawrence
+	def new_code
+		user_id = message['id']
+		room_id = message['roomid']
+		code = message['code']
+
+		user = User.find user_id
+
+put_message_in_db(message, message_to_send, 'new_code')
+
+WebsocketRails[roomid].trigger(:new_code, message_to_send)
+
+	end
+
+	#lawrence end
 
 	def new_text
 		# Save data from the message into variables for easy access
