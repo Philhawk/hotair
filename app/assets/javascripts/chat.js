@@ -19,7 +19,7 @@ $(document).ready(function() {
  	 	dispatcher.bind('show_rooms', displayRooms);
  	 	dispatcher.bind('scroll_chat', scrollChat);
  	 	dispatcher.bind('show_recent_rooms', showRecentRooms);
-
+ 	 	dispatcher.bind('update_recent_rooms', updateRecentRooms);
 
  	 	// bind to events
  	 	$('#show_create_room_button').on('click', showCreateRoom);
@@ -31,8 +31,10 @@ $(document).ready(function() {
  	 	$('#chat-page').on('click', '.recentRoom>a', joinHandler);
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
 
+
  	 	// get rooms
  	 	getRooms();
+ 	 	getRecentRooms();
 
 	}
 });
@@ -55,6 +57,7 @@ var evalText = function () {
 	var moviesCommand = text.split('/movies ')
 	var codeCommand = text.split('/code ');
 	var searchCommand = text.split('/search ');
+	var nudgeCommand = text.split('/nudge');
 	var gotoCommand = text.split('/goto ');
 
 
@@ -92,10 +95,15 @@ var evalText = function () {
 				sendText(codeCommand[0])
 			}
 			sendCodeCommand(codeCommand[1]);
+	} else if (nudgeCommand.length > 1) {
+			if (nudgeCommand[0]) {
+				sendText(nudgeCommand[0])
+		}
+  		sendNudgeCommand(nudgeCommand[1]);
 	} else if (searchCommand.length > 1) {
 			if (searchCommand[0]) {
 				sendText(searchCommand[0]);
-			}
+		}
 		sendSearchCommand(searchCommand[1]);
 	} else {
 		sendText(text);
@@ -127,6 +135,7 @@ var getRooms = function() {
 
 var getRecentRooms = function () {
 	var message = {
+		id: userId,
 		recent_rooms: recentRooms
 	};
 	dispatcher.trigger('get_recent_rooms',message);
@@ -197,6 +206,14 @@ var sendCodeCommand = function (code) {
 	dispatcher.trigger('send_code', message);
 };
 
+var sendNudgeCommand = function (nudge) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		nudge: nudge
+	}
+	dispatcher.trigger('send_nudge', message);
+};
 //lawrence end
 
 // dont touch this ---------------------
@@ -276,6 +293,7 @@ var joinRoom = function (room_id) {
 		room.unbind('new_code');
 
 		room.unbind('new_map');
+		room.unbind('new_nudge');
 		room.unbind('new_directions');
 
 		room.unbind('new_recipe');
@@ -293,6 +311,7 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_map');
 		dispatcher.unbind('new_recipe');
 		dispatcher.unbind('new_movie');
+		dispatcher.unbind('new_nudge');
 
 		dispatcher.unbind('new_directions');
 
@@ -340,18 +359,21 @@ var joinRoom = function (room_id) {
 
  //lawrence
 	room.bind('new_code', displayCode);
+	room.bind('new_nudge', displayNudge);
 	//phil
 
 
 	// phil end
 
 	//lawrence
+	dispatcher.bind('new_nudge', displayNudge);
 
 	//lawrence end
 
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_embed', displayEmbed);
 	dispatcher.bind('new_time', displayTime);
+
 
 		// AND BETWEEN HERE
 
@@ -540,6 +562,13 @@ var displayMovie = function(message) {
 		});
 	};
 
+	var displayNudge = function (message) {
+			var $html = $('div').addClass('shake');
+ 			setTimeout(function () {
+    	$html.removeClass('shake');
+  		}, 800);
+	};
+
 //lawrence end
 
 var scrollChat = function() {
@@ -555,9 +584,10 @@ var removeRecent = function(ev) {
 	if (currentRoomId === roomID) {
 		getRooms();
 	}
-
 	getRecentRooms();
-}
+};
 
-
+var updateRecentRooms = function(message) {
+	recentRooms = message;
+};
 
