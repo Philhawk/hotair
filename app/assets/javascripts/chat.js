@@ -16,11 +16,19 @@ $(document).ready(function() {
  	 	dispatcher.bind('connected', clientConnected);
  	 	dispatcher.bind('room_created', roomCreated);
  	 	dispatcher.bind('room_failed', roomFailed);
+ 	 	dispatcher.bind('show_rooms', displayRooms);
+ 	 	dispatcher.bind('scroll_chat', scrollChat);
+
 
  	 	// bind to events
  	 	$('#create_room_button').on('click', createRoom);
- 	 	$('#join_room_button').on('click', joinHandler);
+ 	 	// $('#join_room_button').on('click', joinHandler);
  	 	$('#send_button').on('click', evalText);
+ 	 	$('#show_rooms_button').on('click', getRooms);
+ 	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
+
+ 	 	// get rooms
+ 	 	getRooms();
 
 	}
 });
@@ -37,7 +45,10 @@ var evalText = function () {
 	// create arrays
 	var embedLinks = text.match(EMBEDREGEXP);
 	var timeCommand = text.split('/time');
+	var mapsCommand = text.split('/maps ');
 	var codeCommand = text.split('/code ');
+	var searchCommand = text.split('/search');
+
 
 	// see if text has regexp's
 	if (embedLinks) {
@@ -48,20 +59,34 @@ var evalText = function () {
 				sendText(timeCommand[0]);
 			}
 		sendTimeCommand(timeCommand[1]);
+	} else if (mapsCommand.length > 1) {
+			if (mapsCommand[0]) {
+				sendText(mapsCommand[0]);
+			}
+		sendMapsCommand(mapsCommand[1]);
 	} else if (codeCommand.length > 1) {
 			if (codeCommand[0]) {
 				sendText(codeCommand[0])
-				debugger;
 			}
 			sendCodeCommand(codeCommand[1]);
+		if (codeCommand[0]) {
+			sendText(timeCommand[0])
+		}
+		sendCodeCommand(codeCommand[1]);
+	} else if (searchCommand.length > 1) {
+			if (searchCommand[0]) {
+				sendText(searchCommand[0]);
+			}
+		sendSearchCommand(addressCommand[0]);
 	} else {
 		sendText(text);
 	}
 };
 
-var joinHandler = function () {
-	var roomid = $('#room_name').val();
-	joinRoom(roomid);
+var joinHandler = function(ev) {
+	ev.preventDefault();
+	var roomID = $(this).attr('href');
+	joinRoom(roomID);
 };
 
 // Functions that send to the server
@@ -74,13 +99,35 @@ var sendTimeCommand = function(gmt) {
 	};
 	dispatcher.trigger('send_time', message);
 };
+var getRooms = function() {
+	var message = {
+
+	};
+	dispatcher.trigger('get_rooms', message);
+};
 // nick end
 
 // james
-
+var sendSearchCommand = function(search) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		search: search
+	};
+	dispatcher.trigger('send_search', message);
+}
 // james end
 
 //phil
+
+var sendMapsCommand = function(map) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		map: map
+	};
+	dispatcher.trigger('send_map', message);
+}
 
 // phil end
 
@@ -122,6 +169,32 @@ var createRoom = function () {
 	dispatcher.trigger('new_room', message);
 };
 
+var leaveRoom = function(){
+// stop listening to previous events and leave the room
+	room.unsubscribe;
+	// functions to stop listening to
+	room.unbind('user_joined');
+	room.unbind('user_left');
+	room.unbind('new_text');
+	room.unbind('new_embed');
+	room.unbind('new_time');
+	room.unbind('room_details');
+
+	dispatcher.unbind('new_embed');
+	dispatcher.unbind('new_text');
+	dispatcher.unbind('new_time');
+
+	// ADD BETWEEN HERE
+	// AND HERE
+
+	// send a message to people in the PREVIOUS room that someone has LEFT
+	var leavemessage = {
+		name: userName,
+		id: userId,
+		roomid: currentRoomId
+	};
+	dispatcher.trigger('left_room', leavemessage);
+};
 var joinRoom = function (room_id) {
 	if (room) {
 		// stop listening to previous events and leave the room
@@ -134,11 +207,14 @@ var joinRoom = function (room_id) {
 		room.unbind('new_time');
 		room.unbind('new_code');
 
+		room.unbind('new_map');
+		room.unbind('scroll_chat');
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
 		dispatcher.unbind('new_code');
+		dispatcher.unbind('new_map');
 
 		// ADD BETWEEN HERE
 		// AND HERE
@@ -149,6 +225,7 @@ var joinRoom = function (room_id) {
 			roomid: currentRoomId
 		};
 		dispatcher.trigger('left_room', leavemessage);
+		leaveRoom();
 	}
 
 	// join the room
@@ -163,51 +240,68 @@ var joinRoom = function (room_id) {
 	room.bind('new_text', displayText);
 	room.bind('new_embed', displayEmbed);
 	room.bind('new_time', displayTime);
+	room.bind('room_details', displayRoomDetails);
+	room.bind('scroll_chat', scrollChat);
 
 	// james
 
-// james end
+	// james end
 
-//phil
 
-// phil end
+	//phil
+	room.bind('new_map', displayMap);
 
 //lawrence
 	room.bind('new_code', displayCode);
+	//phil
 
-//lawrence end
+
+	// phil end
+
+	//lawrence
+
+	//lawrence end
 
 	dispatcher.bind('new_text', displayText);
 	dispatcher.bind('new_embed', displayEmbed);
 	dispatcher.bind('new_time', displayTime);
 
-	// AND BETWEEN HERE
+		// AND BETWEEN HERE
 
-// james
+	// james
 
-// james end
+	// james end
 
-//phil
+	//phil
 
-// phil end
 
 //lawrence
 	dispatcher.bind('new_code', displayCode);
 
-//lawrence end
 
-	// AND HERE
+	dispatcher.bind('new_map', displayMap);
+
+	// phil end
 
 
-	// message to send to server
-	var message = {
-		id: userId,
-		room_joined: room_id
+	//lawrence
+
+	//lawrence end
+
+		// AND HERE
+
+
+		// message to send to server
+		var message = {
+			id: userId,
+			room_joined: room_id
+		};
+		// tell server we have joined
+		dispatcher.trigger('join_room', message);
+
+
 	};
-	// tell server we have joined
-	dispatcher.trigger('join_room', message);
-};
-// end dont touch this ---------------------------
+	// end dont touch this ---------------------------
 
 
 // Functions called from server
@@ -241,6 +335,7 @@ var displayText = function (message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+
 };
 
 var displayEmbed = function(message) {
@@ -248,6 +343,7 @@ var displayEmbed = function(message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
+
 };
 
 // NICKS DISPLAY
@@ -257,6 +353,28 @@ var displayTime = function(message) {
 
 	$('#chat-view').append(displayHTML(message));
 };
+
+var displayRooms = function(message) {
+	if (room) {
+		leaveRoom();
+		$('#topBar').empty();
+	}
+	rooms = jQuery.parseJSON( message );
+	var source = $('#room_template').html();
+	var displayHTML = Handlebars.compile(source);
+	$('#chat-view').empty();
+	$.each(rooms, function(i, roomObj){
+		$('#chat-view').append(displayHTML(roomObj));
+	});
+};
+
+var displayRoomDetails = function(message) {
+	console.log(message)
+	var source = $('#room_details_template').html();
+	var displayHTML = Handlebars.compile(source);
+	$('#topBar').empty();
+	$('#topBar').append(displayHTML(message));
+};
 // END
 
 // james
@@ -264,6 +382,14 @@ var displayTime = function(message) {
 // james end
 
 //phil
+
+var displayMap = function(message) {
+	var source = $('#map_template').html()
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
 
 // phil end
 
@@ -280,3 +406,7 @@ var displayTime = function(message) {
 
 //lawrence end
 
+var scrollChat = function() {
+	var $chat = $('#chat-view');
+	$chat.animate({ scrollTop: $chat[0].scrollHeight}, 500);
+}

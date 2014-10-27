@@ -8,15 +8,26 @@ class RoomController < WebsocketRails::BaseController
 		room_name = message['name']
 		room = Room.new(name: room_name, topic: 'Welcome!')
 		if room.save
+			# send a message to the user that the room was created
 			message = {
 		 	name: room.name,
 		 	topic: room.topic,
 		 	id: room.id.to_s
 		 	}
 			send_message :room_created, message
+
+			# send a message to all users that a new room is created
+			broadcast_message :new_room_added, message
+
 		else
 		 	send_message :room_failed, message
 		end
+	end
+
+	def show
+		roomsAsJSON = Room.all.to_json
+		send_message :show_rooms, roomsAsJSON
+
 	end
 
 	def join
@@ -36,17 +47,41 @@ class RoomController < WebsocketRails::BaseController
 		# tell all users in that room that someone has joined
 		WebsocketRails[room_id].trigger(:user_joined, message)
 
-		# tell the user that joined the past messages
-		room.messages.each do |m|
+		# tell all users the room details
+		room_details = {
+			name: room.name,
+			topic: room.topic,
+			users: room.users.length
+		}
+		WebsocketRails[room_id].trigger(:room_details, room_details)
+		# tell the user that joined the past 10 messages
+		room.messages.last(20).each do |m|
 			send_message(m.function.to_sym, eval(m.object))
 		end
+
+		# scroll user
+		send_message(:scroll_chat, message);
 
 	end
 
 	def leave
 		user_name = message['name']
-		room = message['roomid']
-		WebsocketRails[room].trigger(:user_left, message)
+		room_id = message['roomid']
+		WebsocketRails[room_id].trigger(:user_left, message)
+
+		user = User.find message['id']
+		room = Room.find message['roomid']
+
+		# remove association
+		room.users.delete(user)
+
+		# tell all users the room details
+		room_details = {
+			name: room.name,
+			topic: room.topic,
+			users: room.users.length
+		}
+		WebsocketRails[room_id].trigger(:room_details, room_details)
 	end
 
 	def new_embed
@@ -65,6 +100,8 @@ class RoomController < WebsocketRails::BaseController
 
 		WebsocketRails[room_id].trigger(:new_embed, message)
 
+		# scroll clients
+		scroll_chat room_id
 	end
 
 	#lawrence
@@ -80,10 +117,12 @@ class RoomController < WebsocketRails::BaseController
 			code: code
 		}
 
-put_message_in_db(message, message_to_send, 'new_code')
+		put_message_in_db(message, message_to_send, 'new_code')
 
-WebsocketRails[roomid].trigger(:new_code, message_to_send)
+		WebsocketRails[roomid].trigger(:new_code, message_to_send)
 
+		# scroll clients
+		scroll_chat room_id
 	end
 
 	#lawrence end
@@ -110,6 +149,9 @@ WebsocketRails[roomid].trigger(:new_code, message_to_send)
 
 		# send the new message to the room
 		WebsocketRails[room_id].trigger(:new_text, message_to_send)
+
+		# scroll clients
+		scroll_chat room_id
 	end
 
 
@@ -135,11 +177,62 @@ WebsocketRails[roomid].trigger(:new_code, message_to_send)
 
 		WebsocketRails[room_id].trigger(:new_time, message_to_send)
 
+		# scroll clients
+		scroll_chat room_id
 	end
 	# NICKS END
 
+
+	#PHIL
+
+	def new_map
+		user_id = message['id']
+		room_id = message['roomid']
+		map = message['map']
+
+		user = User.find user_id
+
+		new_address = "http://www.google.com.au/maps/place/#{ map.gsub(' ', '+') }"
+
+		message_to_send = {
+			name: user.name,
+			address: new_address
+		}
+
+		put_message_in_db(message, message_to_send, 'new_map')
+
+		WebsocketRails[room_id].trigger(:new_map, message_to_send)
+
+	end
+	#PHIL END
+
+	# JAMES
+	def new_search
+		user_id = message['id']
+		room_id = message['roomid']
+		search = message['search']
+
+		user = User.find user_id
+
+
+
+	  search = Google::Search::Web.new do |search|
+	    search.query = query
+	    search.size = :large
+	    search.each_response { print '.'; $stdout.flush }
+	  end
+	  search.find { |item| item.uri =~ uri }
+
+	end
+	# JAMES END
+
+
 private
 	# Storing the entire message and the function associated with it
+	def scroll_chat(room_id)
+		# scroll clients
+		WebsocketRails[room_id].trigger(:scroll_chat, message)
+	end
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
 		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
