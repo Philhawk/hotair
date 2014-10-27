@@ -349,7 +349,7 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
-		new_recipe = "http://en.wikipedia.org/wiki/#{ wiki.gsub(' ', '%20') }"
+		new_wiki = "http://en.wikipedia.org/wiki/#{ wiki.gsub(' ', '%20') }"
 
 		message_to_send = {
 			name: user.name,
