@@ -159,13 +159,37 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 
+	def new_fact
+		user_id = message['id']
+		room_id = message['roomid']
+		message['fact'] = ["trivia", "year", "date", "math"]
+		fact = message['fact'].sample
+
+		url = "http://numbersapi.com/random/#{fact}"
+		puts "showing fact"
+		fact = HTTParty.get url
+		puts fact
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			fact: fact
+		}
+
+		put_message_in_db(message, message_to_send, 'new_fact')
+
+		WebsocketRails[room_id].trigger(:new_fact, message_to_send)
+
+		scroll_chat room_id
+	end
+
 	#lawrence end
 
 	def new_text
 		# Save data from the message into variables for easy access
 		user_id = message['id']
 		room_id = message['roomid']
-		text = message['msg']
+		text = message['text']
 
 		# find the user from the message
 		user = User.find user_id
@@ -196,7 +220,7 @@ class RoomController < WebsocketRails::BaseController
 	def new_time
 		user_id = message['id']
 		room_id = message['roomid']
-		gmt = message['gmt']
+		time = message['time']
 
 		user = User.find user_id
 
@@ -219,16 +243,15 @@ class RoomController < WebsocketRails::BaseController
 		user = User.find message['id']
 		room_id = message['roomid']
 
-		if message['max_value'].to_i == 0
-			roll = 'no' + message['max_value'] + "'s"
+		if message['roll'].to_i == 0
+			roll = 'no' + message['roll'] + "'s"
 		else
-			roll = (rand(message['max_value'].to_i) + 1).floor
+			roll = (rand(message['roll'].to_i) + 1).floor
 		end 
-
 		message_to_send = {
 			name: user.name,
 			roll: roll,
-			max: message['max_value']
+			max: message['roll']
 		}
 
 		put_message_in_db(message, message_to_send, 'new_roll')
@@ -238,7 +261,7 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 
-	def new_flip 
+	def new_flip
 		user = User.find message['id']
 		room_id = message['roomid']
 
@@ -254,7 +277,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_flip, message_to_send)
 
 		scroll_chat room_id
-	end 
+	end
 	# NICKS END
 
 
@@ -279,7 +302,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_map, message_to_send)
 
 	end
-	
+
 	def new_directions
 		user_id = message['id']
 		room_id = message['roomid']
