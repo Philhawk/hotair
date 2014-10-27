@@ -17,16 +17,24 @@ class RoomController < WebsocketRails::BaseController
 			send_message :room_created, message
 
 			# send a message to all users that a new room is created
-			broadcast_message :new_room_added, message 
+			broadcast_message :new_room_added, message
 
 		else
 		 	send_message :room_failed, message
 		end
 	end
 
+	def get_recent_rooms 
+		ids_of_rooms = message['recent_rooms']
+		rooms = Room.find(ids_of_rooms).to_json 
+		send_message :show_recent_rooms, rooms
+
+	end
+
 	def show
-		roomsAsJSON = Room.all.to_json 
+		roomsAsJSON = Room.all.to_json
 		send_message :show_rooms, roomsAsJSON
+
 	end
 
 	def join
@@ -53,12 +61,13 @@ class RoomController < WebsocketRails::BaseController
 			users: room.users.length
 		}
 		WebsocketRails[room_id].trigger(:room_details, room_details)
-		# tell the user that joined the past messages
-		room.messages.each do |m|
+		# tell the user that joined the past 10 messages
+		room.messages.last(10).each do |m|
 			send_message(m.function.to_sym, eval(m.object))
 		end
 
-
+		# scroll user
+		send_message(:scroll_chat, message);
 
 	end
 
@@ -98,6 +107,8 @@ class RoomController < WebsocketRails::BaseController
 
 		WebsocketRails[room_id].trigger(:new_embed, message)
 
+		# scroll clients
+		scroll_chat room_id
 	end
 
 	#lawrence
@@ -108,10 +119,17 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
-put_message_in_db(message, message_to_send, 'new_code')
+		message_to_send = {
+			name: user.name,
+			code: code
+		}
 
-WebsocketRails[roomid].trigger(:new_code, message_to_send)
+		put_message_in_db(message, message_to_send, 'new_code')
 
+		WebsocketRails[room_id].trigger(:new_code, message_to_send)
+
+		# scroll clients
+		scroll_chat room_id
 	end
 
 	#lawrence end
@@ -138,6 +156,9 @@ WebsocketRails[roomid].trigger(:new_code, message_to_send)
 
 		# send the new message to the room
 		WebsocketRails[room_id].trigger(:new_text, message_to_send)
+
+		# scroll clients
+		scroll_chat room_id
 	end
 
 
@@ -163,8 +184,74 @@ WebsocketRails[roomid].trigger(:new_code, message_to_send)
 
 		WebsocketRails[room_id].trigger(:new_time, message_to_send)
 
+		# scroll clients
+		scroll_chat room_id
 	end
 	# NICKS END
+
+
+	#PHIL
+
+	def new_map
+		user_id = message['id']
+		room_id = message['roomid']
+		map = message['map']
+
+		user = User.find user_id
+
+		new_address = "http://www.google.com.au/maps/place/#{ map.gsub(' ', '+') }"
+
+		message_to_send = {
+			name: user.name,
+			address: new_address
+		}
+
+		put_message_in_db(message, message_to_send, 'new_map')
+
+		WebsocketRails[room_id].trigger(:new_map, message_to_send)
+
+	end
+
+	def new_recipe
+		user_id = message['id']
+		room_id = message['roomid']
+		recipe = message['recipe']
+
+		user = User.find user_id
+
+		new_recipe = "http://ifood.tv/search/q/#{ recipe.gsub(' ', '%20') }"
+		
+		message_to_send = {
+			name: user.name,
+			recipe: new_recipe
+		}
+
+		put_message_in_db(message, message_to_send, 'new_recipe')
+
+		WebsocketRails[room_id].trigger(:new_recipe, message_to_send)
+
+	end
+
+	def new_movie
+		user_id = message['id']
+		room_id = message['roomid']
+		movie = message['movie']
+
+		user = User.find user_id
+
+		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
+		
+		message_to_send = {
+			name: user.name,
+			movie: new_movie
+		}
+
+		put_message_in_db(message, message_to_send, 'new_movie')
+
+		WebsocketRails[room_id].trigger(:new_movie, message_to_send)
+
+	end
+	#PHIL END
 
 	# JAMES
 	def new_search
@@ -192,8 +279,13 @@ WebsocketRails[roomid].trigger(:new_code, message_to_send)
 
 	# JAMES END
 
+
 private
 	# Storing the entire message and the function associated with it
+	def scroll_chat(room_id)
+		# scroll clients
+		WebsocketRails[room_id].trigger(:scroll_chat, message)
+	end
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
 		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)

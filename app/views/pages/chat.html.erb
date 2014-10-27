@@ -11,15 +11,16 @@
 				Hot Air
 		</div>
 		<!-- side-nav -->
-		<div class="row" id="roomNav">
-			<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
+		<%= button_tag 'Create Room', id:'show_create_room_button' %>
+		<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
+		<div class="row" id="recentRoomNav">
+
 		</div>
 	</div>
 	<!-- Right Side -->
 	<div class="small-9 columns">
 		<!-- Top Bar -->
 		<div class="row topBar" id="topBar">
-			
 		</div>
 		<!-- Chat room -->
 		<div class="row chatRoom">
@@ -57,34 +58,49 @@
 		</div>
 	</div>
 
-	<%= label_tag 'Room Name' %>
-	<%= text_field_tag :room_name %>
-	<%= button_tag 'Create Room', id: 'create_room_button' %>
-	<%= button_tag 'Join Room', id: 'join_room_button' %>
-	<p></p>
-	<%= text_field_tag :chat_text %>
-	<%= button_tag 'Send', id: 'send_button' %>
 	<div >
 	</div>
 
-
-
 	<script type='templates/handlebars' id="text_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{{ text }}}
+			<em>{{ name }}:</em> {{{ text }}}
 		</div>
 	</script>
 
 	<script type='templates/handlebars' id="embed_template">
 		<div class="row chatRow">
+			<em>{{ name }}</em>
 				<a class="embedly-card" href="{{ url }}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
 	</script>
 
+
+	<script type='templates/handlebars' id="map_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{{ address }}}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
+
+	<script type='templates/handlebars' id="recipe_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{{ recipe }}}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
+
+	<script type='templates/handlebars' id="movie_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{ movie }}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
+
+
 	<script type="templates/handlebars" id="time_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{ time }} 
+			<em>{{ name }}</em>: {{ time }}
 		</div>
 	</script>
 
@@ -95,11 +111,18 @@
 	</script>
 
 	<script type="templates/handlebars" id="room_details_template">
-		<h1>{{ name }}</h1>
-		<h4>{{ topic }}</h4>
-		<h5>{{ users }} Users in room</h5>
+		<div class="columns small-12">
+			<div class="row">
+				<h1>{{ name }}</h1>
+			</div>
+			<div class="row">
+				<h4>{{ topic }}</h4>
+				{{#if users}}
+				<h5>{{ users }} Users in room</h5>
+				{{/if}}
+			</div>
+		</div>
 	</script>
-
 
 	<script type="templates/handlebars" id="search_template">
 		<div class="row chatRow">
@@ -109,3 +132,29 @@
 		</div>
 	</script>
 
+	<script type="templates/handlebars" id="recent_rooms_template">
+		<div class="recentRoom">
+			<a href="{{ id }}">{{ name }}</a><span class="removeRecent"><a href="{{ id }}">x</a></span>
+		</div>
+	</script>
+
+	<script type="templates/handlebars" id="code_template">
+	<div class="row chatRow">
+			<em>{{ name }}</em>: {{ time }}
+			<pre><code>{{ code }}</code></pre>
+ 		</div>
+ 	</script>
+
+
+<!-- New room form -->
+
+<div id="newRoomModal" class="reveal-modal" data-reveal>
+  <h2>New Room.</h2>
+  <p class="lead">Enter a title for your new room.</p>
+  <div class="columns small-10">
+  	<%= text_field_tag :room_name %>
+  </div>
+
+ 	<%= button_tag 'Create', id: 'create_room_button' %>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
