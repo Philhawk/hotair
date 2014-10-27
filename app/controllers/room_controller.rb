@@ -49,7 +49,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room].trigger(:user_left, message)
 	end
 
-	def new_image
+	def new_embed
 		user_id = message['id']
 		room_id = message['roomid']
 		url = message['url']
@@ -61,9 +61,9 @@ class RoomController < WebsocketRails::BaseController
 			url: url
 		}
 
-		put_message_in_db(message, message_to_send, 'new_image')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_image, message)
+		WebsocketRails[room_id].trigger(:new_embed, message)
 
 	end
 
@@ -94,6 +94,28 @@ class RoomController < WebsocketRails::BaseController
 
 	def set_topic
 	end
+
+	# NICKS
+	def new_time
+		user_id = message['id']
+		room_id = message['roomid']
+		gmt = message['gmt']
+
+		user = User.find user_id
+
+		localtime = Time.now.to_s
+
+		message_to_send = {
+			name: user.name,
+			time: localtime
+		}
+
+		put_message_in_db(message, message_to_send, 'new_time')
+
+		WebsocketRails[room_id].trigger(:new_time, message_to_send)
+
+	end
+	# NICKS END
 
 private
 	# Storing the entire message and the function associated with it
