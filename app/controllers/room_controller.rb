@@ -417,6 +417,7 @@ class RoomController < WebsocketRails::BaseController
 		user = User.find user_id
 
 		url = "https://imgur.com/hot/viral"
+		# url = "http://imgur.com/r/gifs"
 		doc = Nokogiri::HTML(open(url))
 		links = doc.css('a.image-list-link')
 		results = []
