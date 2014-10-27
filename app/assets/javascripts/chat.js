@@ -45,7 +45,7 @@ var evalText = function () {
 	var embedLinks = text.match(EMBEDREGEXP);
 	var timeCommand = text.split('/time');
 	var codeCommand = text.split('/code ');
-	var searchCommand = text.split('/search');
+	var searchCommand = text.split('/search ');
 
 	// see if text has regexp's
 	if (embedLinks) {
@@ -65,7 +65,7 @@ var evalText = function () {
 			if (searchCommand[0]) {
 				sendText(searchCommand[0]);
 			}
-		sendSearchCommand(addressCommand[0]);
+		sendSearchCommand(searchCommand[1]);
 	} else {
 		sendText(text);
 	}
@@ -97,6 +97,7 @@ var getRooms = function() {
 
 // james
 var sendSearchCommand = function(search) {
+	console.log('sendSearchCommand');
 	var message = {
 		id: userId,
 		roomid: currentRoomId,
@@ -158,10 +159,12 @@ var leaveRoom = function(){
 	room.unbind('new_embed');
 	room.unbind('new_time');
 	room.unbind('room_details');
+	room.unbind('new_search');
 
 	dispatcher.unbind('new_embed');
 	dispatcher.unbind('new_text');
 	dispatcher.unbind('new_time');
+	dispatcher.unbind('new_search');
 
 	// ADD BETWEEN HERE
 	// AND HERE
@@ -194,7 +197,7 @@ var joinRoom = function (room_id) {
 	room.bind('room_details', displayRoomDetails);
 
 	// james
-
+	room.bind('new_search', displaySearch);
 	// james end
 
 	//phil
@@ -212,7 +215,7 @@ var joinRoom = function (room_id) {
 		// AND BETWEEN HERE
 
 	// james
-
+	dispatcher.bind('new_search', displaySearch);
 	// james end
 
 	//phil
@@ -311,7 +314,16 @@ var displayRoomDetails = function(message) {
 // END
 
 // james
+var displaySearch = function(message) {
+	console.log(message);
+	var source = $('#search_template').html();
+	var displayHTML = Handlebars.compile(source);
 
+	$.each(message.search, function(i, result) {
+		result.name = message.name;
+		$('#chat-view').append(displayHTML(result));
+	});
+};
 // james end
 
 //phil
