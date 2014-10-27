@@ -409,6 +409,37 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_gif
+		user_id = message['id']
+		room_id = message['roomid']
+		# gif = message['gif']
+
+		user = User.find user_id
+
+		url = "https://imgur.com/hot/viral"
+		doc = Nokogiri::HTML(open(url))
+		links = doc.css('a.image-list-link')
+		results = []
+
+		links.each do |link|
+			results << link["href"]
+		end
+
+		sample = results.sample
+		new_gif = "https://imgur.com#{ sample }"
+
+		message_to_send = {
+			name: user.name,
+			gif: new_gif
+		}
+
+	  put_message_in_db(message, message_to_send, 'new_gif')
+
+	  WebsocketRails[room_id].trigger(:new_gif, message_to_send)
+
+	  scroll_chat room_id
+	end
+
 	# JAMES END
 
 
