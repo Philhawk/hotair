@@ -37,8 +37,6 @@ class RoomController < WebsocketRails::BaseController
 		end
 		rooms = Room.find(ids_of_rooms).to_json
 		send_message :show_recent_rooms, rooms
-
-
 	end
 
 	def show
@@ -216,6 +214,47 @@ class RoomController < WebsocketRails::BaseController
 		# scroll clients
 		scroll_chat room_id
 	end
+
+	def new_roll
+		user = User.find message['id']
+		room_id = message['roomid']
+
+		if message['max_value'].to_i == 0
+			roll = 'no' + message['max_value'] + "'s"
+		else
+			roll = (rand(message['max_value'].to_i) + 1).floor
+		end 
+
+		message_to_send = {
+			name: user.name,
+			roll: roll,
+			max: message['max_value']
+		}
+
+		put_message_in_db(message, message_to_send, 'new_roll')
+
+		WebsocketRails[room_id].trigger(:new_roll, message_to_send)
+
+		scroll_chat room_id
+	end
+
+	def new_flip 
+		user = User.find message['id']
+		room_id = message['roomid']
+
+		heads_or_tails = rand > 0.5 ? 'heads' : 'tails'
+
+		message_to_send = {
+			name: user.name,
+			result: heads_or_tails
+		}
+
+		put_message_in_db(message, message_to_send, 'new_flip')
+
+		WebsocketRails[room_id].trigger(:new_flip, message_to_send)
+
+		scroll_chat room_id
+	end 
 	# NICKS END
 
 
@@ -240,7 +279,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_map, message_to_send)
 
 	end
-
+	
 	def new_directions
 		user_id = message['id']
 		room_id = message['roomid']
@@ -251,8 +290,8 @@ class RoomController < WebsocketRails::BaseController
 		new_directions = "https://www.google.com/maps?saddr=My+Location&daddr=#{ directions.gsub(' ', '+') }"
 
 		message_to_send = {
-			name: user.name,
-			directions: new_directions
+		name: user.name,
+		directions: new_directions
 		}
 
 		put_message_in_db(message, message_to_send, 'new_directions')
@@ -325,6 +364,8 @@ class RoomController < WebsocketRails::BaseController
 	  put_message_in_db(message, message_to_send, 'new_search')
 
 	  WebsocketRails[room_id].trigger(:new_search, message_to_send)
+
+	  scroll_chat room_id
 
 	end
 
