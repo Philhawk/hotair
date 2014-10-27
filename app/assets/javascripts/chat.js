@@ -18,7 +18,7 @@ $(document).ready(function() {
  	 	dispatcher.bind('room_failed', roomFailed);
  	 	dispatcher.bind('show_rooms', displayRooms);
  	 	dispatcher.bind('scroll_chat', scrollChat);
- 	 	
+
 
  	 	// bind to events
  	 	$('#create_room_button').on('click', createRoom);
@@ -65,6 +65,10 @@ var evalText = function () {
 			}
 		sendMapsCommand(mapsCommand[1]);
 	} else if (codeCommand.length > 1) {
+			if (codeCommand[0]) {
+				sendText(codeCommand[0])
+			}
+			sendCodeCommand(codeCommand[1]);
 		if (codeCommand[0]) {
 			sendText(timeCommand[0])
 		}
@@ -201,12 +205,15 @@ var joinRoom = function (room_id) {
 		room.unbind('new_text');
 		room.unbind('new_embed');
 		room.unbind('new_time');
+		room.unbind('new_code');
+
 		room.unbind('new_map');
 		room.unbind('scroll_chat');
 
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
+		dispatcher.unbind('new_code');
 		dispatcher.unbind('new_map');
 
 		// ADD BETWEEN HERE
@@ -244,6 +251,8 @@ var joinRoom = function (room_id) {
 	//phil
 	room.bind('new_map', displayMap);
 
+//lawrence
+	room.bind('new_code', displayCode);
 	//phil
 
 
@@ -264,6 +273,10 @@ var joinRoom = function (room_id) {
 	// james end
 
 	//phil
+
+
+//lawrence
+	dispatcher.bind('new_code', displayCode);
 
 
 	dispatcher.bind('new_map', displayMap);
@@ -330,12 +343,12 @@ var displayEmbed = function(message) {
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
-	
+
 };
 
 // NICKS DISPLAY
 var displayTime = function(message) {
-	var source = $('#time_template').html()
+	var source = $('#time_template').html();
 	var displayHTML = Handlebars.compile(source);
 
 	$('#chat-view').append(displayHTML(message));
@@ -387,6 +400,15 @@ var displayMap = function(message) {
 // phil end
 
 //lawrence
+	var displayCode = function(message) {
+		var source = $('#code_template').html();
+		var displayHTML = Handlebars.compile(source);
+		$('#chat-view').append(displayHTML(message));
+
+		$('pre code').each(function(i, msg) {
+	    hljs.highlightBlock(msg);
+		});
+	};
 
 //lawrence end
 

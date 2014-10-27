@@ -17,7 +17,7 @@ class RoomController < WebsocketRails::BaseController
 			send_message :room_created, message
 
 			# send a message to all users that a new room is created
-			broadcast_message :new_room_added, message 
+			broadcast_message :new_room_added, message
 
 		else
 		 	send_message :room_failed, message
@@ -25,7 +25,7 @@ class RoomController < WebsocketRails::BaseController
 	end
 
 	def show
-		roomsAsJSON = Room.all.to_json 
+		roomsAsJSON = Room.all.to_json
 		send_message :show_rooms, roomsAsJSON
 
 	end
@@ -111,6 +111,11 @@ class RoomController < WebsocketRails::BaseController
 		code = message['code']
 
 		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			code: code
+		}
 
 		put_message_in_db(message, message_to_send, 'new_code')
 
@@ -209,7 +214,7 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
-		
+
 
 	  search = Google::Search::Web.new do |search|
 	    search.query = query
@@ -227,7 +232,7 @@ private
 	def scroll_chat(room_id)
 		# scroll clients
 		WebsocketRails[room_id].trigger(:scroll_chat, message)
-	end 
+	end
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
 		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
