@@ -212,6 +212,26 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
+	def new_directions
+		user_id = message['id']
+		room_id = message['roomid']
+		directions = message['directions']
+
+		user = User.find user_id
+
+		new_directions = "https://www.google.com/maps?saddr=My+Location&daddr=#{ directions.gsub(' ', '+') }"
+
+		message_to_send = {
+			name: user.name,
+			directions: new_directions
+		}
+
+		put_message_in_db(message, message_to_send, 'new_directions')
+
+		WebsocketRails[room_id].trigger(:new_directions, message_to_send)
+
+	end
+
 	def new_recipe
 		user_id = message['id']
 		room_id = message['roomid']
@@ -239,8 +259,10 @@ class RoomController < WebsocketRails::BaseController
 
 		user = User.find user_id
 
-		new_movie = "http://www.rottentomatoes.com/search/?search=#{ movie.gsub(' ', '+') }"
+		new_movie = "http://www.imdb.com/find?ref_=nv_sr_fn&q=#{ movie.gsub(' ', '+') }&s=all"
 		
+		
+
 		message_to_send = {
 			name: user.name,
 			movie: new_movie

@@ -55,6 +55,7 @@ var evalText = function () {
 	var moviesCommand = text.split('/movies ')
 	var codeCommand = text.split('/code ');
 	var searchCommand = text.split('/search ');
+	var gotoCommand = text.split('/goto ');
 
 
 	// see if text has regexp's
@@ -66,6 +67,11 @@ var evalText = function () {
 				sendText(timeCommand[0]);
 			}
 		sendTimeCommand(timeCommand[1]);
+	} else if (gotoCommand.length > 1) {
+			if (gotoCommand[0]) {
+				sendText(gotoCommand[0]);
+			}
+		sendGoToCommand(gotoCommand[1]);
 	} else if (mapsCommand.length > 1) {
 			if (mapsCommand[0]) {
 				sendText(mapsCommand[0]);
@@ -148,6 +154,15 @@ var sendMapsCommand = function(map) {
 		map: map
 	};
 	dispatcher.trigger('send_map', message);
+}
+
+var sendGoToCommand = function(directions) {
+	var message = {
+		id: userId,
+		roomid: currentRoomId,
+		directions: directions
+	};
+	dispatcher.trigger('send_directions', message);
 }
 
 var sendRecipeCommand = function(recipe) {
@@ -261,6 +276,7 @@ var joinRoom = function (room_id) {
 		room.unbind('new_code');
 
 		room.unbind('new_map');
+		room.unbind('new_directions');
 
 		room.unbind('new_recipe');
 		room.unbind('new_movie');
@@ -277,7 +293,11 @@ var joinRoom = function (room_id) {
 		dispatcher.unbind('new_map');
 		dispatcher.unbind('new_recipe');
 		dispatcher.unbind('new_movie');
+
+		dispatcher.unbind('new_directions');
+
 		dispatcher.unbind('new_search');
+
 
 		// ADD BETWEEN HERE
 		// AND HERE
@@ -315,6 +335,7 @@ var joinRoom = function (room_id) {
 	room.bind('new_map', displayMap);
 	room.bind('new_recipe', displayRecipe);
 	room.bind('new_movie', displayMovie);
+	room.bind('new_directions', displayDirections);
 
 
  //lawrence
@@ -339,21 +360,17 @@ var joinRoom = function (room_id) {
 	// james end
 
 	//phil
-
-
- //lawrence
-	dispatcher.bind('new_code', displayCode);
-
-
 	dispatcher.bind('new_map', displayMap);
 	dispatcher.bind('new_recipe', displayRecipe);
 	dispatcher.bind('new_movie', displayMovie);
+	dispatcher.bind('new_directions', displayDirections);
 
 	// phil end
 
 
 	//lawrence
 
+	dispatcher.bind('new_code', displayCode);
 	//lawrence end
 
 		// AND HERE
@@ -482,6 +499,14 @@ var displaySearch = function(message) {
 
 var displayMap = function(message) {
 	var source = $('#map_template').html();
+	console.log(message);
+	var displayHTML = Handlebars.compile(source);
+
+	$('#chat-view').append(displayHTML(message));
+};
+
+var displayDirections = function(message) {
+	var source = $('#directions_template').html();
 	console.log(message);
 	var displayHTML = Handlebars.compile(source);
 
