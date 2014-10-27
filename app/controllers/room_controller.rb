@@ -63,7 +63,7 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:room_details, room_details)
 		# tell the user that joined the past 10 messages
 		room.messages.last(10).each do |m|
-			send_message(m.function.to_sym, eval(m.object))
+			send_message(m.function.to_sym, JSON.parse(m.object))
 		end
 
 		# scroll user
@@ -310,7 +310,7 @@ private
 	end
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
-		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_s, function: fn)
+		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_json, function: fn)
 		msg.save
 		user = User.find message_sent['id']
 		room = Room.find message_sent['roomid']
