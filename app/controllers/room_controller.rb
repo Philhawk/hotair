@@ -264,7 +264,7 @@ class RoomController < WebsocketRails::BaseController
 	    uri.query = search
 	    uri.size = :small
 	  end
-	  uri_results = uri.first(5).each
+	  uri_results = uri.first(5)
 
 	  message_to_send = {
 	  	name: user.name,
