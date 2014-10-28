@@ -4,6 +4,7 @@ var room;
 var currentRoomId;
 var recentRooms = [];
 var commandsList = [];
+var usersInRoom = [];
 
 // Reg expressions used
 var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
@@ -56,12 +57,22 @@ $(document).ready(function() {
  	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
  	 	$('#chat-page').on('click', '.recentRoom>a', joinHandler);
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
+ 	 	$(window).on('keypress', function(ev){
+ 	 		if (ev.charCode === 13) {
+ 	 			evalText();
+ 	 		}
+ 	 	});
 
  	 	// get rooms
- 	 	getRooms();
- 	 	getRecentRooms();
+ 	 	dispatcher.on_open = function(data) {
+			getRecentRooms();
+			getRooms();
+		}
+ 	 	
 	}
 });
+
+// when connected get recent rooms
 
 // send-to-server generator for custom commands
 var sendCommand = function (type) {
@@ -143,14 +154,21 @@ var getRooms = function() {
 	dispatcher.trigger('get_rooms', message);
 };
 
-var getRecentRooms = function () {
+var getRecentRooms = function() {
 	// get a list of a users 'recent rooms' from the server
 	var message = {
 		id: userId,
-		recent_rooms: recentRooms
 	};
 	dispatcher.trigger('get_recent_rooms',message);
 };
+
+var saveRecentRooms = function() {
+	var message = {
+		id: userId,
+		recent_rooms: recentRooms
+	}
+	dispatcher.trigger('save_recent_rooms',message);
+}
 
 var sendEmbed = function(i, embedLink) {
 	// send an embeded link to the correct function
@@ -260,7 +278,7 @@ var joinRoom = function (room_id) {
 	// add to recently joined
 	recentRooms.push(room_id);
 	recentRooms = _.uniq(recentRooms);
-	getRecentRooms();
+	saveRecentRooms();
 };
 
 // Functions called from server
@@ -279,8 +297,10 @@ var roomFailed = function (message) {
 };
 
 var userJoinedRoom = function (message) {
-	var name = message.name;
-	console.log(name + ' has entered the room');
+	var source = $('#users_in_room_template').html();
+	var displayHTML = Handlebars.compile(source);
+	$('.userList').empty();
+	$('.userList').append(displayHTML(message));
 };
 
 var userLeftRoom = function (message) {
@@ -352,7 +372,10 @@ var displayNudge = function (message) {
 
 var scrollChat = function() {
 	var $chat = $('#chat-view');
-	$chat.scrollTop($chat[0].scrollHeight);
+	if (($chat[0].scrollHeight - $chat.scrollTop()) < 600 ){
+
+		$chat.scrollTop($chat[0].scrollHeight);
+	}
 };
 
 var removeRecent = function(ev) {
@@ -363,7 +386,7 @@ var removeRecent = function(ev) {
 	if (currentRoomId === roomID) {
 		getRooms();
 	}
-	getRecentRooms();
+	saveRecentRooms();
 };
 
 var updateRecentRooms = function(message) {
