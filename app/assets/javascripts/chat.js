@@ -406,9 +406,16 @@ var editTopic = function () {
 	var $input = $('<input>').val(topicText);
 
   $input.on('blur', function () {
+
+
     var topicText = $(this).val();
-    var message = $topic.html(topicText);
+    $topic.html(topicText);
     // AJAX here to send to the server
+  	var message = {
+			id: userId,
+			roomid: currentRoomId,
+			topic: topicText
+		};
 
 
 

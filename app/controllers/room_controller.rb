@@ -213,14 +213,6 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 
-	def new_topic
-		user_id = message['id']
-		room_id = message['roomid']
-
-		user = User.find user_id
-
-
-	end
 	#lawrence end
 
 	def new_text
@@ -254,16 +246,20 @@ class RoomController < WebsocketRails::BaseController
 	def new_topic
 		user_id = message['id']
 		room_id = message['roomid']
-		new_topic = message
+		new_topic = message['topic']
 
-		user = User.find user_id
-		message_to_send = {
-			name: user.name
+		room = Room.find(room_id.to_i)
+		room.topic = new_topic
+		room.save
+
+
+		# tell all users the room details
+		room_details = {
+			name: room.name,
+			topic: room.topic,
+			users: room.users.length
 		}
-
-		put_message_in_db(message, message_to_send, set_topic)
-
-		WebsocketRails[room_id].trigger(:new_topic, message_to_send)
+		WebsocketRails[room_id].trigger(:room_details, room_details)
 	end
 
 	# NICKS
