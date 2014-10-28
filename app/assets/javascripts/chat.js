@@ -55,6 +55,7 @@ $(document).ready(function() {
  	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
  	 	$('#chat-page').on('click', '.recentRoom>a', joinHandler);
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
+ 	 	$('#chat-view').on('scroll', onChatViewScroll);
 
  	 	// get rooms
  	 	getRooms();
@@ -370,3 +371,27 @@ var removeRecent = function(ev) {
 var updateRecentRooms = function(message) {
 	recentRooms = message;
 };
+
+// James Start
+var getNewChatViewData = function () {
+  offset += 3;
+  console.log("Offset: ", offset);
+  var message = {
+    offset: offset,
+    limit: limit,
+    roomid: currentRoomId
+  };
+  dispatcher.trigger('get_chat_data', message);
+}
+
+var onChatViewScroll = function  () { // checks the scroll on the page
+    var scrolled = $(this).scrollTop();
+    console.log( $(this).scrollTop() );
+    if ( scrolled < 80 ) {
+      getNewChatViewData();
+    }
+}
+
+var offset = 0, // inital value
+    limit = 10;
+// James end
