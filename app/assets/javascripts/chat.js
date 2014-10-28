@@ -409,6 +409,9 @@ var editTopic = function () {
     var topicText = $(this).val();
     var message = $topic.html(topicText);
     // AJAX here to send to the server
+
+
+
     	dispatcher.trigger('edit_topic', message)
     });
 

@@ -9,6 +9,7 @@
 #  password_digest :string(255)
 #  created_at      :datetime
 #  updated_at      :datetime
+#  recent_rooms    :text
 #
 
 class User < ActiveRecord::Base
