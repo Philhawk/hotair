@@ -38,7 +38,7 @@ gem 'mail'
 gem 'daemons'
 gem 'coderay'
 gem 'google-search'
-gem 'nokogiri'
+# gem 'nokogiri'
 # Use unicorn as the app server
 # gem 'unicorn'
 

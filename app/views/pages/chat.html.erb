@@ -30,8 +30,6 @@
 			</div>
 			<!-- List of users -->
 			<div class="small-2 columns userList">
-				<p>Nick</p>
-				<p>Nick2</p>
 			</div>
 		</div>
 		<!-- Send row -->
@@ -202,6 +200,13 @@
 		</div>
 	</script>
 
+	<script type='templates/handlebars' id="users_in_room_template">
+		<ul>
+			{{#each users}}
+				<li>{{ name }}</li>
+			{{/each}}
+		</ul>
+	</script>
 
 
 <!-- New room form -->

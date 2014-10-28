@@ -3,10 +3,6 @@ class UsersController < ApplicationController
 		@user = User.new
 	end
 
-	def edit
-		@current_user
-	end
-
 	def create
 		@user = User.new user_params
 		if @user.save
@@ -17,7 +13,17 @@ class UsersController < ApplicationController
 		end
 	end
 
-private
+	def edit
+		@current_user
+	end
+
+	def update
+		user = User.find params[:id]
+		user.update user_params
+		redirect_to chat_path
+	end
+
+	private
 	def user_params
 		params.require(:user).permit(:name, :email, :password, :password_confirmation)
 	end

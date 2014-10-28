@@ -25,19 +25,22 @@ class RoomController < WebsocketRails::BaseController
 	end
 
 
-	def get_recent_rooms
+	def save_recent_rooms
 		user = User.find message['id']
 		ids_of_rooms = message['recent_rooms']
-		if ids_of_rooms.length < 1
-			ids_of_rooms = JSON.parse(user.recent_rooms)
-			send_message :update_recent_rooms, ids_of_rooms
-		else
-			user.recent_rooms = ids_of_rooms.to_json
-			user.save
-		end
+		user.recent_rooms = ids_of_rooms.to_json
+		user.save
 		rooms = Room.find(ids_of_rooms).to_json
 		send_message :show_recent_rooms, rooms
 	end
+
+	def get_recent_rooms
+		user = User.find message['id']
+		ids_of_rooms = JSON.parse(user.recent_rooms)
+		rooms = Room.find(ids_of_rooms).to_json
+		send_message :update_recent_rooms, ids_of_rooms
+		send_message :show_recent_rooms, rooms
+	end 
 
 	def show
 		roomsAsJSON = Room.all.to_json
@@ -56,7 +59,8 @@ class RoomController < WebsocketRails::BaseController
 
 		message = {
 			name: user.name,
-			id: user.id
+			id: user.id,
+			users: room.users
 		}
 
 		# tell all users in that room that someone has joined
@@ -82,6 +86,7 @@ class RoomController < WebsocketRails::BaseController
 	def leave
 		user_name = message['name']
 		room_id = message['roomid']
+		# tell all users in that room that someone has joined
 		WebsocketRails[room_id].trigger(:user_left, message)
 
 		user = User.find message['id']
@@ -97,6 +102,12 @@ class RoomController < WebsocketRails::BaseController
 			users: room.users.length
 		}
 		WebsocketRails[room_id].trigger(:room_details, room_details)
+
+		# send which users are in the room
+		message = {
+			users: room.users
+		}
+		WebsocketRails[room_id].trigger(:user_joined, message)
 	end
 
 	def new_embed
@@ -472,31 +483,43 @@ class RoomController < WebsocketRails::BaseController
 	  WebsocketRails[room_id].trigger(:new_search, message_to_send)
 
 	  scroll_chat room_id
-
 	end
 
 	def new_gif
 		user_id = message['id']
 		room_id = message['roomid']
-		# gif = message['gif']
+		gif_query = message['gif']
 
 		user = User.find user_id
 
-		url = "https://imgur.com/hot/viral"
-		doc = Nokogiri::HTML(open(url))
-		links = doc.css('a.image-list-link')
-		results = []
+		gif_links_array = []
 
-		links.each do |link|
-			results << link["href"]
+		if gif_query.length > 1 
+			url = "http://api.giphy.com/v1/gifs/search?q=#{ gif_query.gsub(' ', '+') }&api_key=dc6zaTOxFJmzC&limit=10"
+
+			resp = Net::HTTP.get_response(URI.parse(url))
+			buffer = resp.body
+			result = JSON.parse(buffer)
+
+			result["data"].each do |image|
+			gif_links_array << image["images"]["fixed_height"]["url"]
+			end
+
+		else
+			url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
+
+			resp = Net::HTTP.get_response(URI.parse(url))
+			buffer = resp.body
+			result = JSON.parse(buffer)
+
+			gif_links_array << result["data"]["fixed_height_downsampled_url"]
 		end
 
-		sample = results.sample
-		new_gif = "https://imgur.com#{ sample }"
+		gif = gif_links_array.sample
 
 		message_to_send = {
 			name: user.name,
-			gif: new_gif
+			gif: gif
 		}
 
 	  put_message_in_db(message, message_to_send, 'new_gif')
