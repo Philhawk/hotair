@@ -183,6 +183,24 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 
+	def new_fortune
+		user_id = message['id']
+		room_id = message['roomid']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			fortune: FortuneGem.give_fortune
+		}
+
+
+		put_message_in_db(message, message_to_send, 'new_fortune')
+
+		WebsocketRails[room_id].trigger(:new_fortune, message_to_send)
+
+		scroll_chat room_id
+	end
 	#lawrence end
 
 	def new_text
@@ -247,7 +265,7 @@ class RoomController < WebsocketRails::BaseController
 			roll = 'no' + message['roll'] + "'s"
 		else
 			roll = (rand(message['roll'].to_i) + 1).floor
-		end 
+		end
 		message_to_send = {
 			name: user.name,
 			roll: roll,
@@ -303,24 +321,36 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
-	def new_directions
+	def new_goto
 		user_id = message['id']
 		room_id = message['roomid']
-		directions = message['directions']
+		goto = message['goto']
 
 		user = User.find user_id
 
-		new_directions = "https://www.google.com/maps?saddr=My+Location&daddr=#{ directions.gsub(' ', '+') }"
+	  	destination = goto.split(' from ')
+	    
+	    if (destination.length > 1) 
+	          origin = destination[0]
+	          destination = destination[1]
+	     else 
+	          origin = 'My+Location'
+	          destination = destination[0]
+	    
+		end
+
+		new_goto = "https://www.google.com/maps?saddr=#{ origin }&daddr=#{ destination.gsub(' ', '+') }"
+
+		puts new_goto
 
 		message_to_send = {
-		name: user.name,
-		directions: new_directions
+			name: user.name,
+			destination: new_goto
 		}
 
-		put_message_in_db(message, message_to_send, 'new_directions')
+		put_message_in_db(message, message_to_send, 'new_goto')
 
-		WebsocketRails[room_id].trigger(:new_directions, message_to_send)
-
+		WebsocketRails[room_id].trigger(:new_goto, message_to_send)
 	end
 
 	def new_transport
@@ -332,7 +362,7 @@ class RoomController < WebsocketRails::BaseController
 
 		new_transport = "https://www.google.com/maps/dir/?saddr=my+location&daddr=#{ transport.gsub(' ', '+') }&ie=UTF8&f=d&sort=def&dirflg=r&hl=en"
 
-		
+
 
 		message_to_send = {
 		name: user.name,
@@ -404,6 +434,19 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_movie, message_to_send)
 
 	end
+
+	# def new_grubme
+	# 	user_id = message['id']
+	# 	room_id = message['roomid']
+	# 	grubme = message['grubme']
+
+	# 	user = User.find user_id
+ #    	parameters = { term: grubme, limit: 8 }
+ #    	render json: Yelp.client.search(‘:grubme’, parameters)
+ #  	end
+
+	# end
+
 	#PHIL END
 
 	# JAMES
