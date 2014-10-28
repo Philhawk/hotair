@@ -40,7 +40,7 @@ class RoomController < WebsocketRails::BaseController
 		rooms = Room.find(ids_of_rooms).to_json
 		send_message :update_recent_rooms, ids_of_rooms
 		send_message :show_recent_rooms, rooms
-	end 
+	end
 
 	def show
 		roomsAsJSON = Room.all.to_json
@@ -212,6 +212,15 @@ class RoomController < WebsocketRails::BaseController
 
 		scroll_chat room_id
 	end
+
+	def new_topic
+		user_id = message['id']
+		room_id = message['roomid']
+
+		user = User.find user_id
+
+
+	end
 	#lawrence end
 
 	def new_text
@@ -242,7 +251,19 @@ class RoomController < WebsocketRails::BaseController
 	end
 
 
-	def set_topic
+	def new_topic
+		user_id = message['id']
+		room_id = message['roomid']
+		new_topic = message
+
+		user = User.find user_id
+		message_to_send = {
+			name: user.name
+		}
+
+		put_message_in_db(message, message_to_send, set_topic)
+
+		WebsocketRails[room_id].trigger(:new_topic, message_to_send)
 	end
 
 	# NICKS
@@ -494,7 +515,7 @@ class RoomController < WebsocketRails::BaseController
 
 		gif_links_array = []
 
-		if gif_query.length > 1 
+		if gif_query.length > 1
 			url = "http://api.giphy.com/v1/gifs/search?q=#{ gif_query.gsub(' ', '+') }&api_key=dc6zaTOxFJmzC&limit=10"
 
 			resp = Net::HTTP.get_response(URI.parse(url))

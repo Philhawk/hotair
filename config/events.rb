@@ -49,6 +49,7 @@ WebsocketRails::EventMap.describe do
   subscribe :send_fact, :to => RoomController, :with_method => :new_fact
 
   subscribe :send_fortune, :to => RoomController, :with_method => :new_fortune
+  subscribe :edit_topic, :to => RoomController, :with_method => :new_topic
 
 #lawrence end
 

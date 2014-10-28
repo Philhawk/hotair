@@ -25,7 +25,7 @@ var commands = [
 	'recipe',
 	'fact',
 	'roll',
-	'fortune',
+	'fortune'
 ];
 
 $(document).ready(function() {
@@ -56,6 +56,9 @@ $(document).ready(function() {
  	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
  	 	$('#chat-page').on('click', '.recentRoom>a', joinHandler);
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
+
+ 	 	$('#chat-page').on('click', '#roomTopic', editTopic);
+
  	 	$(window).on('keypress', function(ev){
  	 		if (ev.charCode === 13) {
  	 			evalText();
@@ -67,7 +70,7 @@ $(document).ready(function() {
 			getRecentRooms();
 			getRooms();
 		}
- 	 	
+
 	}
 });
 
@@ -207,7 +210,7 @@ var leaveRoom = function(){
 	});
 
 	// unbind from other functions
-	
+
 	dispatcher.unbind('new_text');
 	dispatcher.unbind('new_embed');
 
@@ -390,4 +393,25 @@ var removeRecent = function(ev) {
 
 var updateRecentRooms = function(message) {
 	recentRooms = message;
+};
+
+var editTopic = function () {
+	var $topic = $(this);
+	var topicText = $topic.text();
+
+	if ($topic.find('input').length) {
+	  return;
+  }
+
+	var $input = $('<input>').val(topicText);
+
+  $input.on('blur', function () {
+    var topicText = $(this).val();
+    var message = $topic.html(topicText);
+    // AJAX here to send to the server
+    	dispatcher.trigger('edit_topic', message)
+    });
+
+	$topic.html($input);
+	$input.focus();
 };
