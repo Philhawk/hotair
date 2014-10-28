@@ -528,7 +528,7 @@ class RoomController < WebsocketRails::BaseController
 	end
 
   def get_content
-    
+
     # user_id = message['id'].to_i
     # user = User.find user_id
     room_id = message['roomid']
@@ -561,7 +561,7 @@ class RoomController < WebsocketRails::BaseController
     # binding.pry
       room.messages.limit( limit ).offset( offset ).each do |message|
         send_message(message.function.to_sym, JSON.parse(message.object))
-      # binding.pry
+
     end
 
     # # scroll user

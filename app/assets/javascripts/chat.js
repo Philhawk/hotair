@@ -385,9 +385,13 @@ var getNewChatViewData = function () {
 }
 
 var onChatViewScroll = function  () { // checks the scroll on the page
+		var docHeight = $(document).height();
+		var chatViewHeight = $('#chat-view').height();
     var scrolled = $(this).scrollTop();
     console.log( $(this).scrollTop() );
-    if ( scrolled < 80 ) {
+    // if ( scrolled < 80 ) {
+    if (scrolled < docHeight - 0.9 * chatViewHeight) {
+    	console.log('Firing for more pictures');
       getNewChatViewData();
     }
 }
