@@ -22,7 +22,8 @@ var commands = [
 	'goto',
 	'recipe',
 	'fact',
-	'roll'
+	'roll',
+	'fortune',
 ];
 
 $(document).ready(function() {
@@ -174,7 +175,8 @@ var leaveRoom = function(){
 			room.unbind(command);
 			dispatcher.unbind(command);
 	});
-
+	room.unbind('new_text');
+	dispatcher.unbind('new_text');
 	var leavemessage = {
 		name: userName,
 		id: userId,
@@ -202,6 +204,10 @@ var joinRoom = function (room_id) {
 		room.bind(command, displayCommand(command));
 		dispatcher.bind(command, displayCommand(command));
 	});
+
+	// listen
+	room.bind('new_text', displayCommand('text'));
+	dispatcher.bind('new_text', displayCommand('text'));
 
 	// unbind lawrences for now
 	room.unbind('new_code');

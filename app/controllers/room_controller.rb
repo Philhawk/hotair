@@ -185,16 +185,15 @@ class RoomController < WebsocketRails::BaseController
 
 	def new_fortune
 		user_id = message['id']
-		roomid = message['roomid']
-		message['fortune'] = FortuneGem.give_fortune
-		fortune = message['fortune']
+		room_id = message['roomid']
 
 		user = User.find user_id
 
 		message_to_send = {
 			name: user.name,
-			fortune: fortune
+			fortune: FortuneGem.give_fortune
 		}
+
 
 		put_message_in_db(message, message_to_send, 'new_fortune')
 
