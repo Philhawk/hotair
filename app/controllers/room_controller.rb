@@ -429,32 +429,43 @@ class RoomController < WebsocketRails::BaseController
 	  WebsocketRails[room_id].trigger(:new_search, message_to_send)
 
 	  scroll_chat room_id
-
 	end
 
 	def new_gif
 		user_id = message['id']
 		room_id = message['roomid']
-		# gif = message['gif']
+		gif_query = message['gif']
 
 		user = User.find user_id
 
-		url = "https://imgur.com/hot/viral"
-		# url = "http://imgur.com/r/gifs"
-		doc = Nokogiri::HTML(open(url))
-		links = doc.css('a.image-list-link')
-		results = []
+		gif_links_array = []
 
-		links.each do |link|
-			results << link["href"]
+		if gif_query.length > 1 
+			url = "http://api.giphy.com/v1/gifs/search?q=#{ gif_query.gsub(' ', '+') }&api_key=dc6zaTOxFJmzC&limit=10"
+
+			resp = Net::HTTP.get_response(URI.parse(url))
+			buffer = resp.body
+			result = JSON.parse(buffer)
+
+			result["data"].each do |image|
+			gif_links_array << image["images"]["fixed_height"]["url"]
+			end
+
+		else
+			url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
+
+			resp = Net::HTTP.get_response(URI.parse(url))
+			buffer = resp.body
+			result = JSON.parse(buffer)
+
+			gif_links_array << result["data"]["fixed_height_downsampled_url"]
 		end
 
-		sample = results.sample
-		new_gif = "https://imgur.com#{ sample }"
+		gif = gif_links_array.sample
 
 		message_to_send = {
 			name: user.name,
-			gif: new_gif
+			gif: gif
 		}
 
 	  put_message_in_db(message, message_to_send, 'new_gif')
