@@ -45,7 +45,6 @@ class RoomController < WebsocketRails::BaseController
 	def show
 		roomsAsJSON = Room.all.to_json
 		send_message :show_rooms, roomsAsJSON
-
 	end
 
 	def join
@@ -73,14 +72,13 @@ class RoomController < WebsocketRails::BaseController
 			users: room.users.length
 		}
 		WebsocketRails[room_id].trigger(:room_details, room_details)
-		# tell the user that joined the past 10 messages
-		room.messages.last(10).each do |m|
+			# tell the user that joined the past 10 messages
+			room.messages.last(10).each do |m|
 			send_message(m.function.to_sym, JSON.parse(m.object))
 		end
 
 		# scroll user
 		send_message(:scroll_chat, message);
-
 	end
 
 	def leave
@@ -462,6 +460,7 @@ class RoomController < WebsocketRails::BaseController
 
 	# JAMES
 	def new_search
+		binding.pry
 		user_id = message['id']
 		room_id = message['roomid']
 		search = message['search']
@@ -486,6 +485,7 @@ class RoomController < WebsocketRails::BaseController
 	end
 
 	def new_gif
+		binding.pry
 		user_id = message['id']
 		room_id = message['roomid']
 		gif_query = message['gif']

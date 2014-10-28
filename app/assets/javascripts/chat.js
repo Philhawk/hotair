@@ -79,7 +79,6 @@ var sendCommand = function (type) {
 	}
 };
 
-
 // display data from server generator for custom commands
 var displayCommand = function(type) {
 	// returns a custom function
@@ -208,6 +207,7 @@ var leaveRoom = function(){
 	dispatcher.trigger('left_room', leavemessage);
 };
 
+
 var joinRoom = function (room_id) {
 	if (room) {
 		leaveRoom();
@@ -222,6 +222,8 @@ var joinRoom = function (room_id) {
 	// listen to room events
 	room.bind('user_joined', userJoinedRoom);
 	room.bind('user_left', userLeftRoom);
+
+
 
 	$.each(commandsList, function(i, command){
 		room.bind(command, displayCommand(command));
@@ -253,6 +255,7 @@ var joinRoom = function (room_id) {
 		id: userId,
 		room_joined: room_id
 	};
+
 		// tell server we have joined
 	dispatcher.trigger('join_room', message);
 
@@ -262,7 +265,6 @@ var joinRoom = function (room_id) {
 	getRecentRooms();
 };
 
-// Functions called from server
 var clientConnected = function() {
 	console.log('Client connected to websocket');
 };
