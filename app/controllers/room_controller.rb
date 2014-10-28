@@ -162,7 +162,7 @@ class RoomController < WebsocketRails::BaseController
 	def new_fact
 		user_id = message['id']
 		room_id = message['roomid']
-		message['fact'] = ["trivia", "year", "date", "math"]
+		message['fact'] = ["year", "date", "math"]
 		fact = message['fact'].sample
 
 		url = "http://numbersapi.com/random/#{fact}"
@@ -329,14 +329,14 @@ class RoomController < WebsocketRails::BaseController
 		user = User.find user_id
 
 	  	destination = goto.split(' from ')
-	    
-	    if (destination.length > 1) 
+
+	    if (destination.length > 1)
 	          origin = destination[0]
 	          destination = destination[1]
-	     else 
+	     else
 	          origin = 'My+Location'
 	          destination = destination[0]
-	    
+
 		end
 
 		new_goto = "https://www.google.com/maps?saddr=#{ origin }&daddr=#{ destination.gsub(' ', '+') }"
