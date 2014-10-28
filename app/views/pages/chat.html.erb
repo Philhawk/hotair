@@ -83,7 +83,7 @@
 		</div>
 	</script>
 
-	<script type='templates/handlebars' id="directions_template">
+	<script type='templates/handlebars' id="goto_template">
 		<div class="row chatRow">
 				<a class="embedly-card" href="{{{ directions }}}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
@@ -146,10 +146,12 @@
 	</script>
 
 	<script type="templates/handlebars" id="search_template">
-		<div class="row chatRow">
-			<a href="{{ uri }}">{{ title }}</a>
-			{{{ content }}}
-		</div>
+		{{#each search }}
+			<div class="row chatRow">
+				<a href="{{ uri }}">{{ title }}</a>
+				{{{ content }}}
+			</div>
+		{{/each}}
 	</script>
 
 	<script type="templates/handlebars" id="recent_rooms_template">

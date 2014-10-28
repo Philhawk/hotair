@@ -4,6 +4,11 @@ WebsocketRails::EventMap.describe do
   # actions will be executed in the order they were subscribed.
   #
   # Uncomment and edit the next line to handle the client connected event:
+
+  # how commands work:
+  # subscribe send_command, :to => RoomController, :with_method => :new_command
+
+
   subscribe :client_connected, :to => ChatController, :with_method => :new
   subscribe :new_room, :to => RoomController, :with_method => :new
   subscribe :join_room, :to => RoomController, :with_method => :join
@@ -19,6 +24,7 @@ WebsocketRails::EventMap.describe do
   subscribe :get_recent_rooms, :to => RoomController, :with_method => :get_recent_rooms
   subscribe :send_flip, :to => RoomController, :with_method => :new_flip
   subscribe :send_roll, :to => RoomController, :with_method => :new_roll
+
 # james
   subscribe :send_search, :to => RoomController, :with_method => :new_search
   subscribe :send_gif, :to => RoomController, :with_method => :new_gif
@@ -28,7 +34,7 @@ WebsocketRails::EventMap.describe do
   subscribe :send_map, :to => RoomController, :with_method => :new_map
   subscribe :send_recipe, :to => RoomController, :with_method => :new_recipe
   subscribe :send_movie, :to => RoomController, :with_method => :new_movie
-  subscribe :send_directions, :to => RoomController, :with_method => :new_directions
+  subscribe :send_goto, :to => RoomController, :with_method => :new_goto
   subscribe :send_transport, :to => RoomController, :with_method => :new_transport
   subscribe :send_wiki, :to => RoomController, :with_method => :new_wiki
 
