@@ -250,7 +250,6 @@ class RoomController < WebsocketRails::BaseController
 		room.topic = new_topic
 		room.save
 
-
 		# tell all users the room details
 		room_details = {
 			name: room.name,
