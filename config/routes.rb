@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
 	resources :users
 
+  get '/edit' => 'users#edit', :as => 'edit_current_user'
+
 	get '/login' => 'session#new'
 	post '/login' => 'session#create'
 	delete '/login' => 'session#destroy'
