@@ -39,7 +39,7 @@ $(document).ready(function() {
 	}
 });
 
-// Send command generator 
+// Send command generator
 
 var sendCommand = function (type) {
 	return function (value) {
@@ -52,7 +52,7 @@ var sendCommand = function (type) {
 	}
 };
 
-// display command generator 
+// display command generator
 
 var displayCommand = function(type) {
 	return function(message) {
@@ -89,6 +89,7 @@ var evalText = function () {
 	var rollCommand = text.split('/roll');
 	var randomFactCommand = text.split('/fact');
 	var gifCommand = text.split('/gifme');
+	var fortuneCommand = text.split('/fortune');
 
 
 	// see if text has regexp's
@@ -166,6 +167,11 @@ var evalText = function () {
 			sendText(gifCommand[0]);
 		}
 		sendGifCommand(gifCommand[1]);
+	} else if (fortuneCommand.length > 1) {
+		if (fortuneCommand[0]) {
+			sendText(fortuneCommand[0]);
+		}
+		sendFortuneCommand(fortuneCommand[1]);
 	}	else {
 		sendText(text);
 	}
@@ -221,6 +227,7 @@ var sendMoviesCommand = sendCommand('movie');
 var sendCodeCommand = sendCommand('code');
 var sendNudgeCommand = sendCommand('nudge');
 var sendRandomFactCommand = sendCommand('fact');
+var sendFortuneCommand = sendCommand('fortune');
 //lawrence end
 
 // dont touch this ---------------------
@@ -266,6 +273,7 @@ var leaveRoom = function(){
 	room.unbind('new_search');
 	room.unbind('new_fact');
 	room.unbind('new_gif');
+	room.unbind('new_fortune');
 
 	dispatcher.unbind('new_embed');
 	dispatcher.unbind('new_text');
@@ -273,6 +281,7 @@ var leaveRoom = function(){
 	dispatcher.unbind('new_search');
 	dispatcher.unbind('new_fact');
 	dispatcher.unbind('new_gif');
+	dispatcher.unbind('new_fortune');
 
 	// ADD BETWEEN HERE
 	// AND HERE
@@ -299,6 +308,7 @@ var joinRoom = function (room_id) {
 		room.unbind('new_code');
 		room.unbind('new_flip');
 		room.unbind('new_roll');
+		room.unbind('new_fortune');
 
 		room.unbind('new_transport');
 		room.unbind('new_map');
@@ -315,7 +325,7 @@ var joinRoom = function (room_id) {
 
 		room.unbind('new_fact');
 
-
+		dispatcher.unbind('new_fortune');
 		dispatcher.unbind('new_embed');
 		dispatcher.unbind('new_text');
 		dispatcher.unbind('new_time');
@@ -366,6 +376,7 @@ var joinRoom = function (room_id) {
 	room.bind('new_flip', displayFlip);
 	room.bind('new_roll', displayRoll);
 
+
 	// james
 	room.bind('new_search', displaySearch);
 	room.bind('new_gif', displayGif);
@@ -385,13 +396,7 @@ var joinRoom = function (room_id) {
 	room.bind('new_code', displayCode);
 	room.bind('new_nudge', displayNudge);
 	room.bind('new_fact', displayFact);
-
-	//phil
-
-
-
-
-	//lawrence
+	room.bind('new_fortune', displayFortune);
 
 	//lawrence end
 
@@ -424,6 +429,7 @@ var joinRoom = function (room_id) {
 
 	dispatcher.bind('new_code', displayCode);
 	dispatcher.bind('new_fact', displayFact);
+	dispatcher.bind('new_forutne', displayFortune);
 	//lawrence end
 
 		// AND HERE
@@ -563,6 +569,7 @@ var displayWiki = displayCommand('wiki');
 	};
 
 var displayFact = displayCommand('fact');
+var displayFortune = displayCommand('fortune');
 //lawrence end
 
 var scrollChat = function() {
