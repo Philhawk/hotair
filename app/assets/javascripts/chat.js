@@ -196,6 +196,9 @@ var joinRoom = function (room_id) {
 		dispatcher.bind(command, displayCommand(command));
 	});
 
+	// listen
+	room.bind('new_text');
+
 	// unbind lawrences for now
 	room.unbind('new_code');
 	room.unbind('new_nudge');
