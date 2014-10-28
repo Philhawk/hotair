@@ -5,6 +5,7 @@ var currentRoomId;
 var recentRooms = [];
 var commandsList = [];
 var usersInRoom = [];
+var offset = 10; // inital value
 
 // Reg expressions used
 var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
@@ -47,6 +48,8 @@ $(document).ready(function() {
  	 	dispatcher.bind('scroll_chat', scrollChat);
  	 	dispatcher.bind('show_recent_rooms', showRecentRooms);
  	 	dispatcher.bind('update_recent_rooms', updateRecentRooms);
+ 	 	dispatcher.bind('clear_chat', clearChat);
+
 
  	 	// bind to client-triggered events
  	 	$('#show_create_room_button').on('click', showCreateRoom);
@@ -58,6 +61,7 @@ $(document).ready(function() {
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
  	 	$('#chat-view').on('scroll', onChatViewScroll);
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
+ 	 	$('#chat-view').on('scroll', onChatViewScroll);
 
  	 	$(window).on('keypress', function(ev){
  	 		if (ev.charCode === 13) {
@@ -425,28 +429,23 @@ var editTopic = function () {
 // lawrence end
 // James Start
 var getNewChatViewData = function () {
-  offset += 3;
-  console.log("Offset: ", offset);
+  offset += 10;
   var message = {
     offset: offset,
-    limit: limit,
     roomid: currentRoomId
   };
   dispatcher.trigger('get_chat_data', message);
 }
 
-var onChatViewScroll = function  () { // checks the scroll on the page
-		var docHeight = $(document).height();
-		var chatViewHeight = $('#chat-view').height();
+var onChatViewScroll = function  () {
     var scrolled = $(this).scrollTop();
-    console.log( $(this).scrollTop() );
-    // if ( scrolled < 80 ) {
-    if (scrolled < docHeight - 0.9 * chatViewHeight) {
-    	console.log('Firing for more pictures');
-      getNewChatViewData();
+    if ( scrolled === 0 ) {
+    	if (room) {
+    		getNewChatViewData();
+    	}
     }
 }
 
-var offset = 0, // inital value
-    limit = 10;
-// James end
+var clearChat = function() {
+	$('#chat-view').empty();
+};
