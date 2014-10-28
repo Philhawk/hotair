@@ -4,7 +4,7 @@ class PagesController < ApplicationController
 
   def chat
   	unless logged_in?
-  		redirect_to chat
+  		redirect_to root_path
   	end
   end
 end
