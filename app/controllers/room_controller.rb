@@ -183,6 +183,24 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 
+	def new_fortune
+		user_id = message['id']
+		room_id = message['roomid']
+
+		user = User.find user_id
+
+		message_to_send = {
+			name: user.name,
+			fortune: FortuneGem.give_fortune
+		}
+
+
+		put_message_in_db(message, message_to_send, 'new_fortune')
+
+		WebsocketRails[room_id].trigger(:new_fortune, message_to_send)
+
+		scroll_chat room_id
+	end
 	#lawrence end
 
 	def new_text
@@ -247,7 +265,7 @@ class RoomController < WebsocketRails::BaseController
 			roll = 'no' + message['roll'] + "'s"
 		else
 			roll = (rand(message['roll'].to_i) + 1).floor
-		end 
+		end
 		message_to_send = {
 			name: user.name,
 			roll: roll,
@@ -332,7 +350,7 @@ class RoomController < WebsocketRails::BaseController
 
 		new_transport = "https://www.google.com/maps/dir/?saddr=my+location&daddr=#{ transport.gsub(' ', '+') }&ie=UTF8&f=d&sort=def&dirflg=r&hl=en"
 
-		
+
 
 		message_to_send = {
 		name: user.name,

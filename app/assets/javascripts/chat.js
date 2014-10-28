@@ -22,7 +22,8 @@ var commands = [
 	'goto',
 	'recipe',
 	'fact',
-	'roll'
+	'roll',
+	'fortune'
 ];
 
 $(document).ready(function() {
@@ -35,7 +36,7 @@ $(document).ready(function() {
 		$.each(commands, function(i, command) {
 			commandsList.push('new_'+ command);
 		});
-		
+
 
  	 	// bind to websocket global events
  	 	dispatcher.bind('connected', clientConnected);
@@ -63,7 +64,7 @@ $(document).ready(function() {
 	}
 });
 
-// Send command generator 
+
 var sendCommand = function (type) {
 	return function (value) {
 		var message = {
@@ -75,7 +76,9 @@ var sendCommand = function (type) {
 	}
 };
 
-// display command generator 
+
+// display command generator
+
 var displayCommand = function(type) {
 	return function(message) {
 		cmd = type.replace('new_', "");
@@ -91,6 +94,7 @@ var evalText = function () {
 	var text = $('#chat_text').val();
 
 	var embedLinks = text.match(EMBEDREGEXP);
+
 	if (embedLinks) {
 		sendText(text);
 		$.each(embedLinks, sendEmbed);
@@ -133,6 +137,7 @@ var getRecentRooms = function () {
 	dispatcher.trigger('get_recent_rooms',message);
 };
 
+
 var sendEmbed = function(i, embedLink) {
 	var message = {
 		url: embedLink,
@@ -165,10 +170,12 @@ var createRoom = function () {
 var leaveRoom = function(){
  // stop listening to previous events and leave the room
 	room.unsubscribe;
+
 	$.each(commandsList, function(i, command){
 			room.unbind(command);
 			dispatcher.unbind(command);
 	});
+
 	var leavemessage = {
 		name: userName,
 		id: userId,
@@ -191,6 +198,7 @@ var joinRoom = function (room_id) {
 	// listen to room events
 	room.bind('user_joined', userJoinedRoom);
 	room.bind('user_left', userLeftRoom);
+
 	$.each(commandsList, function(i, command){
 		room.bind(command, displayCommand(command));
 		dispatcher.bind(command, displayCommand(command));
@@ -210,6 +218,7 @@ var joinRoom = function (room_id) {
  //lawrence
 	room.bind('new_code', displayCode);
 	room.bind('new_nudge', displayNudge);
+
 
 	dispatcher.bind('new_code', displayCode);
 
@@ -303,12 +312,14 @@ var displayCode = function(message) {
 	});
 };
 
+
 var displayNudge = function (message) {
 		var $html = $('div').addClass('shake');
 			setTimeout(function () {
   	$html.removeClass('shake');
 		}, 800);
 };
+
 //lawrence end
 
 var scrollChat = function() {
