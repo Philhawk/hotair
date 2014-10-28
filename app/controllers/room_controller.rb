@@ -45,7 +45,6 @@ class RoomController < WebsocketRails::BaseController
 	def show
 		roomsAsJSON = Room.all.to_json
 		send_message :show_rooms, roomsAsJSON
-
 	end
 
 	def join
@@ -73,14 +72,13 @@ class RoomController < WebsocketRails::BaseController
 			users: room.users.length
 		}
 		WebsocketRails[room_id].trigger(:room_details, room_details)
-		# tell the user that joined the past 10 messages
-		room.messages.last(10).each do |m|
+			# tell the user that joined the past 10 messages
+			room.messages.last(10).each do |m|
 			send_message(m.function.to_sym, JSON.parse(m.object))
 		end
 
 		# scroll user
 		send_message(:scroll_chat, message);
-
 	end
 
 	def leave
@@ -546,6 +544,47 @@ class RoomController < WebsocketRails::BaseController
 	  scroll_chat room_id
 	end
 
+  def get_content
+
+    # user_id = message['id'].to_i
+    # user = User.find user_id
+    room_id = message['roomid']
+    room = Room.find room_id
+    # binding.pry
+    # # add user to room
+    # room.users << user
+
+    # message = {
+    #   name: user.name,
+    #   id: user.id,
+    #   users: room.users
+    # }
+
+    # # tell all users in that room that someone has joined
+    # WebsocketRails[room_id].trigger(:user_joined, message)
+
+    # # tell all users the room details
+    # room_details = {
+    #   name: room.name,
+    #   topic: room.topic,
+    #   users: room.users.length
+    # }
+
+    offset = message["offset"]
+    limit = message["limit"]
+
+    # WebsocketRails[room_id].trigger(:room_details, room_details)
+    #   # tell the user that joined the past 10 messages
+    # binding.pry
+      room.messages.limit( limit ).offset( offset ).each do |message|
+        send_message(message.function.to_sym, JSON.parse(message.object))
+
+    end
+
+    # # scroll user
+    # send_message(:scroll_chat, message);
+
+  end
 	# JAMES END
 
 

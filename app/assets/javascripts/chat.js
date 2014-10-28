@@ -56,7 +56,7 @@ $(document).ready(function() {
  	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
  	 	$('#chat-page').on('click', '.recentRoom>a', joinHandler);
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
-
+ 	 	$('#chat-view').on('scroll', onChatViewScroll);
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
 
  	 	$(window).on('keypress', function(ev){
@@ -92,7 +92,6 @@ var sendCommand = function (type) {
 		dispatcher.trigger('send_' + type, message);
 	}
 };
-
 
 // display data from server generator for custom commands
 var displayCommand = function(type) {
@@ -229,6 +228,7 @@ var leaveRoom = function(){
 	dispatcher.trigger('left_room', leavemessage);
 };
 
+
 var joinRoom = function (room_id) {
 	if (room) {
 		leaveRoom();
@@ -243,6 +243,8 @@ var joinRoom = function (room_id) {
 	// listen to room events
 	room.bind('user_joined', userJoinedRoom);
 	room.bind('user_left', userLeftRoom);
+
+
 
 	$.each(commandsList, function(i, command){
 		room.bind(command, displayCommand(command));
@@ -274,6 +276,7 @@ var joinRoom = function (room_id) {
 		id: userId,
 		room_joined: room_id
 	};
+
 		// tell server we have joined
 	dispatcher.trigger('join_room', message);
 
@@ -283,7 +286,6 @@ var joinRoom = function (room_id) {
 	saveRecentRooms();
 };
 
-// Functions called from server
 var clientConnected = function() {
 	console.log('Client connected to websocket');
 };
@@ -394,7 +396,7 @@ var removeRecent = function(ev) {
 var updateRecentRooms = function(message) {
 	recentRooms = message;
 };
-
+// lawrence
 var editTopic = function () {
 	var $topic = $(this);
 	var topicText = $topic.text();
@@ -407,21 +409,44 @@ var editTopic = function () {
 
   $input.on('blur', function () {
 
-
-    var topicText = $(this).val();
-    $topic.html(topicText);
-    // AJAX here to send to the server
-  	var message = {
+	  var topicText = $(this).val();
+	  $topic.html(topicText);
+	  // AJAX here to send to the server
+		var message = {
 			id: userId,
 			roomid: currentRoomId,
 			topic: topicText
 		};
-
-
-
-    	dispatcher.trigger('edit_topic', message)
-    });
-
+  dispatcher.trigger('edit_topic', message)
+	});
 	$topic.html($input);
 	$input.focus();
 };
+// lawrence end
+// James Start
+var getNewChatViewData = function () {
+  offset += 3;
+  console.log("Offset: ", offset);
+  var message = {
+    offset: offset,
+    limit: limit,
+    roomid: currentRoomId
+  };
+  dispatcher.trigger('get_chat_data', message);
+}
+
+var onChatViewScroll = function  () { // checks the scroll on the page
+		var docHeight = $(document).height();
+		var chatViewHeight = $('#chat-view').height();
+    var scrolled = $(this).scrollTop();
+    console.log( $(this).scrollTop() );
+    // if ( scrolled < 80 ) {
+    if (scrolled < docHeight - 0.9 * chatViewHeight) {
+    	console.log('Firing for more pictures');
+      getNewChatViewData();
+    }
+}
+
+var offset = 0, // inital value
+    limit = 10;
+// James end

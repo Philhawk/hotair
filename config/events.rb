@@ -29,6 +29,7 @@ WebsocketRails::EventMap.describe do
 # james
   subscribe :send_search, :to => RoomController, :with_method => :new_search
   subscribe :send_gif, :to => RoomController, :with_method => :new_gif
+  subscribe :get_chat_data, :to => RoomController, :with_method => :get_content
 # james end
 
 #phil
