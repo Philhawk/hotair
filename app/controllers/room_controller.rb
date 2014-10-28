@@ -303,10 +303,10 @@ class RoomController < WebsocketRails::BaseController
 
 	end
 
-	def new_directions
+	def new_goto
 		user_id = message['id']
 		room_id = message['roomid']
-		directions = message['directions']
+		directions = message['goto']
 
 		user = User.find user_id
 
@@ -317,9 +317,9 @@ class RoomController < WebsocketRails::BaseController
 		directions: new_directions
 		}
 
-		put_message_in_db(message, message_to_send, 'new_directions')
+		put_message_in_db(message, message_to_send, 'new_goto')
 
-		WebsocketRails[room_id].trigger(:new_directions, message_to_send)
+		WebsocketRails[room_id].trigger(:new_goto, message_to_send)
 
 	end
 
