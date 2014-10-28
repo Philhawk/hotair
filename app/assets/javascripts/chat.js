@@ -22,7 +22,8 @@ var commands = [
 	'goto',
 	'recipe',
 	'fact',
-	'roll'
+	'roll',
+	'fortune'
 ];
 
 $(document).ready(function() {
