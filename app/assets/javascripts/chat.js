@@ -1,10 +1,11 @@
+// client global vars
 var dispatcher;
 var room;
 var currentRoomId;
 var recentRooms = [];
 var commandsList = [];
-// Reg expressions used
 
+// Reg expressions used
 var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
 
 // List your commands here
@@ -32,11 +33,10 @@ $(document).ready(function() {
 		// connect to websocket
 		dispatcher = new WebSocketRails('localhost:3000/websocket');
 
-		// listen to commands
+		// get commands read to listen to
 		$.each(commands, function(i, command) {
 			commandsList.push('new_'+ command);
 		});
-
 
  	 	// bind to websocket global events
  	 	dispatcher.bind('connected', clientConnected);
@@ -47,16 +47,14 @@ $(document).ready(function() {
  	 	dispatcher.bind('show_recent_rooms', showRecentRooms);
  	 	dispatcher.bind('update_recent_rooms', updateRecentRooms);
 
- 	 	// bind to events
+ 	 	// bind to client-triggered events
  	 	$('#show_create_room_button').on('click', showCreateRoom);
  	 	$('#create_room_button').on('click', createRoom);
- 	 	// $('#join_room_button').on('click', joinHandler);
  	 	$('#send_button').on('click', evalText);
  	 	$('#show_rooms_button').on('click', getRooms);
  	 	$('#chat-view').on('click', '.roomRow a', joinHandler);
  	 	$('#chat-page').on('click', '.recentRoom>a', joinHandler);
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
-
 
  	 	// get rooms
  	 	getRooms();
@@ -64,44 +62,59 @@ $(document).ready(function() {
 	}
 });
 
-
+// send-to-server generator for custom commands
 var sendCommand = function (type) {
+	// return a custom function
 	return function (value) {
+		// prepare the message to send to the server
 		var message = {
+			// provide client details such as id and room id
 			id: userId,
 			roomid: currentRoomId
 		};
+		// add the value sent to the function, with the key of the command
 		message[type] = value;
+		// send the function
 		dispatcher.trigger('send_' + type, message);
 	}
 };
 
 
-// display command generator
-
+// display data from server generator for custom commands
 var displayCommand = function(type) {
+	// returns a custom function
 	return function(message) {
+		// get rid of the new_ that prepends commands
 		cmd = type.replace('new_', "");
+		// grab the template HTML from the specific ID
 		var source = $('#' + cmd + '_template').html();
+		// render the html with handlebars
 		var displayHTML = Handlebars.compile(source);
 
+		// append the message to the chat view
 		$('#chat-view').append(displayHTML(message));
 	}
 };
 
-// Functions bound to events from page
+// evaluate what text has been entered in the text field
 var evalText = function () {
+	// grab the text
 	var text = $('#chat_text').val();
 
+	// create an array of links that need embeding
 	var embedLinks = text.match(EMBEDREGEXP);
 
 	if (embedLinks) {
+		// send the original text and the embed links
 		sendText(text);
 		$.each(embedLinks, sendEmbed);
 	} else {
+		// just send the text
 		sendText(text);
 	}
 
+	// with each command, create a function that sends that command to the server, then call it with the correct
+	// arguements.
 	$.each(commands, function(i, command){
 		var commandArgs = text.split('/' + command)
 		if (commandArgs.length > 1) {
@@ -112,24 +125,25 @@ var evalText = function () {
 		}
 	});
 
+	// reset the text field
 	$('#chat_text').val("");
 };
 
 var joinHandler = function(ev) {
+	// grab the room ID of the link clicked and join that room
 	ev.preventDefault();
 	var roomID = $(this).attr('href');
 	joinRoom(roomID);
 };
 
-// Functions that send to the server
-// nicks stuff
 var getRooms = function() {
-	var message = {
-	};
+	// get a list of rooms from the server
+	var message = {};
 	dispatcher.trigger('get_rooms', message);
 };
 
 var getRecentRooms = function () {
+	// get a list of a users 'recent rooms' from the server
 	var message = {
 		id: userId,
 		recent_rooms: recentRooms
@@ -137,8 +151,8 @@ var getRecentRooms = function () {
 	dispatcher.trigger('get_recent_rooms',message);
 };
 
-
 var sendEmbed = function(i, embedLink) {
+	// send an embeded link to the correct function
 	var message = {
 		url: embedLink,
 		id: userId,
@@ -150,15 +164,12 @@ var sendEmbed = function(i, embedLink) {
 var sendText = sendCommand('text');
 
 var showCreateRoom = function () {
-	// var roomName = $('#room_name').val();
-	// var message = {
-	// 	name: roomName
-	// };
-	// dispatcher.trigger('new_room', message);
+	// reveal the modal that contains the new room form
 	$('#newRoomModal').foundation('reveal', 'open');
 };
 
 var createRoom = function () {
+	// use form data to create the room
 	var roomName = $('#room_name').val();
 	var message = {
 		name: roomName
@@ -168,15 +179,27 @@ var createRoom = function () {
 };
 
 var leaveRoom = function(){
- // stop listening to previous events and leave the room
+ 	// stop listening to previous events and leave the room
 	room.unsubscribe;
 
+	// unbind each command in the command list
 	$.each(commandsList, function(i, command){
 			room.unbind(command);
 			dispatcher.unbind(command);
 	});
-	room.unbind('new_text');
+
+	// unbind from other functions
+	
 	dispatcher.unbind('new_text');
+	dispatcher.unbind('new_embed');
+
+	room.unbind('new_embed');
+	room.unbind('new_text');
+	room.unbind('scroll_chat');
+	room.unbind('room_details');
+	room.unbind('user_joined', userJoinedRoom);
+	room.unbind('user_left', userLeftRoom);
+
 	var leavemessage = {
 		name: userName,
 		id: userId,
@@ -205,9 +228,11 @@ var joinRoom = function (room_id) {
 		dispatcher.bind(command, displayCommand(command));
 	});
 
-	// listen
+	// listen to text and embed
 	room.bind('new_text', displayCommand('text'));
 	dispatcher.bind('new_text', displayCommand('text'));
+	room.bind('new_embed', displayCommand('embed'));
+	dispatcher.bind('new_embed', displayCommand('embed'));
 
 	// unbind lawrences for now
 	room.unbind('new_code');
