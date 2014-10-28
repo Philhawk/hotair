@@ -335,21 +335,33 @@ class RoomController < WebsocketRails::BaseController
 	def new_goto
 		user_id = message['id']
 		room_id = message['roomid']
-		directions = message['goto']
+		goto = message['goto']
 
 		user = User.find user_id
 
-		new_directions = "https://www.google.com/maps?saddr=My+Location&daddr=#{ directions.gsub(' ', '+') }"
+	  	destination = goto.split(' from ')
+	    
+	    if (destination.length > 1) 
+	          origin = destination[0]
+	          destination = destination[1]
+	     else 
+	          origin = 'My+Location'
+	          destination = destination[0]
+	    
+		end
+
+		new_goto = "https://www.google.com/maps?saddr=#{ origin }&daddr=#{ destination.gsub(' ', '+') }"
+
+		puts new_goto
 
 		message_to_send = {
-		name: user.name,
-		directions: new_directions
+			name: user.name,
+			destination: new_goto
 		}
 
 		put_message_in_db(message, message_to_send, 'new_goto')
 
 		WebsocketRails[room_id].trigger(:new_goto, message_to_send)
-
 	end
 
 	def new_transport
@@ -433,6 +445,19 @@ class RoomController < WebsocketRails::BaseController
 		WebsocketRails[room_id].trigger(:new_movie, message_to_send)
 
 	end
+
+	# def new_grubme
+	# 	user_id = message['id']
+	# 	room_id = message['roomid']
+	# 	grubme = message['grubme']
+
+	# 	user = User.find user_id
+ #    	parameters = { term: grubme, limit: 8 }
+ #    	render json: Yelp.client.search(‘:grubme’, parameters)
+ #  	end
+
+	# end
+
 	#PHIL END
 
 	# JAMES
@@ -458,31 +483,43 @@ class RoomController < WebsocketRails::BaseController
 	  WebsocketRails[room_id].trigger(:new_search, message_to_send)
 
 	  scroll_chat room_id
-
 	end
 
 	def new_gif
 		user_id = message['id']
 		room_id = message['roomid']
-		# gif = message['gif']
+		gif_query = message['gif']
 
 		user = User.find user_id
 
-		url = "https://imgur.com/hot/viral"
-		doc = Nokogiri::HTML(open(url))
-		links = doc.css('a.image-list-link')
-		results = []
+		gif_links_array = []
 
-		links.each do |link|
-			results << link["href"]
+		if gif_query.length > 1 
+			url = "http://api.giphy.com/v1/gifs/search?q=#{ gif_query.gsub(' ', '+') }&api_key=dc6zaTOxFJmzC&limit=10"
+
+			resp = Net::HTTP.get_response(URI.parse(url))
+			buffer = resp.body
+			result = JSON.parse(buffer)
+
+			result["data"].each do |image|
+			gif_links_array << image["images"]["fixed_height"]["url"]
+			end
+
+		else
+			url = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC"
+
+			resp = Net::HTTP.get_response(URI.parse(url))
+			buffer = resp.body
+			result = JSON.parse(buffer)
+
+			gif_links_array << result["data"]["fixed_height_downsampled_url"]
 		end
 
-		sample = results.sample
-		new_gif = "https://imgur.com#{ sample }"
+		gif = gif_links_array.sample
 
 		message_to_send = {
 			name: user.name,
-			gif: new_gif
+			gif: gif
 		}
 
 	  put_message_in_db(message, message_to_send, 'new_gif')

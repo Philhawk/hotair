@@ -24,6 +24,7 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
+gem 'yelpster'
 gem 'fortune_gem'
 
 gem 'httparty'
@@ -37,7 +38,7 @@ gem 'mail'
 gem 'daemons'
 gem 'coderay'
 gem 'google-search'
-gem 'nokogiri'
+# gem 'nokogiri'
 # Use unicorn as the app server
 # gem 'unicorn'
 
