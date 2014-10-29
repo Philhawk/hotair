@@ -240,6 +240,8 @@ var joinRoom = function (room_id) {
 		leaveRoom();
 	}
 
+	offset = 10;
+
 	// join the room
 	room = dispatcher.subscribe(room_id);
 	console.log('joined room ' + room_id);

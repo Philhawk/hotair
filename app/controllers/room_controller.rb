@@ -30,7 +30,6 @@ class RoomController < WebsocketRails::BaseController
 
 			send_room_details(room.id.to_s)
 		end 
-
 	end 
 
 	def closed
@@ -38,7 +37,6 @@ class RoomController < WebsocketRails::BaseController
 		room.users.delete(current_user)
 		send_room_details(room.id.to_s)
 	end
-
 
 	def save_recent_rooms
 		user = User.find message['id']
@@ -392,7 +390,6 @@ class RoomController < WebsocketRails::BaseController
 		put_message_in_db(message, message_to_send, 'new_recipe')
 
 		WebsocketRails[room_id].trigger(:new_recipe, message_to_send)
-
 	end
 
 	def new_wiki
@@ -412,7 +409,6 @@ class RoomController < WebsocketRails::BaseController
 		put_message_in_db(message, message_to_send, 'new_wiki')
 
 		WebsocketRails[room_id].trigger(:new_wiki, message_to_send)
-
 	end
 
 	def new_movie
@@ -432,22 +428,7 @@ class RoomController < WebsocketRails::BaseController
 		put_message_in_db(message, message_to_send, 'new_movie')
 
 		WebsocketRails[room_id].trigger(:new_movie, message_to_send)
-
 	end
-
-	# def new_grubme
-	# 	user_id = message['id']
-	# 	room_id = message['roomid']
-	# 	grubme = message['grubme']
-
-	# 	user = User.find user_id
- #    	parameters = { term: grubme, limit: 8 }
- #    	render json: Yelp.client.search(‘:grubme’, parameters)
- #  	end
-
-	# end
-
-	#PHIL END
 
 	# JAMES
 	def new_search
@@ -538,6 +519,7 @@ private
 		# scroll clients
 		WebsocketRails[room_id].trigger(:scroll_chat, message)
 	end
+
 	def put_message_in_db(message_sent, message_to_send, fn)
 		# reduce boilerplate by creating associations in helper function
 		msg = Message.new(user_id: message_sent['id'], room_id: message_sent['roomid'], object: message_to_send.to_json, function: fn)
