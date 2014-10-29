@@ -218,7 +218,6 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 
-
 	def new_topic
 		user_id = message['id']
 		room_id = message['roomid']
@@ -295,10 +294,7 @@ class RoomController < WebsocketRails::BaseController
 		scroll_chat room_id
 	end
 	# NICKS END
-
-
 	#PHIL
-
 	def new_map
 		user_id = message['id']
 		room_id = message['roomid']
@@ -370,7 +366,6 @@ class RoomController < WebsocketRails::BaseController
 		put_message_in_db(message, message_to_send, 'new_transport')
 
 		WebsocketRails[room_id].trigger(:new_transport, message_to_send)
-
 	end
 
 	def new_recipe

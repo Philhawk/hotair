@@ -120,6 +120,10 @@ var evalText = function () {
 	// grab the text
 	var text = $('#chat_text').val();
 
+	if (text == "") {
+		return;
+	}
+
 	// create an array of links that need embeding
 	var embedLinks = text.match(EMBEDREGEXP);
 

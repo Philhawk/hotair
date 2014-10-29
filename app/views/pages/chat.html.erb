@@ -219,6 +219,12 @@
 		</div>
 	</script>
 
+	<script type="templates/handlebars" id="image_template">
+		<div class="row chatRow">
+		<a class="embedly-card" href="{{ imageURL }}"></a>
+		<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
 
 <!-- New room form -->
 
@@ -231,4 +237,20 @@
 
  	<%= button_tag 'Create', id: 'create_room_button' %>
   <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<!-- image upload form -->
+<div id="newUploadFileModal" class="reveal-modal" data-reveal>
+	<h2>Upload Image</h2>
+  <p class="lead">Choose an image to upload</p>
+	<form id="gingerstepkid">
+		<div class="columns small-10">
+			<%= file_field_tag :image_file %>
+			<%= hidden_field_tag :image_cache %>	
+		</div>
+	 	
+	 	<%= button_tag 'Upload', id: 'create_uploaded_file' %>
+
+	</form>
+	<a class="close-reveal-modal">&#215;</a>
 </div>
