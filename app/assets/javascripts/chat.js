@@ -222,7 +222,7 @@ var leaveRoom = function(){
 	room.unbind('scroll_chat');
 	room.unbind('room_details');
 	room.unbind('user_joined', userJoinedRoom);
-	room.unbind('user_left', userLeftRoom);
+
 
 	var leavemessage = {
 		name: userName,
@@ -246,9 +246,6 @@ var joinRoom = function (room_id) {
 
 	// listen to room events
 	room.bind('user_joined', userJoinedRoom);
-	room.bind('user_left', userLeftRoom);
-
-
 
 	$.each(commandsList, function(i, command){
 		room.bind(command, displayCommand(command));
@@ -308,10 +305,7 @@ var userJoinedRoom = function (message) {
 
 };
 
-var userLeftRoom = function (message) {
-	var name = message.name;
-	console.log(name + ' has left the room');
-};
+
 
 // NICKS DISPLAY
 var showRecentRooms = function(message) {

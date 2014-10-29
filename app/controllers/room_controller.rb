@@ -48,20 +48,10 @@ class RoomController < WebsocketRails::BaseController
 	end
 
 	def join
-		user_id = message['id'].to_i
-		user = User.find user_id
 		room_id = message['room_joined']
 		room = Room.find room_id
-
 		# add user to room
-		room.users << user
-
-		message = {
-			name: user.name,
-			id: user.id,
-			users: room.users
-		}
-
+		room.users << current_user
 		# tell all users in that room that someone has joined
 		# tell all users the room details
 		send_room_details(room_id)
@@ -69,7 +59,6 @@ class RoomController < WebsocketRails::BaseController
 		room.messages.last(10).each do |m|
 			send_message(m.function.to_sym, JSON.parse(m.object))
 		end
-
 		# scroll user
 		send_message(:scroll_chat, message);
 	end
@@ -78,14 +67,9 @@ class RoomController < WebsocketRails::BaseController
 		user_name = message['name']
 		room_id = message['roomid']
 		# tell all users in that room that someone has joined
-		WebsocketRails[room_id].trigger(:user_left, message)
-
-		user = User.find message['id']
 		room = Room.find message['roomid']
-
 		# remove association
-		room.users.delete(user)
-
+		room.users.delete(current_user)
 		send_room_details(room_id)
 	end
 
