@@ -155,7 +155,6 @@ var evalText = function () {
 				}
 				sendCommand(command)(commandArgs[1].trim());
 				commandSent = true;
-
 			}
 		});
 		if (commandSent === false) {
