@@ -305,10 +305,7 @@ var roomFailed = function (message) {
 };
 
 var userJoinedRoom = function (message) {
-	var source = $('#users_in_room_template').html();
-	var displayHTML = Handlebars.compile(source);
-	$('.userList').empty();
-	$('.userList').append(displayHTML(message));
+
 };
 
 var userLeftRoom = function (message) {
@@ -334,27 +331,44 @@ var displayRooms = function(message) {
 	if (room) {
 		leaveRoom();
 		$('#topBar').empty();
+		$('#userList').empty();
 	}
 	rooms = jQuery.parseJSON( message );
 	var source = $('#room_template').html();
 	var displayHTML = Handlebars.compile(source);
 	$('#chat-view').empty();
-
-	var displayRoomsDetailsMessage = {
-		name: "Room List",
-		topic: "Click a room to join"
-	};
-	displayRoomDetails(displayRoomsDetailsMessage);
 	$.each(rooms, function(i, roomObj){
 		$('#chat-view').append(displayHTML(roomObj));
 	});
+
+	var roomListTopBar = {
+		name: "Room List",
+		topic: "Click a room to join"
+	};
+	
+	source = $('#room_list_template').html();
+	displayHTML = Handlebars.compile(source);
+	$('#topBar').append(displayHTML(roomListTopBar));
 };
 
 var displayRoomDetails = function(message) {
+	var topInfo = {
+		name: message['name'],
+		topic: message['topic'],
+		users: message['users']
+	};
 	var source = $('#room_details_template').html();
 	var displayHTML = Handlebars.compile(source);
 	$('#topBar').empty();
-	$('#topBar').append(displayHTML(message));
+	$('#topBar').append(displayHTML(topInfo));
+
+	var userListInfo = {
+		users: message['userList']
+	};
+	source = $('#users_in_room_template').html();
+	displayHTML = Handlebars.compile(source);
+	$('#userList').empty();
+	$('#userList').append(displayHTML(userListInfo));
 };
 
 //lawrence

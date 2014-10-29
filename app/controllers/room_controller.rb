@@ -63,17 +63,10 @@ class RoomController < WebsocketRails::BaseController
 		}
 
 		# tell all users in that room that someone has joined
-		WebsocketRails[room_id].trigger(:user_joined, message)
-
 		# tell all users the room details
-		room_details = {
-			name: room.name,
-			topic: room.topic,
-			users: room.users.length
-		}
-		WebsocketRails[room_id].trigger(:room_details, room_details)
-			# tell the user that joined the past 10 messages
-			room.messages.last(10).each do |m|
+		send_room_details(room_id)
+		# tell the user that joined the past 10 messages
+		room.messages.last(10).each do |m|
 			send_message(m.function.to_sym, JSON.parse(m.object))
 		end
 
@@ -572,5 +565,16 @@ private
 		user.messages << msg
 		room.messages << msg
 		msg
+	end
+
+	def send_room_details(room_id)
+		room = Room.find room_id
+		room_details = {
+				name: room.name,
+				topic: room.topic,
+				users: room.users.length,
+				userList: room.users
+			}
+		WebsocketRails[room_id].trigger(:room_details, room_details)
 	end
 end

@@ -29,7 +29,7 @@
 
 			</div>
 			<!-- List of users -->
-			<div class="small-2 columns userList">
+			<div class="small-2 columns userList" id="userList">
 			</div>
 		</div>
 		<!-- Send row -->
@@ -206,6 +206,17 @@
 				<li>{{ name }}</li>
 			{{/each}}
 		</ul>
+	</script>
+
+	<script type="templates/handlebars" id="room_list_template">
+		<div class="columns small-12">
+				<div class="row">
+					<h1 id="roomName">{{ name }}</h1>
+				</div>
+				<div class="row">
+					<h4 id="roomTopic">{{ topic }}</h4>
+				</div>
+		</div>
 	</script>
 
 
