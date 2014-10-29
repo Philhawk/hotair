@@ -292,8 +292,6 @@ var clientConnected = function() {
 };
 
 var roomCreated = function (message) {
-	console.log(message.name + ' room created');
-	console.log(message.id);
 	joinRoom(message.id);
 };
 

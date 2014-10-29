@@ -15,10 +15,6 @@ class RoomController < WebsocketRails::BaseController
 		 	id: room.id.to_s
 		 	}
 			send_message :room_created, message
-
-			# send a message to all users that a new room is created
-			broadcast_message :new_room_added, message
-
 		else
 		 	send_message :room_failed, message
 		end
@@ -216,12 +212,7 @@ class RoomController < WebsocketRails::BaseController
 		room.save
 
 		# tell all users the room details
-		room_details = {
-			name: room.name,
-			topic: room.topic,
-			users: room.users.length
-		}
-		WebsocketRails[room_id].trigger(:room_details, room_details)
+		send_room_details(room_id)
 	end
 
 	# NICKS
