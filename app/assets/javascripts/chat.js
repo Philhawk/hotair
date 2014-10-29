@@ -328,10 +328,10 @@ var showRecentRooms = function(message) {
 };
 
 var displayRooms = function(message) {
+	$('#topBar').empty();
+	$('#userList').empty();
 	if (room) {
 		leaveRoom();
-		$('#topBar').empty();
-		$('#userList').empty();
 	}
 	rooms = jQuery.parseJSON( message );
 	var source = $('#room_template').html();

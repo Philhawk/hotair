@@ -86,19 +86,7 @@ class RoomController < WebsocketRails::BaseController
 		# remove association
 		room.users.delete(user)
 
-		# tell all users the room details
-		room_details = {
-			name: room.name,
-			topic: room.topic,
-			users: room.users.length
-		}
-		WebsocketRails[room_id].trigger(:room_details, room_details)
-
-		# send which users are in the room
-		message = {
-			users: room.users
-		}
-		WebsocketRails[room_id].trigger(:user_joined, message)
+		send_room_details(room_id)
 	end
 
 	def new_embed
