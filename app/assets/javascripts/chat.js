@@ -34,7 +34,7 @@ $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
 		// connect to websocket
-		dispatcher = new WebSocketRails('localhost:3000/websocket');
+		dispatcher = new WebSocketRails('/websocket');
 
 		// get commands read to listen to
 		$.each(commands, function(i, command) {
