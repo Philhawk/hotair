@@ -6,6 +6,7 @@ var recentRooms = [];
 var commandsList = [];
 var usersInRoom = [];
 var offset = 10; // inital value
+var currentRoomOwner;
 
 // Reg expressions used
 var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
@@ -61,6 +62,7 @@ $(document).ready(function() {
  	 	$('#chat-page').on('click', '.removeRecent>a', removeRecent);
  	 	$('#chat-view').on('scroll', onChatViewScroll);
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
+ 	 	$('#chat-page').on('click', '#roomName', editRoomName);
  	 	$('#chat-view').on('scroll', onChatViewScroll);
 
  	 	$(window).on('keypress', function(ev){
@@ -344,6 +346,7 @@ var displayRooms = function(message) {
 };
 
 var displayRoomDetails = function(message) {
+	currentRoomOwner = message['owner'];
 	var topInfo = {
 		name: message['name'],
 		topic: message['topic'],
@@ -405,6 +408,32 @@ var removeRecent = function(ev) {
 
 var updateRecentRooms = function(message) {
 	recentRooms = message;
+};
+
+var editRoomName = function () {
+	if (currentRoomOwner === userId){
+		var $roomName = $(this);
+		var roomText = $roomName.text();
+
+		if ($roomName.find('input').length) {
+			return;
+		}
+
+		var $input = $('<input>').val(roomText);
+
+		$input.on('blur', function(){
+			roomText = $(this).val();
+			$roomName.html(roomText);
+
+			var message = {
+				roomid: currentRoomId,
+				name: roomText
+			};
+			dispatcher.trigger('edit_room_name', message);
+		});
+		$roomName.html($input);
+		$input.focus();
+	}
 };
 // lawrence
 var editTopic = function () {

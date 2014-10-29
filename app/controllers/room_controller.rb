@@ -20,6 +20,19 @@ class RoomController < WebsocketRails::BaseController
 		end
 	end
 
+	def edit_name
+		new_name = message['name']
+		room = Room.find message['roomid']
+
+		if room.owner_id == current_user.id
+			room.name = new_name
+			room.save
+
+			send_room_details(room.id.to_s)
+		end 
+
+	end 
+
 	def closed
 		room = Room.find current_user.room_id 
 		room.users.delete(current_user)
@@ -542,7 +555,8 @@ private
 				name: room.name,
 				topic: room.topic,
 				users: room.users.length,
-				userList: room.users
+				userList: room.users,
+				owner: room.owner_id
 			}
 		WebsocketRails[room_id].trigger(:room_details, room_details)
 	end

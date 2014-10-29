@@ -17,6 +17,7 @@ WebsocketRails::EventMap.describe do
   subscribe :get_rooms, :to => RoomController, :with_method => :show
 
 
+  subscribe :edit_room_name, :to => RoomController, :with_method => :edit_name
   subscribe :send_text, :to => RoomController, :with_method => :new_text
   subscribe :send_embed, :to => RoomController, :with_method => :new_embed
 
