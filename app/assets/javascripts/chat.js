@@ -129,6 +129,7 @@ var displayCommand = function(type) {
 
 // evaluate what text has been entered in the text field
 var evalText = function () {
+	var commandSent = false;
 	// grab the text
 	var text = $('#chat_text').val();
 
@@ -144,22 +145,23 @@ var evalText = function () {
 		sendText(text);
 		$.each(embedLinks, sendEmbed);
 	} else {
-		// just send the text
-		sendText(text);
-	}
+		// with each command, create a function that sends that command to the server, then call it with the correct
+		// arguements.
+		$.each(commands, function(i, command){
+			var commandArgs = text.split('/' + command)
+			if (commandArgs.length > 1) {
+				if (commandArgs[0]) {
+					sendText(commandArgs[0]);
+				}
+				sendCommand(command)(commandArgs[1].trim());
+				commandSent = true;
 
-	// with each command, create a function that sends that command to the server, then call it with the correct
-	// arguements.
-	$.each(commands, function(i, command){
-		var commandArgs = text.split('/' + command)
-		if (commandArgs.length > 1) {
-			if (commandArgs[0]) {
-				sendCommand('text')(commandArgs[0]);
 			}
-			sendCommand(command)(commandArgs[1].trim());
+		});
+		if (commandSent === false) {
+			sendText(text)
 		}
-	});
-
+	}
 	// reset the text field
 	$('#chat_text').val("");
 };
