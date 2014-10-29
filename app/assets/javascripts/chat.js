@@ -64,6 +64,18 @@ $(document).ready(function() {
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
  	 	$('#chat-page').on('click', '#roomName', editRoomName);
  	 	$('#chat-view').on('scroll', onChatViewScroll);
+ 	 	$('#show_create_room_button').on('click', showCreateRoom);
+
+ 	 	
+ 	 	// $('#show_upload_file_button').on('click', showUploadFile);
+ 	 	// $("#image_file").on('change', sendFile);
+ 	 	// $('#gingerstepkid').on('submit', function (e) {
+ 	 	// 	e.preventDefault();
+ 	 	// });
+ 	 	// $("#create_uploaded_file").on('click', sendFile);
+
+ 	 	// $("#image_file").on('change', uploadFile);
+ 	 	// $('#create_uploaded_file').on('click', uploadFile);
 
  	 	$(window).on('keypress', function(ev){
  	 		if (ev.charCode === 13) {
@@ -490,3 +502,52 @@ var onChatViewScroll = function  () {
 var clearChat = function() {
 	$('#chat-view').empty();
 };
+
+
+////////// PHILS IMAGE
+
+
+// var files = [];
+
+// var showUploadFile = function () {
+// 	$('#newUploadFileModal').foundation('reveal', 'open');
+// };
+
+// var sendFile = function (event) {
+// 	event.preventDefault();
+// 	var reader = new FileReader();
+
+// 	reader.onload = function (event) {
+// 		var data = event.target.result.substr(event.target.result.indexOf(",") + 1, event.target.result.length);
+// 		// $(" #newUploadFileModal ").html("<img src=\"" + event.target.result + "\">");
+
+// 		$.ajax({
+// 			url: 'https://api.imgur.com/3/image',
+// 			headers: {
+// 				'Authorization' : 'Client-ID faf198b7a3d3df5'
+// 			},
+// 			type: 'POST',
+// 			data: {
+// 				'image' : data,
+// 				'type'  : 'base64'
+// 			},
+// 			success: function (response) {
+// 				console.log("FUCK YES");
+// 				var message = {
+// 					url: response.data.link,
+// 					id: userId,
+// 					roomid: currentRoomId
+// 				}
+// 				$('#newUploadFileModal').foundation('reveal', 'close');
+// 				$(".chatRow:last").append("<img src=\"" + message.url + "\">");
+// 				// debugger;
+// 				// dispatcher.trigger('new_embed', message);
+// 				$("#create_uploaded_file").on('click', sendFile);
+// 			},
+// 			error: function (response) {
+// 				console.log("YOU SUCK");
+// 			}
+// 		});
+// 	}
+// 	reader.readAsDataURL(this.files[0]);
+// };
