@@ -10,6 +10,7 @@ WebsocketRails::EventMap.describe do
 
 
   subscribe :client_connected, :to => ChatController, :with_method => :new
+  subscribe :client_disconnected, :to => RoomController, :with_method => :closed
   subscribe :new_room, :to => RoomController, :with_method => :new
   subscribe :join_room, :to => RoomController, :with_method => :join
   subscribe :left_room, :to => RoomController, :with_method => :leave

@@ -6,7 +6,7 @@ class RoomController < WebsocketRails::BaseController
 
 	def new
 		room_name = message['name']
-		room = Room.new(name: room_name, topic: 'Welcome!')
+		room = Room.new(name: room_name, topic: 'Welcome!', owner_id: current_user.id)
 		if room.save
 			# send a message to the user that the room was created
 			message = {
@@ -18,6 +18,12 @@ class RoomController < WebsocketRails::BaseController
 		else
 		 	send_message :room_failed, message
 		end
+	end
+
+	def closed
+		room = Room.find current_user.room_id 
+		room.users.delete(current_user)
+		send_room_details(room.id.to_s)
 	end
 
 
