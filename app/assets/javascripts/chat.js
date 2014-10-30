@@ -88,6 +88,8 @@ $(document).ready(function() {
  	 	dispatcher.on_open = function(data) {
 			getRecentRooms();
 			getRooms();
+			$('#userList').fadeOut();
+			
 		}
 
 	}
@@ -224,6 +226,7 @@ var createRoom = function () {
 
 var leaveRoom = function(){
  	// stop listening to previous events and leave the room
+
 	room.unsubscribe;
 
 	// unbind each command in the command list
@@ -250,6 +253,7 @@ var leaveRoom = function(){
 		roomid: currentRoomId
 	};
 	dispatcher.trigger('left_room', leavemessage);
+	
 };
 
 
@@ -259,7 +263,6 @@ var joinRoom = function (room_id) {
 	}
 
 	offset = 10;
-
 	// join the room
 	room = dispatcher.subscribe(room_id);
 	console.log('joined room ' + room_id);
@@ -307,6 +310,10 @@ var joinRoom = function (room_id) {
 	recentRooms.push(room_id);
 	recentRooms = _.uniq(recentRooms);
 	saveRecentRooms();
+
+	$('#sendRow').slideDown();
+	$('#userList').fadeIn();
+
 };
 
 var clientConnected = function() {
@@ -342,6 +349,8 @@ var showRecentRooms = function(message) {
 };
 
 var displayRooms = function(message) {
+	$('#sendRow').slideUp();
+	$('#userList').fadeOut();
 	$('#topBar').empty();
 	$('#userList').empty();
 	if (room) {
@@ -431,6 +440,7 @@ var updateRecentRooms = function(message) {
 };
 
 var editRoomName = function () {
+
 	if (currentRoomOwner === userId){
 		var $roomName = $(this);
 		var roomText = $roomName.text();
