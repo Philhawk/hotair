@@ -5,9 +5,9 @@
 		var userId = <%= @current_user.id %>;
 	</script>
 
-	<div class="row">
+	<div class="row fullWidth">
 		<!-- left column -->
-		<div class="small-2 columns">
+		<div class="small-2 columns fullHeight">
 			<!-- Room list button -->
 			<div class="row">
 				<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
@@ -32,7 +32,7 @@
 			
 		</div>
 		<!-- right column -->
-		<div class="small-10 columns">
+		<div class="small-10 columns fullHeight">
 			<!-- title bar -->
 			<div class="row topBar" id="topBar">
 				<div class="small-12 columns">
@@ -57,11 +57,11 @@
 				</div>
 			</div>		
 			<!-- chat log -->
-			<div class="row chatRoom">
+			<div class="row chatRoom" id="chatRoom">
 				<!-- messages and send -->
-				<div class="small-10 columns">
+				<div class="small-10 columns fullHeight">
 					<!-- chat messages -->
-					<div class="row">
+					<div class="row" id="chatMsgs">
 						<div class="small-12 columns" id="chat-view">
 							<!-- dummy message -->
 							<div class="row">
@@ -81,7 +81,7 @@
 						</div>
 					</div>
 					<!-- send row -->
-					<div class="row">
+					<div class="row" id="sendRow">
 						<!-- Attachment buttom -->
 						<div class="small-1 columns">
 							<%= button_tag 'A', id:'show_upload_file_button' %>
@@ -97,7 +97,7 @@
 					</div>
 				</div>
 				<!-- users online -->
-				<div class="small-2 columns userList" id="userList">
+				<div class="small-2 columns userList fullHeight" id="userList">
 					<!-- dummy user online -->
 					<div class="row">
 						<!-- Online/offline notificator -->
@@ -117,12 +117,23 @@
 
 	<script type='templates/handlebars' id="text_template">
 		<div class="row chatRow">
-			<em>{{ name }}:</em> {{{ text }}}
+			<div class="small-2 columns userName">
+				{{ name }}:
+			</div>
+			<!-- message -->
+			<div class="small-9 columns">
+				{{{ text }}}
+			</div>
+			<!-- time -->
+			<div class="small-1 columns">
+
+			</div>
 		</div>
+
 	</script>
 
 	<script type='templates/handlebars' id="embed_template">
-		<div class="row chatRow">
+		<div class="row chatRow embedColor">
 			<em>{{ name }}</em>
 				<a class="embedly-card" href="{{ url }}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
@@ -139,14 +150,14 @@
 
 
 	<script type='templates/handlebars' id="map_template">
-		<div class="row chatRow">
+		<div class="row chatRow embedColor">
 				<a class="embedly-card" href="{{{ address }}}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
 	</script>
 
 	<script type='templates/handlebars' id="goto_template">
-		<div class="row chatRow">
+		<div class="row chatRow embedColor">
 				<a class="embedly-card" href="{{{ destination }}}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
@@ -167,7 +178,7 @@
 	</script>
 
 	<script type='templates/handlebars' id="wiki_template">
-		<div class="row chatRow">
+		<div class="row chatRow embedColor">
 				<a class="embedly-card" href="{{{ wiki }}}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
@@ -296,6 +307,22 @@
 		<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
 	</script>
+</div>
+
+<!-- New Login form -->
+
+<div id="newLoginModal">
+<h1>Login</h1>
+
+<%= form_tag '/login' do %>
+	<%= label_tag :name %>
+	<%= text_field_tag :name, nil, autofocus: true %>
+
+	<%= label_tag :password %>
+	<%= password_field_tag :password, nil %>
+
+	<%= submit_tag 'Login' %>
+<% end %>
 </div>
 
 <!-- New room form -->

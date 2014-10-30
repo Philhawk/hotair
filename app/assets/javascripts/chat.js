@@ -65,9 +65,15 @@ $(document).ready(function() {
  	 	$('#chat-view').on('scroll', onChatViewScroll);
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
  	 	$('#chat-page').on('click', '#roomName', editRoomName);
+
  	 	$('#chat-view').on('scroll', onChatViewScroll);
 
+ 	 	$(window).on('scroll', onChatViewScroll);
+ 	 	$('#show_create_room_button').on('click', showCreateRoom);
+
+
  	 	//image stuff dont touch please
+ 	 	$('#new_login_path').on('click', showLogin);
  	 	$('#show_create_room_button').on('click', showCreateRoom);
  	 	$('#show_upload_file_button').on('click', showUploadFile);
 	 	$("#create_uploaded_file").on('click', sendFile)
@@ -128,6 +134,12 @@ var displayCommand = function(type) {
 		// append the message to the chat view
 		$('#chat-view').append(displayHTML(message));
 	}
+};
+
+
+var showLogin = function () {
+	// reveal the modal that contains the new room form
+	$('#newLoginModal').foundation('reveal', 'open');
 };
 
 // evaluate what text has been entered in the text field
@@ -495,7 +507,7 @@ var getNewChatViewData = function () {
 }
 
 var onChatViewScroll = function  () {
-    var scrolled = $(this).scrollTop();
+    var scrolled = $('#chat-view').scrollTop();
     if ( scrolled === 0 ) {
     	if (room) {
     		getNewChatViewData();
