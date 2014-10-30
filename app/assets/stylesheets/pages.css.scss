@@ -34,7 +34,7 @@ body {
 	width: 100%;
 	position: absolute;
 	bottom: 0px;
-	top: 115px;
+	top: 112px;
 }
 #chatMsgs{
 	position: absolute;
@@ -116,11 +116,13 @@ body {
 	}
 	box-shadow: 0px 4px 0px rgba(0,0,0,0.1);
 	padding: 1em;
+	background: white;
 }
 
 #userList {
-	border-left: 1px solid #DDDDDD;
 	padding: 1em;
+	background-color: #EEE;
+	z-index: -1;
 
 }
 
