@@ -36,8 +36,8 @@ $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
 		// connect to websocket
-		// dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
-		dispatcher = new WebSocketRails('localhost:3000/websocket');
+		dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
+		// dispatcher = new WebSocketRails('localhost:3000/websocket');
 
 		// get commands read to listen to
 		$.each(commands, function(i, command) {
@@ -72,6 +72,7 @@ $(document).ready(function() {
 
  	 	$(window).on('scroll', onChatViewScroll);
  	 	$('#show_create_room_button').on('click', showCreateRoom);
+ 	 	$('#show_commands').on('click', openSubMenu);
 
 
  	 	//image stuff dont touch please
@@ -231,7 +232,14 @@ var sendText = sendCommand('text');
 var showCreateRoom = function () {
 	// reveal the modal that contains the new room form
 	$('#newRoomModal').foundation('reveal', 'open');
+	$('#room_name').focus();
 };
+
+// james modal
+var openSubMenu = function () {
+	$('#newCommandModal').foundation('reveal', 'open');
+};
+// end james modal
 
 var createRoom = function () {
 	// use form data to create the room
@@ -241,6 +249,7 @@ var createRoom = function () {
 	};
 	dispatcher.trigger('new_room', message);
 	$('#newRoomModal').foundation('reveal', 'close');
+	$('#room_name').val("");
 };
 
 var leaveRoom = function(){
@@ -535,8 +544,6 @@ var clearChat = function() {
 
 
 ////////// PHILS IMAGE
-
-
 var files = [];
 
 var showUploadFile = function () {
@@ -586,5 +593,6 @@ var tagUser = function() {
 	$('#chat_text').val("@" + name + " ");
 	$('#chat_text').focus();
 }
+
 
 
