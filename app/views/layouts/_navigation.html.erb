@@ -10,6 +10,7 @@
     <!-- Right Nav Section -->
     <ul class="right">
     	<% if logged_in? %>
+        <li><%= button_tag 'Commands', id: 'show_commands' %></li>
       	<li><%= link_to "Chat as " + @current_user.name, chat_path %></li>
         <li><%= link_to 'Edit Profile', edit_current_user_path %></li>
       	<li><%= link_to 'Logout', login_path, :method => :delete %></li>

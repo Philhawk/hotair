@@ -66,6 +66,7 @@ $(document).ready(function() {
  	 	$('#chat-page').on('click', '#roomName', editRoomName);
  	 	$(window).on('scroll', onChatViewScroll);
  	 	$('#show_create_room_button').on('click', showCreateRoom);
+ 	 	$('#show_commands').on('click', openSubMenu);
 
  	 	
  	 	// $('#show_upload_file_button').on('click', showUploadFile);
@@ -211,6 +212,12 @@ var showCreateRoom = function () {
 	// reveal the modal that contains the new room form
 	$('#newRoomModal').foundation('reveal', 'open');
 };
+
+// james modal
+var openSubMenu = function () {
+	$('#newCommandModal').foundation('reveal', 'open');
+};
+// end james modal
 
 var createRoom = function () {
 	// use form data to create the room
@@ -553,3 +560,11 @@ var clearChat = function() {
 // 	}
 // 	reader.readAsDataURL(this.files[0]);
 // };
+
+
+
+
+
+
+
+
