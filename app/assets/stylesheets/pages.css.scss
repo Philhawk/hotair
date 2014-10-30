@@ -16,7 +16,6 @@ html {
 
 body {
    height: 100%;
-
  }
 
 #chat-page {
@@ -135,7 +134,11 @@ a {
 
 }
 
-#show_create_room_button {
+#show_create_room_button  {
+	background: #990033;
+}
+
+#new_user_path {
 	background: #990033;
 }
 
@@ -158,6 +161,7 @@ a {
 
 .small-4.columns {
 	background-color: white;
+	text-align: center;
 
 }
 .embedColor {
@@ -167,6 +171,10 @@ a {
 .embedly-card {
 	background-color: white;
 
+}
+
+.button.expand {
+	width: 200%;
 }
 
 #show_rooms_button{
