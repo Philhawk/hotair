@@ -283,8 +283,17 @@
 
 	<script type="templates/handlebars" id="fact_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{ fact }}
+			<div class="small-2 columns userName">
+				{{ name }}: 
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				Heres a fact... <br>
+				<em> {{ fact }} </em>
+			</div>
+			<div class="small-1 columns">
 
+			</div>
 		</div>
 	</script>
 
