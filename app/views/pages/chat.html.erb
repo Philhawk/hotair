@@ -267,7 +267,17 @@
 
 	<script type="templates/handlebars" id="roll_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em> rolled a {{ roll }} on a {{ max }} sided die!
+			<div class="small-2 columns userName">
+				{{ name }}: 
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				Rolling....<br>
+				<em>{{ name }} rolled a {{ roll }} on a {{ max }} sided die!</em>
+			</div>
+			<div class="small-1 columns">
+
+			</div>
 		</div>
 	</script>
 
