@@ -32,6 +32,7 @@ var commands = [
 ];
 
 $(document).ready(function() {
+
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
 		// connect to websocket
@@ -103,8 +104,7 @@ $(document).ready(function() {
 
 	}
 
-	$('#new_login_path').on('click', showLogin);
-	$('#new_user_path').on('click', showRegister);
+
 
 
 });
@@ -146,15 +146,8 @@ var displayCommand = function(type) {
 
 // Modals to login and register 
 
-var showLogin = function () {
-	// reveal the modal that contains the new room form
-	$('#newLoginModal').foundation('reveal', 'open');
-};
 
-var showRegister = function () {
-	// reveal the modal that contains the new room form
-	$('#RegisterModal').foundation('reveal', 'open');
-};
+
 
 // evaluate what text has been entered in the text field
 var evalText = function () {
