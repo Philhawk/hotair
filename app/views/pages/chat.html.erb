@@ -5,9 +5,9 @@
 		var userId = <%= @current_user.id %>;
 	</script>
 
-	<div class="row">
+	<div class="row fullWidth">
 		<!-- left column -->
-		<div class="small-2 columns">
+		<div class="small-2 columns fullHeight">
 			<!-- Room list button -->
 			<div class="row">
 				<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
@@ -32,7 +32,7 @@
 			
 		</div>
 		<!-- right column -->
-		<div class="small-10 columns">
+		<div class="small-10 columns fullHeight">
 			<!-- title bar -->
 			<div class="row topBar" id="topBar">
 				<div class="small-12 columns">
@@ -57,11 +57,11 @@
 				</div>
 			</div>		
 			<!-- chat log -->
-			<div class="row chatRoom">
+			<div class="row chatRoom" id="chatRoom">
 				<!-- messages and send -->
-				<div class="small-10 columns">
+				<div class="small-10 columns fullHeight">
 					<!-- chat messages -->
-					<div class="row">
+					<div class="row" id="chatMsgs">
 						<div class="small-12 columns" id="chat-view">
 							<!-- dummy message -->
 							<div class="row">
@@ -81,7 +81,7 @@
 						</div>
 					</div>
 					<!-- send row -->
-					<div class="row">
+					<div class="row" id="sendRow">
 						<!-- Attachment buttom -->
 						<div class="small-1 columns">
 							<%= button_tag 'A', id:'show_upload_file_button' %>
@@ -97,7 +97,7 @@
 					</div>
 				</div>
 				<!-- users online -->
-				<div class="small-2 columns userList" id="userList">
+				<div class="small-2 columns userList fullHeight" id="userList">
 					<!-- dummy user online -->
 					<div class="row">
 						<!-- Online/offline notificator -->

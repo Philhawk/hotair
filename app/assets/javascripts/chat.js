@@ -64,7 +64,7 @@ $(document).ready(function() {
  	 	$('#chat-view').on('scroll', onChatViewScroll);
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
  	 	$('#chat-page').on('click', '#roomName', editRoomName);
- 	 	$('#chat-view').on('scroll', onChatViewScroll);
+ 	 	$(window).on('scroll', onChatViewScroll);
  	 	$('#show_create_room_button').on('click', showCreateRoom);
 
  	 	
@@ -493,7 +493,7 @@ var getNewChatViewData = function () {
 }
 
 var onChatViewScroll = function  () {
-    var scrolled = $(this).scrollTop();
+    var scrolled = $('#chat-view').scrollTop();
     if ( scrolled === 0 ) {
     	if (room) {
     		getNewChatViewData();
