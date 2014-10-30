@@ -65,6 +65,7 @@ $(document).ready(function() {
  	 	$('#chat-view').on('scroll', onChatViewScroll);
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
  	 	$('#chat-page').on('click', '#roomName', editRoomName);
+ 	 	$('#chat-page').on('click', '.userInRoom', tagUser);
 
  	 	$('#chat-view').on('scroll', onChatViewScroll);
 
@@ -579,5 +580,11 @@ var sendFile = function (event) {
 	}
 	reader.readAsDataURL(this.files[0]);
 };
+
+var tagUser = function() {
+	var name = $(this).context.innerText;
+	$('#chat_text').val("@" + name + " ");
+	$('#chat_text').focus();
+}
 
 
