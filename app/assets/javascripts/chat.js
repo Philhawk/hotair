@@ -202,7 +202,6 @@ var joinHandler = function(ev) {
 var getRooms = function() {
 	// get a list of rooms from the server
 	var message = {};
-
 	dispatcher.trigger('get_rooms', message);
 };
 

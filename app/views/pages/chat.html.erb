@@ -145,7 +145,16 @@
 
 	<script type="templates/handlebars" id="time_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{ time }}
+			<div class="small-2 columns userName">
+				Server: 
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				The time on the server is {{ time }}
+			</div>
+			<div class="small-1 columns">
+
+			</div>
 		</div>
 	</script>
 
@@ -174,36 +183,57 @@
 	</script>
 
 	<script type="templates/handlebars" id="search_template">
-		{{#each search }}
-			<div class="row chatRow">
-				<a href="{{ uri }}">{{ title }}</a>
-				{{{ content }}}
+		<div class="row chatRow">
+			<div class="small-2 columns userName">
+				{{ name }}:
 			</div>
-		{{/each}}
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				<em>The top 5 results for {{ searchText }}</em>
+				{{#each search }}
+						<p>
+							<a href="{{ uri }}">{{ title }}</a><br>
+							{{{ content }}}
+						</p>
+				{{/each}}
+			</div>
+			<!-- time -->
+			<div class="small-1 columns">
+
+			</div>
+		</div>
+
 	</script>
 
 	<script type="templates/handlebars" id="recent_rooms_template">
 		<ul class="side-nav">
 			<li>
-						<div class="small-10 columns recentRoom">
-							<a href="{{ id }}">{{ name }}</a>
-						</div>
-						<div class="small-2 columns noPadding">
-							<span class="removeRecent"><a href="{{ id }}">x</a></span>
-						</div>
-						<!-- name -->
-						
+				<div class="small-10 columns recentRoom">
+					<a href="{{ id }}">{{ name }}</a>
+				</div>
+				<div class="small-2 columns noPadding">
+					<span class="removeRecent"><a href="{{ id }}">x</a></span>
+				</div>
+				<!-- name -->
+				
 			</li>
 		</ul>	
 	</script>
 
 	<script type="templates/handlebars" id="code_template">
-		<div class="row chatRow">
-			<div class="code snippet">
-				<em>{{ name }}</em>: {{ time }}
+	 	<div class="row chatRow">
+			<div class="small-2 columns userName">
+				{{ name }}:
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl code snippet">
 				<pre><code>{{ code }}</code></pre>
 			</div>
-	 	</div>
+			<!-- time -->
+			<div class="small-1 columns">
+
+			</div>
+		</div>
  	</script>
 
  	<script type="templates/handlebars" id="flip_template">
@@ -214,20 +244,49 @@
 
 	<script type="templates/handlebars" id="roll_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em> rolled a {{ roll }} on a {{ max }} sided die!
+			<div class="small-2 columns userName">
+				{{ name }}: 
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				Rolling....<br>
+				<em>{{ name }} rolled a {{ roll }} on a {{ max }} sided die!</em>
+			</div>
+			<div class="small-1 columns">
+
+			</div>
 		</div>
 	</script>
 
 	<script type="templates/handlebars" id="fact_template">
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{ fact }}
+			<div class="small-2 columns userName">
+				{{ name }}: 
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				Heres a fact... <br>
+				<em> {{ fact }} </em>
+			</div>
+			<div class="small-1 columns">
 
+			</div>
 		</div>
 	</script>
 
 	<script type="templates/handlebars" id="fortune_template">
-		<div class="row chatRom">
-			<em>{{ name }}</em>: {{{ fortune }}}
+		<div class="row chatRow">
+			<div class="small-2 columns userName">
+				{{ name }}: 
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				A fortune for you...<br>
+				<em>{{{ fortune }}}</em>
+			</div>
+			<div class="small-1 columns">
+
+			</div>
 		</div>
 	</script>
 
