@@ -315,12 +315,12 @@ class RoomController < WebsocketRails::BaseController
 
 		message_to_send = {
 			name: user.name,
-			address: new_address
+			url: new_address
 		}
 
-		put_message_in_db(message, message_to_send, 'new_map')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_map, message_to_send)
+		WebsocketRails[room_id].trigger(:new_embed, message_to_send)
 
 	end
 
@@ -348,12 +348,12 @@ class RoomController < WebsocketRails::BaseController
 
 		message_to_send = {
 			name: user.name,
-			destination: new_goto
+			url: new_goto
 		}
 
-		put_message_in_db(message, message_to_send, 'new_goto')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_goto, message_to_send)
+		WebsocketRails[room_id].trigger(:new_embed, message_to_send)
 	end
 
 	def new_transport
@@ -369,12 +369,12 @@ class RoomController < WebsocketRails::BaseController
 
 		message_to_send = {
 		name: user.name,
-		transport: new_transport
+		url: new_transport
 		}
 
-		put_message_in_db(message, message_to_send, 'new_transport')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_transport, message_to_send)
+		WebsocketRails[room_id].trigger(:new_embed, message_to_send)
 	end
 
 	def new_image
@@ -389,33 +389,13 @@ class RoomController < WebsocketRails::BaseController
 			url: url
 		}
 
-		put_message_in_db(message, message_to_send, 'new_image')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_image, message)
+		WebsocketRails[room_id].trigger(:new_embed, message)
 
 		# scroll clients
 		scroll_chat room_id
 	end
-
-	def new_crumble
-		user_id = message['id']
-		room_id = message['roomid']
-		crumble = message['crumble']
-
-		user = User.find user_id
-
-		new_crumble = "https://www.crumbles.co/?dictionary=standard&crumble=#{ crumble.gsub(' ', '%20') }"
-
-		message_to_send = {
-			name: user.name,
-			recipe: new_crumble
-		}
-
-		put_message_in_db(message, message_to_send, 'new_crumble')
-
-		WebsocketRails[room_id].trigger(:new_crumble, message_to_send)
-	end
-
 
 
 	def new_recipe
@@ -429,12 +409,12 @@ class RoomController < WebsocketRails::BaseController
 
 		message_to_send = {
 			name: user.name,
-			recipe: new_recipe
+			url: new_recipe
 		}
 
-		put_message_in_db(message, message_to_send, 'new_recipe')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_recipe, message_to_send)
+		WebsocketRails[room_id].trigger(:new_embed, message_to_send)
 	end
 
 	def new_wiki
@@ -448,12 +428,12 @@ class RoomController < WebsocketRails::BaseController
 
 		message_to_send = {
 			name: user.name,
-			wiki: new_wiki
+			url: new_wiki
 		}
 
-		put_message_in_db(message, message_to_send, 'new_wiki')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_wiki, message_to_send)
+		WebsocketRails[room_id].trigger(:new_embed, message_to_send)
 	end
 
 	def new_movie
@@ -467,12 +447,12 @@ class RoomController < WebsocketRails::BaseController
 
 		message_to_send = {
 			name: user.name,
-			movie: new_movie
+			url: new_movie
 		}
 
-		put_message_in_db(message, message_to_send, 'new_movie')
+		put_message_in_db(message, message_to_send, 'new_embed')
 
-		WebsocketRails[room_id].trigger(:new_movie, message_to_send)
+		WebsocketRails[room_id].trigger(:new_embed, message_to_send)
 	end
 
 	# JAMES
@@ -490,7 +470,8 @@ class RoomController < WebsocketRails::BaseController
 
 	  message_to_send = {
 	  	name: user.name,
-	  	search: uri_results
+	  	search: uri_results,
+	  	searchText: message['search']
 	  }
 
 	  put_message_in_db(message, message_to_send, 'new_search')

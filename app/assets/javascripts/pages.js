@@ -13,3 +13,8 @@ var showRegister = function () {
 	// reveal the modal that contains the new room form
 	$('#RegisterModal').foundation('reveal', 'open');
 };
+
+
+var closeLoginPage = function () {	
+	$('#newLoginModal').foundation('reveal', 'close');
+};

@@ -13,7 +13,6 @@ var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
 
 // List your commands here
 var commands = [
-	'crumble',
 	'map',
 	'time',
 	'movie',
@@ -203,7 +202,6 @@ var joinHandler = function(ev) {
 var getRooms = function() {
 	// get a list of rooms from the server
 	var message = {};
-
 	dispatcher.trigger('get_rooms', message);
 };
 
