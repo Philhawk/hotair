@@ -23,7 +23,7 @@
     <%= label_tag :password %>
     <%= password_field_tag :password, nil %>
 
-  <%= submit_tag 'Login' %>
+  <%= submit_tag 'Login', class: "button expand" %>
 <% end %>
   <a class="close-reveal-modal">&#215;</a>
 </div>
@@ -43,7 +43,7 @@
   <%= f.label :password_confirmation %>
   <%= f.password_field :password_confirmation, required: true %>
 
-  <%= f.submit %>
+  <%= f.submit class: "button expand" %>
 <% end %>
   <a class="close-reveal-modal">&#215;</a>
 
