@@ -1,11 +1,7 @@
-	
-
-$(document).ready(function() {
+	$(document).ready(function() {
 	$('body').on('click', '#new_login_path', showLogin);
 	$('body').on('click', '#new_user_path', showRegister);
-	$('body').on('click', '#show_commands', openSubMenu);
-
-
+  $('body').on('click', '#registerButton', showRegister);
 });
 
 var showLogin = function () {
@@ -13,13 +9,7 @@ var showLogin = function () {
 	$('#newLoginModal').foundation('reveal', 'open');
 };
 
-
 var showRegister = function () {
 	// reveal the modal that contains the new room form
 	$('#RegisterModal').foundation('reveal', 'open');
-};
-
-
-var openSubMenu = function () {
-	$('#newCommandModal').foundation('reveal', 'open');
 };
