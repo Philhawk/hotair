@@ -208,8 +208,12 @@
 			</div>
 			<div class="row">
 				<h4 id="roomTopic">{{ topic }}</h4>
+				
 				{{#if users}}
 				<h5>{{ users }} Users in room</h5>
+				{{/if}}
+				{{#if owner}}
+					<h5> <%= button_tag 'DELETE', id: 'delete_room_button' %> </h5>
 				{{/if}}
 			</div>
 		</div>
