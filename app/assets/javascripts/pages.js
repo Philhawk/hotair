@@ -3,8 +3,7 @@
 $(document).ready(function() {
 	$('body').on('click', '#new_login_path', showLogin);
 	$('body').on('click', '#new_user_path', showRegister);
-	$('body').on('click', '#loginClose', closeLoginPage);
-
+	$('body').on('click', '#registerButton', showRegister);
 
 });
 

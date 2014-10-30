@@ -514,12 +514,12 @@ class RoomController < WebsocketRails::BaseController
 
 		message_to_send = {
 			name: user.name,
-			gif: gif
+			url: gif
 		}
 
-	  put_message_in_db(message, message_to_send, 'new_gif')
+	  put_message_in_db(message, message_to_send, 'new_embed')
 
-	  WebsocketRails[room_id].trigger(:new_gif, message_to_send)
+	  WebsocketRails[room_id].trigger(:new_embed, message_to_send)
 
 	  scroll_chat room_id
 	end
