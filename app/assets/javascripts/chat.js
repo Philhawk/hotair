@@ -370,7 +370,6 @@ var displayRooms = function(message) {
 	$('#sendRow').slideUp();
 	$('#userList').fadeOut();
 	$('#topBar').empty();
-	$('#userList').empty();
 	if (room) {
 		leaveRoom();
 	}
