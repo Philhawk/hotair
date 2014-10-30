@@ -7,8 +7,9 @@ class SessionController < ApplicationController
   	if user.present? && user.authenticate(params[:password])
   		session[:user_id] = user.id
   		redirect_to chat_path
-  	else
-  		redirect_to login_path
+    else
+      @error = "Login Incorrect"
+      render :new
   	end
   end
 

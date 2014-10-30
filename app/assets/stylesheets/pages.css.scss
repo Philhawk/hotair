@@ -16,7 +16,8 @@ html {
 
 body {
    height: 100%;
-}
+
+ }
 
 #chat-page {
 	position: absolute;
@@ -134,9 +135,9 @@ a {
 
 }
 
-#show_create_room_button {
+/*#show_create_room_button {
 	background: #990033;
-}
+}*/
 
 .userName {
 	text-align: right;
@@ -260,3 +261,22 @@ html {
 
 
 /* lawrence test  */
+
+/* james */
+button.secondary, .button.secondary {
+  background-color: #990033;
+  border-color: #b9b9b9;
+  color: white;
+}
+/* line 162, /Users/jamesleboeuf/.rvm/gems/ruby-2.0.0-p481/gems/foundation-rails-5.4.5.0/vendor/assets/stylesheets/foundation/components/_buttons.scss */
+button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+  background-color: #008cba;
+}
+/* line 168, /Users/jamesleboeuf/.rvm/gems/ruby-2.0.0-p481/gems/foundation-rails-5.4.5.0/vendor/assets/stylesheets/foundation/components/_buttons.scss */
+button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+  color: white;
+}
+
+.top-bar-section ul li > button {
+  background-color: #990033;
+}
