@@ -7,14 +7,14 @@
 
 	<div class="row fullWidth">
 		<!-- left column -->
-		<div class="small-2 columns fullHeight">
+		<div class="small-2 columns fullHeight" id="leftColumn">
 			<!-- Room list button -->
 			<div class="row">
 				<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
 			</div>
 			<!-- Rooms title -->
-			<div class="row">
-				Rooms
+			<div class="row roomsTitle">
+				<h6>Recent Rooms</h6>
 			</div>
 			<!-- list of rooms as rows -->
 			<div id="recentRoomNav">
@@ -67,15 +67,15 @@
 							<div class="row">
 								<!-- user name -->
 								<div class="small-2 columns">
-									Nick
+					
 								</div>
 								<!-- message -->
 								<div class="small-9 columns">
-									Oklahoma sucks
+
 								</div>
 								<!-- time -->
 								<div class="small-1 columns">
-									10:00am
+
 								</div>
 							</div>
 						</div>
@@ -84,16 +84,14 @@
 					<div class="row" id="sendRow">
 						<!-- Attachment buttom -->
 						<div class="small-1 columns">
-							<%= button_tag 'A', id:'show_upload_file_button' %>
+							<button id="show_upload_file_button" name="button" type="submit"><i class="fa fa-camera"></i></button>
 						</div>
 						<!-- text field -->
-						<div class="small-10 columns">
+						<div class="small-11 columns">
 							<%= text_field_tag :chat_text %>
 						</div>
 						<!-- send button -->
-						<div class="small-1 columns">
-							<%= button_tag 'S', id: 'send_button' %>
-						</div>
+					
 					</div>
 				</div>
 				<!-- users online -->
@@ -102,11 +100,11 @@
 					<div class="row">
 						<!-- Online/offline notificator -->
 						<div class="small-2 columns">
-							O
+
 						</div>
 						<!-- name -->
 						<div class="small-10 columns">
-							Nick
+
 						</div>
 					</div>
 				</div>
@@ -121,7 +119,7 @@
 				{{ name }}:
 			</div>
 			<!-- message -->
-			<div class="small-9 columns">
+			<div class="small-9 columns messageEl">
 				{{{ text }}}
 			</div>
 			<!-- time -->
@@ -134,11 +132,17 @@
 
 	<script type='templates/handlebars' id="embed_template">
 		<div class="row chatRow embedColor">
-			<em>{{ name }}</em>
+			<div class="small-2 columns userName">
+				{{ name }}:
+			</div>
+			<!-- message -->
+			<div class="small-10 columns messageEl">
 				<a class="embedly-card" href="{{ url }}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+			</div>
 		</div>
 	</script>
+
 
 
 	<script type='templates/handlebars' id="map_template">
@@ -170,9 +174,10 @@
 	</script>
 
 	<script type='templates/handlebars' id="wiki_template">
-		<div class="row chatRow embedColor">
+		<div class="row chatRow">
 				<a class="embedly-card" href="{{{ wiki }}}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+
 		</div>
 	</script>
 
@@ -220,9 +225,18 @@
 	</script>
 
 	<script type="templates/handlebars" id="recent_rooms_template">
-		<div class="recentRoom">
-			<a href="{{ id }}">{{ name }}</a><span class="removeRecent"><a href="{{ id }}">x</a></span>
-		</div>
+		<ul class="side-nav">
+			<li>
+						<div class="small-10 columns recentRoom">
+							<a href="{{ id }}">{{ name }}</a>
+						</div>
+						<div class="small-2 columns noPadding">
+							<span class="removeRecent"><a href="{{ id }}">x</a></span>
+						</div>
+						<!-- name -->
+						
+			</li>
+		</ul>	
 	</script>
 
 	<script type="templates/handlebars" id="code_template">
@@ -267,10 +281,17 @@
 		</div>
 	</script>
 
+	<script type='templates/handlebars' id="crumble_template">
+		<div class="row chatRow">
+				<a class="embedly-card" href="{{ crumble }}"></a>
+				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		</div>
+	</script>
+
 	<script type='templates/handlebars' id="users_in_room_template">
 		<ul>
 			{{#each users}}
-				<li>{{ name }}</li>
+				<li class="userInRoom">{{ name }}</li>
 			{{/each}}
 		</ul>
 	</script>
@@ -294,6 +315,7 @@
 	</script>
 </div>
 
+
 <!-- New room form -->
 
 <div id="newRoomModal" class="reveal-modal" data-reveal>
@@ -311,7 +333,7 @@
 <div id="newUploadFileModal" class="reveal-modal" data-reveal>
 	<h2>Upload Image</h2>
   <p class="lead">Choose an image to upload</p>
-	<form id="gingerstepkid">
+	<form id="imagefield">
 		<div class="columns small-10">
 			<%= file_field_tag :image_file %>
 			<%= hidden_field_tag :image_cache %>	
@@ -320,5 +342,120 @@
 	 	<%= button_tag 'Upload', id: 'create_uploaded_file' %>
 
 	</form>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<!-- New Command form -->
+<div id="newCommandModal" class="reveal-modal" data-reveal>
+	<h2>Commands</h2>
+	<p class="lead">Click each command for detailed information</p>
+	<!-- <ul class="square"> -->
+	<a href="#" data-reveal-id="mapModal" class="secondary button">/map</a>
+	<a href="#" data-reveal-id="flipModal" class="secondary button">/flip</a>
+	<a href="#" data-reveal-id="codeModal" class="secondary button">/code</a>
+	<a href="#" data-reveal-id="nudgeModal" class="secondary button">/nudge</a>
+	<a href="#" data-reveal-id="searchModal" class="secondary button">/search</a>
+	<a href="#" data-reveal-id="gifModal" class="secondary button">/gif</a>
+	<a href="#" data-reveal-id="transportModal" class="secondary button">/transport</a>
+	<a href="#" data-reveal-id="wikiModal" class="secondary button">/wiki</a>
+	<a href="#" data-reveal-id="gotoModal" class="secondary button">/goto</a>
+	<a href="#" data-reveal-id="recipeModal" class="secondary button">/recipe</a>
+	<a href="#" data-reveal-id="factModal" class="secondary button">/fact</a>
+	<a href="#" data-reveal-id="rollModal" class="secondary button">/roll</a>
+	<a href="#" data-reveal-id="fortuneModal" class="secondary button">/fortune</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="mapModal" class="reveal-modal" data-reveal>
+	<h2>/map</h2>
+	<p>/map 'address'</p>
+	<p>Example: /map Sydney Australia</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="flipModal" class="reveal-modal" data-reveal>
+	<h2>/flip</h2>
+	<p>/flip [ENTER]</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="codeModal" class="reveal-modal" data-reveal>
+	<h2>/code</h2>
+	<p>/code 'code'</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="nudgeModal" class="reveal-modal" data-reveal>
+	<h2>/nudge</h2>
+	<p>/nudge [ENTER]</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="searchModal" class="reveal-modal" data-reveal>
+	<h2>/search</h2>
+	<p>/search 'anything'</p>
+	<p>Example: /search top restaurants in Sydney</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="gifModal" class="reveal-modal" data-reveal>
+	<h2>/gif</h2>
+	<p>/gif 'anything'</p>
+	<p>Example: /gif cat</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="transportModal" class="reveal-modal" data-reveal>
+	<h2>/transport</h2>
+	<p>/transport Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur distinctio doloribus voluptas dolore quod modi odit unde quisquam qui quo nam, eveniet tempore nihil, minima provident officiis libero vitae explicabo!</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="wikiModal" class="reveal-modal" data-reveal>
+	<h2>/wiki</h2>
+	<p>/wiki Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur distinctio doloribus voluptas dolore quod modi odit unde quisquam qui quo nam, eveniet tempore nihil, minima provident officiis libero vitae explicabo!</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="gotoModal" class="reveal-modal" data-reveal>
+	<h2>/goto</h2>
+	<p>/goto Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur distinctio doloribus voluptas dolore quod modi odit unde quisquam qui quo nam, eveniet tempore nihil, minima provident officiis libero vitae explicabo!</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="recipeModal" class="reveal-modal" data-reveal>
+	<h2>/recipe</h2>
+	<p>/recipe Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur distinctio doloribus voluptas dolore quod modi odit unde quisquam qui quo nam, eveniet tempore nihil, minima provident officiis libero vitae explicabo!</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="factModal" class="reveal-modal" data-reveal>
+	<h2>/fact</h2>
+	<p>/fact Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur distinctio doloribus voluptas dolore quod modi odit unde quisquam qui quo nam, eveniet tempore nihil, minima provident officiis libero vitae explicabo!</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="rollModal" class="reveal-modal" data-reveal>
+	<h2>/roll</h2>
+	<p>/roll Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur distinctio doloribus voluptas dolore quod modi odit unde quisquam qui quo nam, eveniet tempore nihil, minima provident officiis libero vitae explicabo!</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
+	<a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="fortuneModal" class="reveal-modal" data-reveal>
+	<h2>/fortune</h2>
+	<p>/fortune Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur distinctio doloribus voluptas dolore quod modi odit unde quisquam qui quo nam, eveniet tempore nihil, minima provident officiis libero vitae explicabo!</p>
+	<a class="secondary button" href="#" data-reveal-id="newCommandModal">Commands</a>
 	<a class="close-reveal-modal">&#215;</a>
 </div>

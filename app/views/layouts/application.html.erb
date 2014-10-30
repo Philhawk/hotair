@@ -5,15 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Hot Air</title>
-
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <%= stylesheet_link_tag    "application" %>
     <%= javascript_include_tag "vendor/modernizr" %>
     <%= csrf_meta_tags %>
   </head>
-
   <body>
+
+
+<div id="newLoginModal" class="reveal-modal">
+<h1>Login</h1>
+
+<%= form_tag '/login' do %>
+  <%= label_tag :name %>
+  <%= text_field_tag :name, nil, autofocus: true %>
+
+  <%= label_tag :password %>
+  <%= password_field_tag :password, nil %>
+
+  <%= submit_tag 'Login' %>
+<% end %>
+</div>
+
+<div id="RegisterModal" class="reveal-modal">
+  <h1>Sign up</h1>
+<%= form_for User.new do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name, required: true %>
+  
+  <%= f.label :email %>
+  <%= f.email_field :email, required: true %>
+
+  <%= f.label :password %>
+  <%= f.password_field :password, required: true %>
+
+  <%= f.label :password_confirmation %>
+  <%= f.password_field :password_confirmation, required: true %>
+
+  <%= f.submit %>
+<% end %>
+</div>
+
+
     <%= render 'layouts/navigation' %>
-    <%= yield %>
+
+
+      <%= yield %>
+
+
     <%= javascript_include_tag "application" %>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/default.min.css">
     <script src="//">

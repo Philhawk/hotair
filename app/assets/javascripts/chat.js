@@ -13,6 +13,7 @@ var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
 
 // List your commands here
 var commands = [
+	'crumble',
 	'map',
 	'time',
 	'movie',
@@ -34,8 +35,8 @@ $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
 		// connect to websocket
-		// dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
-		dispatcher = new WebSocketRails('localhost:3000/websocket');
+		dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
+		// dispatcher = new WebSocketRails('localhost:3000/websocket');
 
 		// get commands read to listen to
 		$.each(commands, function(i, command) {
@@ -64,17 +65,25 @@ $(document).ready(function() {
  	 	$('#chat-view').on('scroll', onChatViewScroll);
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
  	 	$('#chat-page').on('click', '#roomName', editRoomName);
+ 	 	$('#chat-page').on('click', '.userInRoom', tagUser);
+
+ 	 	$('#chat-view').on('scroll', onChatViewScroll);
+
  	 	$(window).on('scroll', onChatViewScroll);
  	 	$('#show_create_room_button').on('click', showCreateRoom);
  	 	$('#show_commands').on('click', openSubMenu);
 
+
+ 	 	//image stuff dont touch please
  	 	
- 	 	// $('#show_upload_file_button').on('click', showUploadFile);
- 	 	// $("#image_file").on('change', sendFile);
- 	 	// $('#gingerstepkid').on('submit', function (e) {
- 	 	// 	e.preventDefault();
- 	 	// });
- 	 	// $("#create_uploaded_file").on('click', sendFile);
+ 	 	$('#show_create_room_button').on('click', showCreateRoom);
+ 	 	$('#show_upload_file_button').on('click', showUploadFile);
+	 	// $("#create_uploaded_file").on('click', sendFile)
+ 	 	$("#image_file").on('change', sendFile);
+ 	 	$('#imagefield').on('submit', function (e) {
+ 	 		e.preventDefault();
+ 	 	});
+ 	 	$("#create_uploaded_file").on('click', sendFile);
 
  	 	// $("#image_file").on('change', uploadFile);
  	 	// $('#create_uploaded_file').on('click', uploadFile);
@@ -89,9 +98,16 @@ $(document).ready(function() {
  	 	dispatcher.on_open = function(data) {
 			getRecentRooms();
 			getRooms();
+			$('#userList').fadeOut();
+			
 		}
 
 	}
+
+	$('#new_login_path').on('click', showLogin);
+	$('#new_user_path').on('click', showRegister);
+
+
 });
 
 // when connected get recent rooms
@@ -127,6 +143,18 @@ var displayCommand = function(type) {
 		// append the message to the chat view
 		$('#chat-view').append(displayHTML(message));
 	}
+};
+
+// Modals to login and register 
+
+var showLogin = function () {
+	// reveal the modal that contains the new room form
+	$('#newLoginModal').foundation('reveal', 'open');
+};
+
+var showRegister = function () {
+	// reveal the modal that contains the new room form
+	$('#RegisterModal').foundation('reveal', 'open');
 };
 
 // evaluate what text has been entered in the text field
@@ -211,6 +239,7 @@ var sendText = sendCommand('text');
 var showCreateRoom = function () {
 	// reveal the modal that contains the new room form
 	$('#newRoomModal').foundation('reveal', 'open');
+	$('#room_name').focus();
 };
 
 // james modal
@@ -227,10 +256,12 @@ var createRoom = function () {
 	};
 	dispatcher.trigger('new_room', message);
 	$('#newRoomModal').foundation('reveal', 'close');
+	$('#room_name').val("");
 };
 
 var leaveRoom = function(){
  	// stop listening to previous events and leave the room
+
 	room.unsubscribe;
 
 	// unbind each command in the command list
@@ -257,6 +288,7 @@ var leaveRoom = function(){
 		roomid: currentRoomId
 	};
 	dispatcher.trigger('left_room', leavemessage);
+	
 };
 
 
@@ -266,7 +298,6 @@ var joinRoom = function (room_id) {
 	}
 
 	offset = 10;
-
 	// join the room
 	room = dispatcher.subscribe(room_id);
 	console.log('joined room ' + room_id);
@@ -314,6 +345,10 @@ var joinRoom = function (room_id) {
 	recentRooms.push(room_id);
 	recentRooms = _.uniq(recentRooms);
 	saveRecentRooms();
+
+	$('#sendRow').slideDown();
+	$('#userList').fadeIn();
+
 };
 
 var clientConnected = function() {
@@ -349,8 +384,9 @@ var showRecentRooms = function(message) {
 };
 
 var displayRooms = function(message) {
+	$('#sendRow').slideUp();
+	$('#userList').fadeOut();
 	$('#topBar').empty();
-	$('#userList').empty();
 	if (room) {
 		leaveRoom();
 	}
@@ -438,6 +474,7 @@ var updateRecentRooms = function(message) {
 };
 
 var editRoomName = function () {
+
 	if (currentRoomOwner === userId){
 		var $roomName = $(this);
 		var roomText = $roomName.text();
@@ -514,57 +551,55 @@ var clearChat = function() {
 
 
 ////////// PHILS IMAGE
+var files = [];
 
+var showUploadFile = function () {
+	$('#newUploadFileModal').foundation('reveal', 'open');
+};
 
-// var files = [];
+var sendFile = function (event) {
+	event.preventDefault();
+	var reader = new FileReader();
 
-// var showUploadFile = function () {
-// 	$('#newUploadFileModal').foundation('reveal', 'open');
-// };
+	reader.onload = function (event) {
+		var data = event.target.result.substr(event.target.result.indexOf(",") + 1, event.target.result.length);
+		// $(" #newUploadFileModal ").html("<img src=\"" + event.target.result + "\">");
 
-// var sendFile = function (event) {
-// 	event.preventDefault();
-// 	var reader = new FileReader();
+		$.ajax({
+			url: 'https://api.imgur.com/3/image',
+			headers: {
+				'Authorization' : 'Client-ID faf198b7a3d3df5'
+			},
+			type: 'POST',
+			data: {
+				'image' : data,
+				'type'  : 'base64'
+			},
+			success: function (response) {
+				var message = {
+					url: response.data.link,
+					id: userId,
+					roomid: currentRoomId
+				}
+				$('#newUploadFileModal').foundation('reveal', 'close');
+				// $(".chatRow:last").append("<img src=\"" + message.url + "\">");
+				// debugger;
+				dispatcher.trigger('send_embed', message);
+				
+			},
+			error: function (response) {
+				console.log("YOU SUCK");
+			}
+		});
+	}
+	reader.readAsDataURL(this.files[0]);
+};
 
-// 	reader.onload = function (event) {
-// 		var data = event.target.result.substr(event.target.result.indexOf(",") + 1, event.target.result.length);
-// 		// $(" #newUploadFileModal ").html("<img src=\"" + event.target.result + "\">");
-
-// 		$.ajax({
-// 			url: 'https://api.imgur.com/3/image',
-// 			headers: {
-// 				'Authorization' : 'Client-ID faf198b7a3d3df5'
-// 			},
-// 			type: 'POST',
-// 			data: {
-// 				'image' : data,
-// 				'type'  : 'base64'
-// 			},
-// 			success: function (response) {
-// 				console.log("FUCK YES");
-// 				var message = {
-// 					url: response.data.link,
-// 					id: userId,
-// 					roomid: currentRoomId
-// 				}
-// 				$('#newUploadFileModal').foundation('reveal', 'close');
-// 				$(".chatRow:last").append("<img src=\"" + message.url + "\">");
-// 				// debugger;
-// 				// dispatcher.trigger('new_embed', message);
-// 				$("#create_uploaded_file").on('click', sendFile);
-// 			},
-// 			error: function (response) {
-// 				console.log("YOU SUCK");
-// 			}
-// 		});
-// 	}
-// 	reader.readAsDataURL(this.files[0]);
-// };
-
-
-
-
-
+var tagUser = function() {
+	var name = $(this).context.innerText;
+	$('#chat_text').val("@" + name + " ");
+	$('#chat_text').focus();
+}
 
 
 

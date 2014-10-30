@@ -11,12 +11,13 @@
     <ul class="right">
     	<% if logged_in? %>
         <li><%= button_tag 'Commands', id: 'show_commands' %></li>
+        <li><%= button_tag 'Create Room', id: 'show_create_room_button' %></li>
       	<li><%= link_to "Chat as " + @current_user.name, chat_path %></li>
         <li><%= link_to 'Edit Profile', edit_current_user_path %></li>
       	<li><%= link_to 'Logout', login_path, :method => :delete %></li>
       <% else %>
-       	<li><%= link_to 'Login', login_path %></li>
-        <li><%= link_to 'Register', new_user_path %></li>
+       	<li><%= button_tag 'Login', id:'new_login_path'%></li>
+        <li><%= button_tag 'Register', id: 'new_user_path' %></li>
       <% end %>
     </ul>
 
