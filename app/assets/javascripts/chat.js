@@ -75,6 +75,7 @@ $(document).ready(function() {
 
  	 	$(window).on('scroll', onChatViewScroll);
  	 	$('#show_create_room_button').on('click', showCreateRoom);
+ 	 	$('#show_commands').on('click', openSubMenu);
 
 
  	 	//image stuff dont touch please
@@ -244,6 +245,12 @@ var showCreateRoom = function () {
 	$('#newRoomModal').foundation('reveal', 'open');
 	$('#room_name').focus();
 };
+
+// james modal
+var openSubMenu = function () {
+	$('#newCommandModal').foundation('reveal', 'open');
+};
+// end james modal
 
 var createRoom = function () {
 	// use form data to create the room
@@ -548,8 +555,6 @@ var clearChat = function() {
 
 
 ////////// PHILS IMAGE
-
-
 var files = [];
 
 var showUploadFile = function () {
@@ -599,5 +604,6 @@ var tagUser = function() {
 	$('#chat_text').val("@" + name + " ");
 	$('#chat_text').focus();
 }
+
 
 
