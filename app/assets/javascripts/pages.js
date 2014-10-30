@@ -3,6 +3,7 @@
 $(document).ready(function() {
 	$('body').on('click', '#new_login_path', showLogin);
 	$('body').on('click', '#new_user_path', showRegister);
+	$('body').on('click', '#loginClose', closeLoginPage);
 });
 
 var showLogin = function () {
@@ -17,6 +18,6 @@ var showRegister = function () {
 };
 
 
-var openSubMenu = function () {
-	$('#newCommandModal').foundation('reveal', 'open');
+var closeLoginPage = function () {	
+	$('#newLoginModal').foundation('reveal', 'close');
 };

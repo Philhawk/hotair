@@ -13,7 +13,6 @@ var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
 
 // List your commands here
 var commands = [
-	'crumble',
 	'map',
 	'time',
 	'movie',
