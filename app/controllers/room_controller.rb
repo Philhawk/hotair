@@ -501,10 +501,13 @@ class RoomController < WebsocketRails::BaseController
 
     offset = message["offset"]
 
-    send_message(:clear_chat, message)
-    room.messages.last(offset).each do |message|
-      send_message(message.function.to_sym, JSON.parse(message.object))
-    end
+
+    if offset <= room.messages.count + 10
+    		send_message(:clear_chat, message)
+    	 	room.messages.last(offset).each do |message|
+    	  send_message(message.function.to_sym, JSON.parse(message.object))
+    	end
+		end    
   end
   # JAMES END
 
