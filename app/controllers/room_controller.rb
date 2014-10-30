@@ -490,7 +490,8 @@ class RoomController < WebsocketRails::BaseController
 
 	  message_to_send = {
 	  	name: user.name,
-	  	search: uri_results
+	  	search: uri_results,
+	  	searchText: message['search']
 	  }
 
 	  put_message_in_db(message, message_to_send, 'new_search')
