@@ -203,6 +203,7 @@ var joinHandler = function(ev) {
 var getRooms = function() {
 	// get a list of rooms from the server
 	var message = {};
+
 	dispatcher.trigger('get_rooms', message);
 };
 
@@ -287,6 +288,7 @@ var leaveRoom = function(){
 		roomid: currentRoomId
 	};
 	dispatcher.trigger('left_room', leavemessage);
+	currentRoomId = '';
 	
 };
 
@@ -543,7 +545,8 @@ var getNewChatViewData = function () {
 var onChatViewScroll = function  () {
     var scrolled = $('#chat-view').scrollTop();
     if ( scrolled === 0 ) {
-    	if (room) {
+    	if (currentRoomId) {
+    		console.log('test')
     		getNewChatViewData();
     	}
     }
