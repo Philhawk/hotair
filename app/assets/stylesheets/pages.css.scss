@@ -265,14 +265,12 @@ html {
 /* james */
 button.secondary, .button.secondary {
   background-color: #990033;
-  border-color: #b9b9b9;
   color: white;
 }
-/* line 162, /Users/jamesleboeuf/.rvm/gems/ruby-2.0.0-p481/gems/foundation-rails-5.4.5.0/vendor/assets/stylesheets/foundation/components/_buttons.scss */
 button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
   background-color: #008cba;
 }
-/* line 168, /Users/jamesleboeuf/.rvm/gems/ruby-2.0.0-p481/gems/foundation-rails-5.4.5.0/vendor/assets/stylesheets/foundation/components/_buttons.scss */
+
 button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
   color: white;
 }
@@ -283,4 +281,13 @@ button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button
 
 button, .button {
   background-color: #990033;
+}
+
+input[type="submit"] {
+  font-size: 0.8125rem;
+  padding-right: 15px;
+  padding-left: 15px;
+  background-color: #990033;
+  border-color: #990033;
+  color: white;
 }
