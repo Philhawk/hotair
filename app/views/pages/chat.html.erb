@@ -7,14 +7,14 @@
 
 	<div class="row fullWidth">
 		<!-- left column -->
-		<div class="small-2 columns fullHeight">
+		<div class="small-2 columns fullHeight" id="leftColumn">
 			<!-- Room list button -->
 			<div class="row">
 				<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
 			</div>
 			<!-- Rooms title -->
-			<div class="row">
-				Rooms
+			<div class="row roomsTitle">
+				<h6>Recent Rooms</h6>
 			</div>
 			<!-- list of rooms as rows -->
 			<div id="recentRoomNav">
@@ -67,15 +67,15 @@
 							<div class="row">
 								<!-- user name -->
 								<div class="small-2 columns">
-									Nick
+					
 								</div>
 								<!-- message -->
 								<div class="small-9 columns">
-									Oklahoma sucks
+
 								</div>
 								<!-- time -->
 								<div class="small-1 columns">
-									10:00am
+
 								</div>
 							</div>
 						</div>
@@ -84,16 +84,14 @@
 					<div class="row" id="sendRow">
 						<!-- Attachment buttom -->
 						<div class="small-1 columns">
-							<%= button_tag 'A', id:'show_upload_file_button' %>
+							<button id="show_upload_file_button" name="button" type="submit"><i class="fa fa-camera"></i></button>
 						</div>
 						<!-- text field -->
-						<div class="small-10 columns">
+						<div class="small-11 columns">
 							<%= text_field_tag :chat_text %>
 						</div>
 						<!-- send button -->
-						<div class="small-1 columns">
-							<%= button_tag 'S', id: 'send_button' %>
-						</div>
+					
 					</div>
 				</div>
 				<!-- users online -->
@@ -102,11 +100,11 @@
 					<div class="row">
 						<!-- Online/offline notificator -->
 						<div class="small-2 columns">
-							O
+
 						</div>
 						<!-- name -->
 						<div class="small-10 columns">
-							Nick
+
 						</div>
 					</div>
 				</div>
@@ -121,7 +119,7 @@
 				{{ name }}:
 			</div>
 			<!-- message -->
-			<div class="small-9 columns">
+			<div class="small-9 columns messageEl">
 				{{{ text }}}
 			</div>
 			<!-- time -->
@@ -134,9 +132,14 @@
 
 	<script type='templates/handlebars' id="embed_template">
 		<div class="row chatRow embedColor">
-			<em>{{ name }}</em>
+			<div class="small-2 columns userName">
+				{{ name }}:
+			</div>
+			<!-- message -->
+			<div class="small-10 columns messageEl">
 				<a class="embedly-card" href="{{ url }}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+			</div>
 		</div>
 	</script>
 
@@ -171,9 +174,10 @@
 	</script>
 
 	<script type='templates/handlebars' id="wiki_template">
-		<div class="row chatRow embedColor">
+		<div class="row chatRow">
 				<a class="embedly-card" href="{{{ wiki }}}"></a>
 				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+
 		</div>
 	</script>
 
@@ -221,9 +225,18 @@
 	</script>
 
 	<script type="templates/handlebars" id="recent_rooms_template">
-		<div class="recentRoom">
-			<a href="{{ id }}">{{ name }}</a><span class="removeRecent"><a href="{{ id }}">x</a></span>
-		</div>
+		<ul class="side-nav">
+			<li>
+						<div class="small-10 columns recentRoom">
+							<a href="{{ id }}">{{ name }}</a>
+						</div>
+						<div class="small-2 columns noPadding">
+							<span class="removeRecent"><a href="{{ id }}">x</a></span>
+						</div>
+						<!-- name -->
+						
+			</li>
+		</ul>	
 	</script>
 
 	<script type="templates/handlebars" id="code_template">
@@ -278,7 +291,7 @@
 	<script type='templates/handlebars' id="users_in_room_template">
 		<ul>
 			{{#each users}}
-				<li>{{ name }}</li>
+				<li class="userInRoom">{{ name }}</li>
 			{{/each}}
 		</ul>
 	</script>
