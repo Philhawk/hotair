@@ -35,6 +35,8 @@ WebsocketRails::EventMap.describe do
 # james end
 
 #phil
+  subscribe :send_image, :to => RoomController, :with_method => :new_image
+  subscribe :send_crumble, :to => RoomController, :with_method => :new_crumble
   subscribe :send_map, :to => RoomController, :with_method => :new_map
   subscribe :send_recipe, :to => RoomController, :with_method => :new_recipe
   subscribe :send_movie, :to => RoomController, :with_method => :new_movie

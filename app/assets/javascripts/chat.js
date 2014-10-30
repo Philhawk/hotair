@@ -13,6 +13,7 @@ var EMBEDREGEXP = /(https?:\/\/|www)\S+/g;
 
 // List your commands here
 var commands = [
+	'crumble',
 	'map',
 	'time',
 	'movie',
@@ -64,15 +65,16 @@ $(document).ready(function() {
  	 	$('#chat-page').on('click', '#roomTopic', editTopic);
  	 	$('#chat-page').on('click', '#roomName', editRoomName);
  	 	$('#chat-view').on('scroll', onChatViewScroll);
- 	 	$('#show_create_room_button').on('click', showCreateRoom);
 
- 	 	
- 	 	// $('#show_upload_file_button').on('click', showUploadFile);
- 	 	// $("#image_file").on('change', sendFile);
- 	 	// $('#gingerstepkid').on('submit', function (e) {
- 	 	// 	e.preventDefault();
- 	 	// });
- 	 	// $("#create_uploaded_file").on('click', sendFile);
+ 	 	//image stuff dont touch please
+ 	 	$('#show_create_room_button').on('click', showCreateRoom);
+ 	 	$('#show_upload_file_button').on('click', showUploadFile);
+	 	$("#create_uploaded_file").on('click', sendFile)
+ 	 	$("#image_file").on('change', sendFile);
+ 	 	$('#imagefield').on('submit', function (e) {
+ 	 		e.preventDefault();
+ 	 	});
+ 	 	$("#create_uploaded_file").on('click', sendFile);
 
  	 	// $("#image_file").on('change', uploadFile);
  	 	// $('#create_uploaded_file').on('click', uploadFile);
@@ -509,47 +511,46 @@ var clearChat = function() {
 ////////// PHILS IMAGE
 
 
-// var files = [];
+var files = [];
 
-// var showUploadFile = function () {
-// 	$('#newUploadFileModal').foundation('reveal', 'open');
-// };
+var showUploadFile = function () {
+	$('#newUploadFileModal').foundation('reveal', 'open');
+};
 
-// var sendFile = function (event) {
-// 	event.preventDefault();
-// 	var reader = new FileReader();
+var sendFile = function (event) {
+	event.preventDefault();
+	var reader = new FileReader();
 
-// 	reader.onload = function (event) {
-// 		var data = event.target.result.substr(event.target.result.indexOf(",") + 1, event.target.result.length);
-// 		// $(" #newUploadFileModal ").html("<img src=\"" + event.target.result + "\">");
+	reader.onload = function (event) {
+		var data = event.target.result.substr(event.target.result.indexOf(",") + 1, event.target.result.length);
+		// $(" #newUploadFileModal ").html("<img src=\"" + event.target.result + "\">");
 
-// 		$.ajax({
-// 			url: 'https://api.imgur.com/3/image',
-// 			headers: {
-// 				'Authorization' : 'Client-ID faf198b7a3d3df5'
-// 			},
-// 			type: 'POST',
-// 			data: {
-// 				'image' : data,
-// 				'type'  : 'base64'
-// 			},
-// 			success: function (response) {
-// 				console.log("FUCK YES");
-// 				var message = {
-// 					url: response.data.link,
-// 					id: userId,
-// 					roomid: currentRoomId
-// 				}
-// 				$('#newUploadFileModal').foundation('reveal', 'close');
-// 				$(".chatRow:last").append("<img src=\"" + message.url + "\">");
-// 				// debugger;
-// 				// dispatcher.trigger('new_embed', message);
-// 				$("#create_uploaded_file").on('click', sendFile);
-// 			},
-// 			error: function (response) {
-// 				console.log("YOU SUCK");
-// 			}
-// 		});
-// 	}
-// 	reader.readAsDataURL(this.files[0]);
-// };
+		$.ajax({
+			url: 'https://api.imgur.com/3/image',
+			headers: {
+				'Authorization' : 'Client-ID faf198b7a3d3df5'
+			},
+			type: 'POST',
+			data: {
+				'image' : data,
+				'type'  : 'base64'
+			},
+			success: function (response) {
+				var message = {
+					url: response.data.link,
+					id: userId,
+					roomid: currentRoomId
+				}
+				$('#newUploadFileModal').foundation('reveal', 'close');
+				// $(".chatRow:last").append("<img src=\"" + message.url + "\">");
+				// debugger;
+				dispatcher.trigger('send_image', message);
+				;
+			},
+			error: function (response) {
+				console.log("YOU SUCK");
+			}
+		});
+	}
+	reader.readAsDataURL(this.files[0]);
+};
