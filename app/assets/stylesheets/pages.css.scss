@@ -76,6 +76,37 @@ body {
 	}
 }
 
+#userList {
+	border-left: 1px solid #DDDDDD;
+}
+
+button {
+	background: #990033;
+}
+
+a {
+
+}
+
+.userName {
+	text-align: right;
+}
+
+
+.chatRow {
+	border-top: 1px solid #EEE;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+
+}
+
+.embedColor {
+	background: #FAF9F5;
+}
+
+.embedly-card {
+	background-color: white;
+}
 // .vertAlign {
 //   position: relative;
 //   top: 50%;
