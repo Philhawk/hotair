@@ -189,9 +189,18 @@
 	</script>
 
 
-	<script type="templates/handlebars" id="time_template">
+	<script type="templates/handlebars" id="time_template">	
 		<div class="row chatRow">
-			<em>{{ name }}</em>: {{ time }}
+			<div class="small-2 columns userName">
+				Server: 
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl">
+				The time on the server is {{ time }}
+			</div>
+			<div class="small-1 columns">
+
+			</div>
 		</div>
 	</script>
 
