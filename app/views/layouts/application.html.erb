@@ -26,6 +26,27 @@
   <%= submit_tag 'Login' %>
 <% end %>
 </div>
+
+<div id="RegisterModal" class="reveal-modal">
+  <h1>Sign up</h1>
+<%= form_for User.new do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name, required: true %>
+  
+  <%= f.label :email %>
+  <%= f.email_field :email, required: true %>
+
+  <%= f.label :password %>
+  <%= f.password_field :password, required: true %>
+
+  <%= f.label :password_confirmation %>
+  <%= f.password_field :password_confirmation, required: true %>
+
+  <%= f.submit %>
+<% end %>
+</div>
+
+
     <%= render 'layouts/navigation' %>
 
 
