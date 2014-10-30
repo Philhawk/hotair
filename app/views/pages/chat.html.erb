@@ -244,12 +244,19 @@
 	</script>
 
 	<script type="templates/handlebars" id="code_template">
-		<div class="row chatRow">
-			<div class="code snippet">
-				<em>{{ name }}</em>: {{ time }}
+	 	<div class="row chatRow">
+			<div class="small-2 columns userName">
+				{{ name }}:
+			</div>
+			<!-- message -->
+			<div class="small-9 columns messageEl code snippet">
 				<pre><code>{{ code }}</code></pre>
 			</div>
-	 	</div>
+			<!-- time -->
+			<div class="small-1 columns">
+
+			</div>
+		</div>
  	</script>
 
  	<script type="templates/handlebars" id="flip_template">

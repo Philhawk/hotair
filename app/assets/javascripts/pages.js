@@ -3,9 +3,6 @@
 $(document).ready(function() {
 	$('body').on('click', '#new_login_path', showLogin);
 	$('body').on('click', '#new_user_path', showRegister);
-	$('body').on('click', '#show_commands', openSubMenu);
-
-
 });
 
 var showLogin = function () {

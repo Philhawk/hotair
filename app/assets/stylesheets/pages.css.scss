@@ -1,7 +1,20 @@
 // // Place all the styles related to the Pages controller here.
 // // They will automatically be included in application.css.
 // // You can use Sass (SCSS) here: http://sass-lang.com/
+#index-page {
+	background-color: #990033;
+	position: absolute;
+	width: 100%;
+	bottom: 0px;
+	top: 45px;
+	h3 {
+		color: white;
+	}
 
+	#register_button {
+		background-color: #333333;	
+	}
+}
 .fullWidth {
    width: 100%;
    margin-left: auto;
@@ -96,6 +109,10 @@ body {
 // 	padding-right: 1em;
 // }
 
+.white {
+	color: white;
+}
+
 .roomRow a {
 	color: black;
 }
@@ -156,8 +173,8 @@ a {
 
 h1.logo {
 	font-family: 'Lobster Two', cursive;
-	color: #990033;
-	font-size: 6em;
+	color: white;
+	font-size: 9em;
 }
 #show_create_room_button  {
 	background: #990033;
