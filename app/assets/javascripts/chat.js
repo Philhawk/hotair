@@ -34,7 +34,8 @@ $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
 		// connect to websocket
-		dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
+		// dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
+		dispatcher = new WebSocketRails('localhost:3000/websocket');
 
 		// get commands read to listen to
 		$.each(commands, function(i, command) {

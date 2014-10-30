@@ -1,64 +1,119 @@
+<!-- header -->
 <div id="chat-page">
 	<script>
 		var userName = "<%= @current_user.name %>";
 		var userId = <%= @current_user.id %>;
 	</script>
 
-	<!-- Left side -->
-	<div class="small-3 columns">
-		<!-- Logo -->
-		<div class="row">
-				Hot Air
-		</div>
-		<!-- side-nav -->
-		<%= button_tag 'Create Room', id:'show_create_room_button' %>
-		<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
-		<div class="row" id="recentRoomNav">
-
-		</div>
-	</div>
-	<!-- Right Side -->
-	<div class="small-9 columns">
-		<!-- Top Bar -->
-		<div class="row topBar" id="topBar">
-		</div>
-		<!-- Chat room -->
-		<div class="row chatRoom">
-			<!-- Chat log -->
-			<div class="small-10 columns" id="chat-view">
-
+	<div class="row">
+		<!-- left column -->
+		<div class="small-2 columns">
+			<!-- Room list button -->
+			<div class="row">
+				<%= button_tag 'List Rooms',  id: 'show_rooms_button' %>
 			</div>
-			<!-- List of users -->
-			<div class="small-2 columns userList" id="userList">
+			<!-- Rooms title -->
+			<div class="row">
+				Rooms
 			</div>
-		</div>
-		<!-- Send row -->
-		<div class="row sendRow">
-			<!-- Send field and button -->
-			<div class="small-9 columns">
-				<div class="row sendInput">
-					<!-- Text field -->
-					<div class="small-9 columns">
-						<%= text_field_tag :chat_text %>
+			<!-- list of rooms as rows -->
+			<div id="recentRoomNav">
+					<div class="row">
+						<!-- close button -->
+						<div class="small-3 columns">
+							
+						</div>
+						<!-- name -->
+						<div class="small-9 columns">
+							
+						</div>
 					</div>
-					<!-- Send button -->
-					<div class="small-3 columns">
-						<%= button_tag 'Send', id: 'send_button' %>
-						<%= button_tag 'Upload', id:'show_upload_file_button' %>
+			</div>
+			
+		</div>
+		<!-- right column -->
+		<div class="small-10 columns">
+			<!-- title bar -->
+			<div class="row topBar" id="topBar">
+				<div class="small-12 columns">
+					<!-- Room Name -->
+					<div class="row">
+						
+					</div>
+					<div class="row">
+						<!-- Topic -->
+						<div class="small-10 columns">
+							
+						</div>
+						<!-- Users Online -->
+						<div class="small-1 columns">
+							<!-- If were in the room list put create room here -->
+						</div>
+						<!-- Delte Button -->
+						<div class="small-1 columns">
+							
+						</div>
+					</div>
+				</div>
+			</div>		
+			<!-- chat log -->
+			<div class="row chatRoom">
+				<!-- messages and send -->
+				<div class="small-10 columns">
+					<!-- chat messages -->
+					<div class="row">
+						<div class="small-12 columns" id="chat-view">
+							<!-- dummy message -->
+							<div class="row">
+								<!-- user name -->
+								<div class="small-2 columns">
+									Nick
+								</div>
+								<!-- message -->
+								<div class="small-9 columns">
+									Oklahoma sucks
+								</div>
+								<!-- time -->
+								<div class="small-1 columns">
+									10:00am
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- send row -->
+					<div class="row">
+						<!-- Attachment buttom -->
+						<div class="small-1 columns">
+							<%= button_tag 'A', id:'show_upload_file_button' %>
+						</div>
+						<!-- text field -->
+						<div class="small-10 columns">
+							<%= text_field_tag :chat_text %>
+						</div>
+						<!-- send button -->
+						<div class="small-1 columns">
+							<%= button_tag 'S', id: 'send_button' %>
+						</div>
+					</div>
+				</div>
+				<!-- users online -->
+				<div class="small-2 columns userList" id="userList">
+					<!-- dummy user online -->
+					<div class="row">
+						<!-- Online/offline notificator -->
+						<div class="small-2 columns">
+							O
+						</div>
+						<!-- name -->
+						<div class="small-10 columns">
+							Nick
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="small-3 columns">
-			</div>
-		</div>
-		<!-- footer -->
-		<div class="row chatFooter">
-			footer
 		</div>
 	</div>
 
-	<div >
-	</div>
 
 	<script type='templates/handlebars' id="text_template">
 		<div class="row chatRow">
@@ -226,6 +281,7 @@
 		<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 		</div>
 	</script>
+</div>
 
 <!-- New room form -->
 
