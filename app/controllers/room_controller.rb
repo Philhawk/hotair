@@ -20,6 +20,15 @@ class RoomController < WebsocketRails::BaseController
 		end
 	end
 
+	def delete 
+		room_id = message['room']
+		room = Room.find room_id
+		if room.owner_id == current_user.id 
+			room.destroy 
+			WebsocketRails[room_id].trigger(:room_deleted, message)
+		end 
+	end 
+
 	def edit_name
 		new_name = message['name']
 		room = Room.find message['roomid']

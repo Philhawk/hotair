@@ -36,8 +36,12 @@ $(document).ready(function() {
 	// if someone is on the chat view
 	if ($('#chat-page').length > 0){
 		// connect to websocket
-		dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
-		// dispatcher = new WebSocketRails('localhost:3000/websocket');
+		// dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
+		dispatcher = new WebSocketRails('localhost:3000/websocket');
+
+
+
+		// dispatcher = new WebSocketRails('agile-island-1238.herokuapp.com/websocket');
 
 		// get commands read to listen to
 		$.each(commands, function(i, command) {
@@ -73,6 +77,7 @@ $(document).ready(function() {
  	 	$(window).on('scroll', onChatViewScroll);
  	 	$('#show_create_room_button').on('click', showCreateRoom);
  	 	$('#show_commands').on('click', openSubMenu);
+ 	 	$('#chat-page').on('click', '#delete_room_button', deleteRoom); 
 
 
  	 	//image stuff dont touch please
@@ -198,6 +203,7 @@ var joinHandler = function(ev) {
 var getRooms = function() {
 	// get a list of rooms from the server
 	var message = {};
+
 	dispatcher.trigger('get_rooms', message);
 };
 
@@ -268,6 +274,7 @@ var leaveRoom = function(){
 	dispatcher.unbind('new_text');
 	dispatcher.unbind('new_embed');
 
+	room.unbind('room_deleted');
 	room.unbind('new_embed');
 	room.unbind('new_text');
 	room.unbind('scroll_chat');
@@ -281,6 +288,7 @@ var leaveRoom = function(){
 		roomid: currentRoomId
 	};
 	dispatcher.trigger('left_room', leavemessage);
+	currentRoomId = '';
 	
 };
 
@@ -299,6 +307,7 @@ var joinRoom = function (room_id) {
 
 	// listen to room events
 	room.bind('user_joined', userJoinedRoom);
+	room.bind('room_deleted', roomDeleted);
 
 	$.each(commandsList, function(i, command){
 		room.bind(command, displayCommand(command));
@@ -403,10 +412,15 @@ var displayRooms = function(message) {
 
 var displayRoomDetails = function(message) {
 	currentRoomOwner = message['owner'];
+	var owner = false;
+	if ( currentRoomOwner === userId) {
+		owner = true;
+	}
 	var topInfo = {
 		name: message['name'],
 		topic: message['topic'],
-		users: message['users']
+		users: message['users'],
+		owner: owner
 	};
 	var source = $('#room_details_template').html();
 	var displayHTML = Handlebars.compile(source);
@@ -454,7 +468,6 @@ var scrollChat = function() {
 var removeRecent = function(ev) {
 	ev.preventDefault();
 	var roomID = $(this).attr('href');
-	console.log(roomID);
 	recentRooms = _.without(recentRooms,roomID);
 	if (currentRoomId === roomID) {
 		getRooms();
@@ -532,7 +545,8 @@ var getNewChatViewData = function () {
 var onChatViewScroll = function  () {
     var scrolled = $('#chat-view').scrollTop();
     if ( scrolled === 0 ) {
-    	if (room) {
+    	if (currentRoomId) {
+    		console.log('test')
     		getNewChatViewData();
     	}
     }
@@ -592,7 +606,20 @@ var tagUser = function() {
 	var name = $(this).context.innerText;
 	$('#chat_text').val("@" + name + " ");
 	$('#chat_text').focus();
-}
+};
 
+var deleteRoom = function() {
+	if (currentRoomOwner === userId) {
+		var message = {
+			room: currentRoomId
+		};
+		dispatcher.trigger('delete_room', message);
+	}
+};
 
+var roomDeleted = function() {
+	recentRooms = _.without(recentRooms,currentRoomId);
+	saveRecentRooms();
+	getRooms();
+};
 

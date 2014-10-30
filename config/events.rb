@@ -15,6 +15,7 @@ WebsocketRails::EventMap.describe do
   subscribe :join_room, :to => RoomController, :with_method => :join
   subscribe :left_room, :to => RoomController, :with_method => :leave
   subscribe :get_rooms, :to => RoomController, :with_method => :show
+  subscribe :delete_room, :to => RoomController, :with_method => :delete
 
 
   subscribe :edit_room_name, :to => RoomController, :with_method => :edit_name
