@@ -1,31 +1,6 @@
-// Place all the styles related to the Pages controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-.removeRecent {
-	float: right;
-	padding-right: 1em;
-}
-#topBar {
-	h1 {
-		font-size: 2em;
-		margin: 0;
-	}
-	h4 {
-		font-size: 1em;
-		display: inline-block;
-	}
-	h5 {
-		display: inline-block;
-		font-size: 1em;
-		float: right;
-	}
-}
-
-.vertAlign {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
+// // Place all the styles related to the Pages controller here.
+// // They will automatically be included in application.css.
+// // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .fullWidth {
    width: 100%;
@@ -34,62 +9,100 @@
    max-width: initial;
 }
 
-#chat-view {
-	max-height: 65vh;
-	overflow: scroll;
-	margin-top: 1em;
-}
-.chatRoom {
-	position: relative;
-	background-color: white;
-	min-height: 65vh;
-
+html {
+   height: 100%;
 }
 
-.sendRow {
-	background-color: #8D8D8D;
+body {
+   height: 100%;
 }
 
-.sendInput {
-	padding-top: 1em;
-}
-.userList {
-	background-color: #F1EEEE;
-	height: 100%;
-	position: absolute;
-	right: 0;
-}
+///////  old shit
+///
+// .removeRecent {
+// 	float: right;
+// 	padding-right: 1em;
+// }
+// #topBar {
+// 	h1 {
+// 		font-size: 2em;
+// 		margin: 0;
+// 	}
+// 	h4 {
+// 		font-size: 1em;
+// 		display: inline-block;
+// 	}
+// 	h5 {
+// 		display: inline-block;
+// 		font-size: 1em;
+// 		float: right;
+// 	}
+// }
 
-#chat-page {
+// .vertAlign {
+//   position: relative;
+//   top: 50%;
+//   transform: translateY(-50%);
+// }
 
-  margin: 0;
-  padding: 0;
 
-	background-color: #FCAFAE;
-}
 
-.chatFooter {
-	background-color: #E49797;
-}
+// #chat-view {
+// 	max-height: 65vh;
+// 	overflow: scroll;
+// 	margin-top: 1em;
+// }
+// .chatRoom {
+// 	position: relative;
+// 	background-color: white;
+// 	min-height: 65vh;
 
-.topBar {
-	position: relative;
-	background: white;
-	padding-top: 0.5em;
-	padding-left: 1em;
-	padding-right: 20%;
-	box-shadow: 0px 5px 2px rgba(0,0,0,0.15);
-	z-index: 1;
-}
+// }
 
-.chatRow {
-	padding-top: 1em;
-	padding-bottom: 1em;
-}
-button {
-	height: 2.4em;
-	padding-top: .65em;
-}
+// .sendRow {
+// 	background-color: #8D8D8D;
+// }
+
+// .sendInput {
+// 	padding-top: 1em;
+// }
+// .userList {
+// 	background-color: #F1EEEE;
+// 	height: 100%;
+// 	position: absolute;
+// 	right: 0;
+// }
+
+// #chat-page {
+
+//   margin: 0;
+//   padding: 0;
+
+// 	background-color: #FCAFAE;
+// }
+
+// .chatFooter {
+// 	background-color: #E49797;
+// }
+
+// .topBar {
+// 	position: relative;
+// 	background: white;
+// 	padding-top: 0.5em;
+// 	padding-left: 1em;
+// 	padding-right: 20%;
+// 	box-shadow: 0px 5px 2px rgba(0,0,0,0.15);
+// 	z-index: 1;
+// }
+
+// .chatRow {
+// 	padding-top: 1em;
+// 	padding-bottom: 1em;
+// }
+// button {
+// 	height: 2.4em;
+// 	padding-top: .65em;
+// }
 
 
 
