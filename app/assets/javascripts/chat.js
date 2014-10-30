@@ -73,10 +73,10 @@ $(document).ready(function() {
 
 
  	 	//image stuff dont touch please
- 	 	$('#new_login_path').on('click', showLogin);
+ 	 	
  	 	$('#show_create_room_button').on('click', showCreateRoom);
  	 	$('#show_upload_file_button').on('click', showUploadFile);
-	 	$("#create_uploaded_file").on('click', sendFile)
+	 	// $("#create_uploaded_file").on('click', sendFile)
  	 	$("#image_file").on('change', sendFile);
  	 	$('#imagefield').on('submit', function (e) {
  	 		e.preventDefault();
@@ -99,6 +99,10 @@ $(document).ready(function() {
 		}
 
 	}
+
+	$('#new_login_path').on('click', showLogin);
+
+
 });
 
 // when connected get recent rooms
@@ -556,8 +560,8 @@ var sendFile = function (event) {
 				$('#newUploadFileModal').foundation('reveal', 'close');
 				// $(".chatRow:last").append("<img src=\"" + message.url + "\">");
 				// debugger;
-				dispatcher.trigger('send_image', message);
-				;
+				dispatcher.trigger('send_embed', message);
+				
 			},
 			error: function (response) {
 				console.log("YOU SUCK");
@@ -566,3 +570,5 @@ var sendFile = function (event) {
 	}
 	reader.readAsDataURL(this.files[0]);
 };
+
+

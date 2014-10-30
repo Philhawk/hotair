@@ -140,13 +140,6 @@
 		</div>
 	</script>
 
-	<script type='templates/handlebars' id="image_template">
-		<div class="row chatRow">
-			<em>{{ name }}</em>
-				<a class="embedly-card" href="{{ url }}"></a>
-				<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
-		</div>
-	</script>
 
 
 	<script type='templates/handlebars' id="map_template">
@@ -309,21 +302,6 @@
 	</script>
 </div>
 
-<!-- New Login form -->
-
-<div id="newLoginModal">
-<h1>Login</h1>
-
-<%= form_tag '/login' do %>
-	<%= label_tag :name %>
-	<%= text_field_tag :name, nil, autofocus: true %>
-
-	<%= label_tag :password %>
-	<%= password_field_tag :password, nil %>
-
-	<%= submit_tag 'Login' %>
-<% end %>
-</div>
 
 <!-- New room form -->
 
