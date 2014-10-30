@@ -1,5 +1,10 @@
 <h1>Login</h1>
 
+	 <% if @error %>
+	    <%= @error %>
+    <% end %>
+	 
+	 
 <%= form_tag '/login' do %>
 	<%= label_tag :name %>
 	<%= text_field_tag :name, nil, autofocus: true %>
@@ -8,5 +13,9 @@
 	<%= password_field_tag :password, nil %>
 
 	<%= submit_tag 'Login' %>
-<% end %>
+
+
+	<% end %> 
+	
+	
 

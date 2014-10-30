@@ -17,6 +17,7 @@
       	<li><%= link_to 'Logout', login_path, :method => :delete %></li>
       <% else %>
        	<li><%= button_tag 'Login', id:'new_login_path'%></li>
+
         <li><%= button_tag 'Register', id: 'new_user_path' %></li>
       <% end %>
     </ul>
