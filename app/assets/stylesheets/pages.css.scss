@@ -96,6 +96,24 @@ body {
 // 	float: right;
 // 	padding-right: 1em;
 // }
+
+.roomRow a {
+	color: black;
+}
+
+.roomRow:hover {
+	a {
+		color: #990033;
+	}
+}
+
+.side-nav li a:not(.button) {
+	color: black;
+}
+
+.side-nav li a:not(.button):hover {
+	color: #990033;
+}
 #leftColumn {
 	border-right: 2px solid #EEE;
 }
