@@ -1,6 +1,10 @@
 // // Place all the styles related to the Pages controller here.
 // // They will automatically be included in application.css.
 // // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#aboutUsModal {
+	text-align: center;
+}
 #index-page {
 	background-color: #990033;
 	position: absolute;
@@ -11,7 +15,7 @@
 		color: white;
 	}
 
-	#register_button {
+	#about_us {
 		background-color: #333333;	
 	}
 }
@@ -179,13 +183,6 @@ h1.logo {
 #show_create_room_button  {
 	background: #990033;
 }
-
-/*#new_user_path {
-
-#show_create_room_button {
-
-	background: #990033;
-}*/
 
 #show_commands {
 	margin-left: 1em;

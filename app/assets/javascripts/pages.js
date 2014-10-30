@@ -2,6 +2,7 @@ $(document).ready(function() {
 	$('body').on('click', '#new_login_path', showLogin);
 	$('body').on('click', '#new_user_path', showRegister);
   $('body').on('click', '#register_button', showRegister);
+  $('body').on('click', '#about_us', showAboutUs);
 });
 
 var showLogin = function () {
@@ -14,6 +15,6 @@ var showRegister = function () {
 	$('#RegisterModal').foundation('reveal', 'open');
 };
 
-var closeLoginPage = function () {	
-	$('#newLoginModal').foundation('reveal', 'close');
+var showAboutUs = function () {
+	$('#aboutUsModal').foundation('reveal', 'open');
 };

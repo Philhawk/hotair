@@ -11,51 +11,52 @@
     <%= csrf_meta_tags %>
   </head>
   <body>
+    <div id="aboutUsModal" class="reveal-modal" data-reveal>
+      <h1>About Us</h1>
+      <div id="wideo-embed-block"
+        wideo-width="540" 
+        wideo-height="310"
+        wideo-id="5971721414657242387"
+        autoplay="true">
+      </div>
+      <script type="text/javascript">(function(){var x=document.createElement('script'), s=document.getElementsByTagName('script')[0];x.async=true;x.src='http://static.wideo.co/js/embed/wideoembed.js';s.parentNode.insertBefore(x,s)})();</script>
+      <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="newLoginModal" class="reveal-modal" data-reveal>
+      <h1>Login</h1>
 
+      <%= form_tag '/login' do %>
+        <%= label_tag :name %>
+        <%= text_field_tag :name, nil, autofocus: true %>
 
-<div id="newLoginModal" class="reveal-modal" data-reveal>
-  <h1>Login</h1>
+        <%= label_tag :password %>
+        <%= password_field_tag :password, nil %>
 
-  <%= form_tag '/login' do %>
-    <%= label_tag :name %>
-    <%= text_field_tag :name, nil, autofocus: true %>
+        <%= submit_tag 'Login', class: "button expand" %>
+      <% end %>
+      <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="RegisterModal" class="reveal-modal" data-reveal>
+      <h1>Sign up</h1>
+      <%= form_for User.new do |f| %>
+        <%= f.label :name %>
+        <%= f.text_field :name, required: true %>
+        
+        <%= f.label :email %>
+        <%= f.email_field :email, required: true %>
 
-    <%= label_tag :password %>
-    <%= password_field_tag :password, nil %>
+        <%= f.label :password %>
+        <%= f.password_field :password, required: true %>
 
-  <%= submit_tag 'Login', class: "button expand" %>
-<% end %>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
+        <%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, required: true %>
 
-<div id="RegisterModal" class="reveal-modal" data-reveal>
-  <h1>Sign up</h1>
-<%= form_for User.new do |f| %>
-  <%= f.label :name %>
-  <%= f.text_field :name, required: true %>
-  
-  <%= f.label :email %>
-  <%= f.email_field :email, required: true %>
-
-  <%= f.label :password %>
-  <%= f.password_field :password, required: true %>
-
-  <%= f.label :password_confirmation %>
-  <%= f.password_field :password_confirmation, required: true %>
-
-  <%= f.submit class: "button expand" %>
-<% end %>
-  <a class="close-reveal-modal">&#215;</a>
-
-</div>
-
-
+        <%= f.submit class: "button expand" %>
+      <% end %>
+      <a class="close-reveal-modal">&#215;</a>
+    </div>
     <%= render 'layouts/navigation' %>
-
-
-      <%= yield %>
-
-
+    <%= yield %>
     <%= javascript_include_tag "application" %>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/default.min.css">
     <script src="//">
