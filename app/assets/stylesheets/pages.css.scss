@@ -134,13 +134,21 @@ a {
 
 }
 
+h1.logo {
+	font-family: 'Lobster Two', cursive;
+	color: #990033;
+	font-size: 6em;
+}
 #show_create_room_button  {
 	background: #990033;
 }
 
-#new_user_path {
+/*#new_user_path {
+
+#show_create_room_button {
+
 	background: #990033;
-}
+}*/
 
 .userName {
 	text-align: right;
@@ -159,11 +167,11 @@ a {
 
 }
 
-.small-4.columns {
+/*.small-4.columns {
 	background-color: white;
 	text-align: center;
 
-}
+}*/
 .embedColor {
 	background: #FAF9F5;
 }
@@ -173,9 +181,6 @@ a {
 
 }
 
-.button.expand {
-	width: 200%;
-}
 
 #show_rooms_button{
 	width: 100%;
@@ -269,3 +274,33 @@ html {
 
 
 /* lawrence test  */
+
+/* james */
+button.secondary, .button.secondary {
+  background-color: #990033;
+  color: white;
+}
+button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+  background-color: #008cba;
+}
+
+button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+  color: white;
+}
+
+.top-bar-section ul li > button {
+  background-color: #990033;
+}
+
+button, .button {
+  background-color: #990033;
+}
+
+input[type="submit"] {
+  font-size: 0.8125rem;
+  padding-right: 15px;
+  padding-left: 15px;
+  background-color: #990033;
+  border-color: #990033;
+  color: white;
+}
